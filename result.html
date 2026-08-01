@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>診断結果 - Claude Code 理解度診断</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+    <div id="no-result" class="card" style="display: none;">
+      <h1>診断結果がありません</h1>
+      <p>まだ診断が完了していないか、結果の保存に失敗しました。</p>
+      <a class="button" href="index.html">トップに戻る</a>
+    </div>
+
+    <div id="result-content" style="display: none;">
+      <div class="card">
+        <h1>診断結果</h1>
+        <p id="fallback-notice" class="progress" style="display: none;"></p>
+        <p id="completed-at" class="progress"></p>
+        <h2>総合レベル</h2>
+        <span id="overall-level-badge" class="level-badge"></span>
+      </div>
+
+      <div class="card">
+        <h2>領域別レベル</h2>
+        <div id="domain-results"></div>
+      </div>
+
+      <div class="card">
+        <h2>改善提案</h2>
+        <div id="suggestions"></div>
+      </div>
+
+      <div class="actions no-print">
+        <button class="button" id="print-button">PDFとして印刷 / 保存</button>
+        <a class="button secondary" href="index.html">トップに戻る</a>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="js/result-page.js"></script>
+</body>
+</html>
