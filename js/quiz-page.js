@@ -1,4 +1,4 @@
-import { buildQuiz, gradeAnswers } from './quiz-engine.js';
+import { buildQuiz, gradeAnswers, collectWrongAnswers } from './quiz-engine.js';
 import { judgeAllLevels } from './level-judge.js';
 import { saveResult, saveFallbackResult } from './storage.js';
 
@@ -99,6 +99,7 @@ async function main() {
   function finishQuiz() {
     const gradeResult = gradeAnswers(quiz, answers);
     const judged = judgeAllLevels(gradeResult);
+    const wrongAnswers = collectWrongAnswers(quiz, answers);
 
     const domains = {};
     for (const entry of quiz) {
@@ -116,6 +117,7 @@ async function main() {
       domains,
       overall: judged.overall,
       completedAt: new Date().toISOString(),
+      wrongAnswers,
     };
 
     const saved = saveResult(resultObject);
