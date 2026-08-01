@@ -115,13 +115,13 @@
       "level": "advanced",
       "question": "スキル（Skill）機能の主な目的として適切なものはどれですか？",
       "choices": [
-        "特定タスクの手順や知識をパッケージ化し、必要な時に読み込ませる",
+        "SKILL.mdに手順や知識をまとめ、関連する場面でClaudeに自動的または明示的に読み込ませる",
         "ネットワーク接続を暗号化する",
         "モデルの推論速度を上げる",
         "OSのパーミッションを変更する"
       ],
       "correctIndex": 0,
-      "explanation": "スキルは特定タスクの手順・知識をパッケージ化し、該当するタスクの際に読み込まれる仕組みです。"
+      "explanation": "スキルはYAML frontmatterとMarkdown本文からなるSKILL.mdファイルとして定義し、Claudeが会話内容に応じて自動的に読み込むか、`/skill-name`で明示的に呼び出すことができます。CLAUDE.mdと異なり、スキル本文は使われるまでコンテキストに載らないため、長い参照資料も低コストで保持できます。"
     },
     {
       "id": "feature-013",
@@ -165,15 +165,327 @@
     {
       "id": "feature-016",
       "level": "expert",
-      "question": "自作のMCPサーバーとフックを組み合わせて、特定のツール実行結果を自動検証しブロックする仕組みを作る際、最も適した設計はどれですか？",
+      "question": "自作のMCPサーバーとフックを組み合わせて、危険なツール呼び出しを実行前に自動検証してブロックする仕組みを作る際、最も適した設計はどれですか？",
       "choices": [
-        "PreToolUse/PostToolUseフックで検証ロジックを実行し、必要に応じて非ゼロ終了コードでブロックする",
-        "MCPサーバー側では何もせず、手動確認のみに頼る",
+        "PreToolUseフックでツール入力を検証し、終了コード2やpermissionDecision: \"deny\"でツール呼び出し自体をブロックする",
+        "PostToolUseフックを使えば終了コード2でツールの実行自体を未然に防げる",
         "検証はモデルの推論精度向上でしか実現できない",
         "フックとMCPは同時に併用できない"
       ],
       "correctIndex": 0,
-      "explanation": "フックのPreToolUse/PostToolUseで検証を行い、終了コードによって処理をブロック・許可する設計が一般的です。"
+      "explanation": "PreToolUseフックはツールが実行される前に発火し、終了コード2（stderrがエラー理由としてClaudeに返る）やJSON出力の`permissionDecision: \"deny\"`でツール呼び出しをブロックできます。一方PostToolUseはツール実行後に発火するため、終了コード2を返してもツールの実行自体は防げず、stderrの内容が表示されるのみです。"
+    },
+    {
+      "id": "feature-017",
+      "level": "beginner",
+      "question": "フック（hooks）の設定はどのファイルに記述しますか？",
+      "choices": [
+        "settings.json（例: .claude/settings.json）",
+        "package.json",
+        ".gitignore",
+        "README.md"
+      ],
+      "correctIndex": 0,
+      "explanation": "フックは`~/.claude/settings.json`や`.claude/settings.json`などのsettings.jsonファイル内の`hooks`キーにJSON形式で設定します。"
+    },
+    {
+      "id": "feature-018",
+      "level": "beginner",
+      "question": "Claude Codeにおけるplan modeの基本的な動作として正しいものはどれですか？",
+      "choices": [
+        "ファイルを読んで調査し計画を提示するが、承認するまでソースの編集は行わない",
+        "常に自動でファイルを編集し続ける",
+        "ツールを一切使用できないモードである",
+        "会話履歴を暗号化するモードである"
+      ],
+      "correctIndex": 0,
+      "explanation": "plan modeではClaudeがファイルの読み取りや調査目的のシェルコマンド実行を行い計画を提示しますが、計画が承認されるまでソースの編集は行いません。"
+    },
+    {
+      "id": "feature-019",
+      "level": "beginner",
+      "question": "サブエージェント（subagent）を利用する主な利点として正しいものはどれですか？",
+      "choices": [
+        "調査結果や大量の出力を独立したコンテキストに閉じ込め、メインの会話コンテキストを圧迫しない",
+        "インターネット接続なしで動作するようになる",
+        "常にメインの会話より高性能なモデルを使う",
+        "権限確認が一切不要になる"
+      ],
+      "correctIndex": 0,
+      "explanation": "サブエージェントは自分専用のコンテキストウィンドウを持ち、検索結果やログなど大量の出力をそこに留めて要約のみをメイン会話に返すため、メインコンテキストの圧迫を防げます。"
+    },
+    {
+      "id": "feature-020",
+      "level": "beginner",
+      "question": "Claude Codeに搭載されている組み込みのサブエージェントとして適切な組み合わせはどれですか？",
+      "choices": [
+        "Explore、Plan、general-purpose",
+        "Frontend、Backend、Database",
+        "Admin、Guest、Root",
+        "Fast、Slow、Medium"
+      ],
+      "correctIndex": 0,
+      "explanation": "Claude Codeには読み取り専用の検索に特化したExplore、plan mode時の調査を担うPlan、複雑な多段階タスク向けのgeneral-purposeなど、組み込みのサブエージェントが用意されています。"
+    },
+    {
+      "id": "feature-021",
+      "level": "beginner",
+      "question": "カスタムサブエージェントを定義するファイルの基本形式はどれですか？",
+      "choices": [
+        "YAML frontmatter付きのMarkdownファイル",
+        "バイナリの実行ファイル",
+        "暗号化されたJSONファイル",
+        "CSVファイル"
+      ],
+      "correctIndex": 0,
+      "explanation": "サブエージェントは`name`や`description`などをYAML frontmatterで記述し、続くMarkdown本文をシステムプロンプトとするファイルとして定義します。"
+    },
+    {
+      "id": "feature-022",
+      "level": "beginner",
+      "question": "スキルを明示的に呼び出す方法として正しいものはどれですか？",
+      "choices": [
+        "`/スキル名` の形式でスラッシュコマンドとして入力する",
+        "スキル名をダブルクリックする",
+        "環境変数に設定する",
+        "呼び出す方法はなく、Claudeの自動判断のみに依存する"
+      ],
+      "correctIndex": 0,
+      "explanation": "スキルは`SKILL.md`のあるディレクトリ名などに基づく`/スキル名`で明示的に呼び出せるほか、Claudeが会話内容に応じて自動的に読み込むこともあります。"
+    },
+    {
+      "id": "feature-023",
+      "level": "intermediate",
+      "question": "PreToolUseフックの`matcher`フィールドで特定のツールにのみフックを適用したい場合、どのように指定しますか？",
+      "choices": [
+        "\"Bash\"のようにツール名や `Edit|Write` のようなパイプ区切り、または正規表現で対象を絞り込む",
+        "matcherは常に無視され、全ツールに適用される",
+        "ツール名の指定はできず、時間帯でのみ絞り込める",
+        "matcherにはフック自身のファイルパスしか指定できない"
+      ],
+      "correctIndex": 0,
+      "explanation": "matcherにはツール名の完全一致（`Bash`）、`Edit|Write`のようなリスト、`^Notebook`のような正規表現が指定でき、対象を柔軟に絞り込めます。"
+    },
+    {
+      "id": "feature-024",
+      "level": "intermediate",
+      "question": "MCPサーバーを追加する際の`--scope`オプションで選べるスコープの組み合わせとして正しいものはどれですか？",
+      "choices": [
+        "local（既定・自分のみ・そのプロジェクトのみ）、project（.mcp.jsonでチーム共有）、user（自分の全プロジェクト）",
+        "public、private、hiddenの3種類のみ",
+        "read-only、write-only、adminの3種類のみ",
+        "スコープの概念はMCPには存在しない"
+      ],
+      "correctIndex": 0,
+      "explanation": "MCPサーバーは`local`（既定。自分のみ、そのプロジェクト限定）、`project`（`.mcp.json`に保存されチームと共有可能）、`user`（自分の全プロジェクトで利用可能）の3スコープで管理できます。"
+    },
+    {
+      "id": "feature-025",
+      "level": "intermediate",
+      "question": "サブエージェントのfrontmatterで、使用できるツールをRead・Grep・Globのみに制限したい場合、どのフィールドを使いますか？",
+      "choices": [
+        "`tools` フィールドにホワイトリストとして列挙する",
+        "`description` フィールドに制限内容を書く",
+        "`model` フィールドで制限する",
+        "ツールの制限はできない"
+      ],
+      "correctIndex": 0,
+      "explanation": "`tools`フィールドに使用可能なツールを列挙するとホワイトリストとして機能し、指定したツール以外は使えなくなります。逆に`disallowedTools`で特定のツールのみを除外することもできます。"
+    },
+    {
+      "id": "feature-026",
+      "level": "intermediate",
+      "question": "plan modeで計画が完成した後、ユーザーが取れる選択肢として適切でないものはどれですか？",
+      "choices": [
+        "計画を承認せずに即座にセッションを強制終了する以外の選択肢はない",
+        "承認してauto modeまたは通常モードで編集を開始する",
+        "各編集を個別に承認しながら進める",
+        "計画を却下し、修正指示を出して計画を練り直す"
+      ],
+      "correctIndex": 0,
+      "explanation": "plan modeで計画が提示されると、承認して編集を開始する、各編集を個別承認する、計画を却下してさらに練り直す、といった選択肢があり、セッション強制終了は必須の選択肢ではありません。"
+    },
+    {
+      "id": "feature-027",
+      "level": "intermediate",
+      "question": "スキルのfrontmatterで`disable-model-invocation: true`を設定した場合の効果として正しいものはどれですか？",
+      "choices": [
+        "ユーザーは`/スキル名`で呼び出せるが、Claudeが自動的に呼び出すことはできなくなる",
+        "誰もそのスキルを呼び出せなくなる",
+        "そのスキルがすべてのセッションで自動的に実行され続ける",
+        "スキルの内容が完全に削除される"
+      ],
+      "correctIndex": 0,
+      "explanation": "`disable-model-invocation: true`を設定すると、そのスキルの説明はコンテキストに載らずClaudeが自動起動できなくなりますが、ユーザーは引き続き`/スキル名`で明示的に呼び出せます。デプロイなど副作用のある操作の起動タイミングを制御したい場合に使います。"
+    },
+    {
+      "id": "feature-028",
+      "level": "intermediate",
+      "question": "MCPサーバーがOAuth 2.0認証を必要とする場合、Claude Code内で認証を行う一般的な方法はどれですか？",
+      "choices": [
+        "`/mcp` コマンドを実行しブラウザでのログインフローに従う",
+        "APIキーをソースコードに直接埋め込む",
+        "認証は自動で行われ、ユーザー操作は一切不要",
+        "MCPはOAuth認証に対応していない"
+      ],
+      "correctIndex": 0,
+      "explanation": "`/mcp`コマンドでOAuth対応のリモートMCPサーバーの認証を開始でき、ブラウザでのログイン完了後にサーバーが`connected`と表示されます。"
+    },
+    {
+      "id": "feature-029",
+      "level": "advanced",
+      "question": "フックの`type`フィールドで指定できるハンドラタイプの組み合わせとして正しいものはどれですか？",
+      "choices": [
+        "command、http、mcp_tool、prompt、agent",
+        "sync、async、batch",
+        "read、write、execute",
+        "local、remote、hybrid"
+      ],
+      "correctIndex": 0,
+      "explanation": "フックのハンドラは`command`（シェルコマンド実行）、`http`（HTTPエンドポイントへのPOST）、`mcp_tool`（接続済みMCPサーバーのツール呼び出し）、`prompt`（単一ターンでのYes/No判定）、`agent`（ツールを使って条件を検証するサブエージェント起動）の5種類が指定できます。"
+    },
+    {
+      "id": "feature-030",
+      "level": "advanced",
+      "question": "agent teamsと通常のサブエージェント（Agent機能）の最も本質的な違いはどれですか？",
+      "choices": [
+        "agent teamsのメンバーは共有タスクリストを介して自律的に連携し、メンバー同士が直接メッセージをやり取りできるが、サブエージェントはメインエージェントにのみ結果を報告する",
+        "agent teamsは1つのコンテキストウィンドウを全員で共有する",
+        "サブエージェントの方が常に多くのトークンを消費する",
+        "agent teamsは読み取り専用の操作しかできない"
+      ],
+      "correctIndex": 0,
+      "explanation": "サブエージェントは独立したコンテキストで作業しメインエージェントにのみ結果を返しますが、agent teamsのチームメイトは共有タスクリストで自己調整しながらメンバー間で直接メッセージを送り合える点が本質的に異なります。"
+    },
+    {
+      "id": "feature-031",
+      "level": "advanced",
+      "question": "スキルのfrontmatterで`context: fork`を設定すると何が起きますか？",
+      "choices": [
+        "スキルの内容がサブエージェントへのプロンプトとなり、独立したコンテキストでバックグラウンド実行される（既定動作の場合）",
+        "スキルの内容がメイン会話に直接展開されるだけになる",
+        "スキルが完全に無効化される",
+        "スキルの引数を受け取れなくなる"
+      ],
+      "correctIndex": 0,
+      "explanation": "`context: fork`を設定すると、SKILL.mdの内容がサブエージェントへのタスクプロンプトとして渡され、会話履歴を持たない独立したコンテキストで実行されます。既定ではバックグラウンドで実行され、完了時に結果が会話に返ります。"
+    },
+    {
+      "id": "feature-032",
+      "level": "advanced",
+      "question": "サブエージェントの`permissionMode`フィールドに`plan`を設定した場合の挙動として正しいものはどれですか？",
+      "choices": [
+        "そのサブエージェントは読み取り専用の調査モードで動作する",
+        "そのサブエージェントは常に全操作を無条件で許可する",
+        "そのサブエージェントはツールを一切使用できなくなる",
+        "親セッションの権限モードは無視され常に反映されない"
+      ],
+      "correctIndex": 0,
+      "explanation": "サブエージェントのfrontmatterで`permissionMode: plan`を指定すると、そのサブエージェントは読み取り専用の探索を行うplan modeで動作します。ただし親セッションが`bypassPermissions`や`acceptEdits`、auto modeの場合はそちらが優先されます。"
+    },
+    {
+      "id": "feature-033",
+      "level": "advanced",
+      "question": "フックの`if`フィールドはどのような目的で使われますか？",
+      "choices": [
+        "権限ルール構文（例: `Bash(rm *)`）でフィルタリングし、条件に一致する場合のみそのハンドラを実行する",
+        "フックの実行順序を数値で指定する",
+        "フックのタイムアウト秒数を設定する",
+        "フックを完全に無効化する"
+      ],
+      "correctIndex": 0,
+      "explanation": "`if`フィールドには`Bash(rm *)`のような権限ルール構文を指定でき、その条件に一致するツール呼び出しの場合のみハンドラが実行されるよう絞り込めます。"
+    },
+    {
+      "id": "feature-034",
+      "level": "advanced",
+      "question": "MCPサーバーの`mcpServers`フィールドをサブエージェントのfrontmatterに定義する利点は何ですか？",
+      "choices": [
+        "そのMCPサーバーをそのサブエージェント専用にでき、ツール説明がメインの会話コンテキストを消費しない",
+        "メインの会話でしか使えなかったMCPサーバーを無効化できる",
+        "MCPサーバーの認証情報を暗号化できる",
+        "MCPサーバーの起動速度を必ず高速化できる"
+      ],
+      "correctIndex": 0,
+      "explanation": "サブエージェントのfrontmatterで`mcpServers`にインラインでサーバーを定義すると、そのサブエージェントの開始時にのみ接続され終了時に切断されます。メインの会話にはそのサーバーのツールが公開されないため、コンテキストを節約できます。"
+    },
+    {
+      "id": "feature-035",
+      "level": "expert",
+      "question": "agent teamsでチームメイトがアイドル状態になろうとする直前に発火し、終了コード2でフィードバックを送って作業を継続させられるフックイベントはどれですか？",
+      "choices": [
+        "TeammateIdle",
+        "SessionEnd",
+        "PreCompact",
+        "ConfigChange"
+      ],
+      "correctIndex": 0,
+      "explanation": "`TeammateIdle`フックはチームメイトがアイドルになろうとする直前に発火し、終了コード2でフィードバックを返すとそのチームメイトの作業を継続させられます。品質ゲートの強制に利用できます。"
+    },
+    {
+      "id": "feature-036",
+      "level": "expert",
+      "question": "組織全体で共通のフックやMCPサーバー設定を、リポジトリごとに手動設定させずに一括配布したい場合、最も適した仕組みはどれですか？",
+      "choices": [
+        "プラグイン機構、またはmanaged settings（管理ポリシー設定）を使って組織全体に配布する",
+        "各メンバーに設定ファイルを個別にメールで送る",
+        "Claude Codeにはそのような配布機構は存在しない",
+        "MCPサーバーだけは配布できるがフックは配布不可能"
+      ],
+      "correctIndex": 0,
+      "explanation": "プラグインの`hooks/hooks.json`や`.mcp.json`でフックとMCPサーバーをまとめて配布したり、managed settingsで組織全体にポリシーとしてフックを強制したりすることで、リポジトリ横断で一貫した設定を配布できます。"
+    },
+    {
+      "id": "feature-037",
+      "level": "expert",
+      "question": "agent teamsのチームメイトとして、事前定義済みのサブエージェント定義（例: security-reviewer）を再利用する場合の挙動として正しいものはどれですか？",
+      "choices": [
+        "そのサブエージェント定義の`tools`allowlistと`model`が適用され、定義の本文はチームメイトのシステムプロンプトに追加情報として付与される",
+        "サブエージェント定義の`skills`と`mcpServers`フィールドもそのままチームメイトに適用される",
+        "サブエージェント定義を再利用することはできず、常にゼロから指示する必要がある",
+        "定義済みサブエージェントを使うとagent teams機能自体が無効になる"
+      ],
+      "correctIndex": 0,
+      "explanation": "チームメイトの生成時にサブエージェント定義を参照すると、その`tools`allowlistと`model`が適用され、本文はシステムプロンプトへの追加指示として付与されます。ただし`skills`と`mcpServers`フロントマターフィールドはチームメイトとして実行される際には適用されません。"
+    },
+    {
+      "id": "feature-038",
+      "level": "expert",
+      "question": "同じ名前のMCPサーバーが複数のスコープ（local・project・user・plugin）で定義されていた場合、Claude Codeはどのように解決しますか？",
+      "choices": [
+        "local > project > user > pluginの優先順位で最も優先度の高い定義を1つだけ使用する（フィールドはマージされない）",
+        "すべてのスコープの設定を自動的にマージして1つのサーバーにする",
+        "エラーとなりClaude Codeが起動できなくなる",
+        "常にpluginスコープの定義が最優先される"
+      ],
+      "correctIndex": 0,
+      "explanation": "同名のMCPサーバーが複数箇所で定義されている場合、local > project > user > plugin（> claude.ai connector）の優先順位に従い、最も優先度の高いスコープの定義がそのまま使われます。異なるスコープの設定がフィールド単位でマージされることはありません。"
+    },
+    {
+      "id": "feature-039",
+      "level": "expert",
+      "question": "PreToolUseフックがJSON出力で`hookSpecificOutput.permissionDecision`に指定できる値の組み合わせとして正しいものはどれですか？",
+      "choices": [
+        "allow、deny、ask、defer",
+        "yes、no、maybe",
+        "true、false",
+        "high、medium、low"
+      ],
+      "correctIndex": 0,
+      "explanation": "PreToolUseフックのJSON出力`hookSpecificOutput.permissionDecision`には`allow`（自動許可）、`deny`（拒否）、`ask`（ユーザーに確認）、`defer`（通常の権限フローに委ねる）を指定でき、`permissionDecisionReason`で理由を添えられます。"
+    },
+    {
+      "id": "feature-040",
+      "level": "expert",
+      "question": "大規模な組織でMCPサーバーの利用を制御する際、特定サーバーの承認を必須にしたり許可リスト・拒否リストで管理したりする仕組みとして適切なものはどれですか？",
+      "choices": [
+        "managed settingsによるenterprise管理ポリシー（allowedMcpServers/deniedMcpServersなど）や、組織側でconnectorツールを`ask`に設定する仕組みを利用する",
+        "各開発者が個別にMCPサーバーの追加を禁止されたディレクトリを探して手動削除する",
+        "Claude Codeには組織単位のMCP管理機能は一切存在しない",
+        "MCPサーバーはインストールした瞬間に全社へ自動配布されるため制御は不要"
+      ],
+      "correctIndex": 0,
+      "explanation": "組織管理者はmanaged settingsで`allowedMcpServers`/`deniedMcpServers`によるポリシーベースのMCPサーバー制御や、claude.ai connectorのツールを`ask`設定にして必ず承認プロンプトを出す、といった仕組みで組織全体のMCP利用を統制できます。"
     }
   ]
 }
