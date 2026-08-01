@@ -19,7 +19,12 @@ export function judgeAllLevels(gradeResult) {
   const domains = {};
   let lowestIndex = LEVELS.length - 1;
 
-  for (const [domain, { correct, total }] of Object.entries(gradeResult)) {
+  const entries = Object.entries(gradeResult);
+  if (entries.length === 0) {
+    return { domains, overall: null };
+  }
+
+  for (const [domain, { correct, total }] of entries) {
     const level = judgeDomainLevel(correct, total);
     const accuracy = total === 0 ? 0 : correct / total;
     domains[domain] = { level, correct, total, accuracy };

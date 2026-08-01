@@ -1,6 +1,6 @@
 import { buildQuiz, gradeAnswers } from './quiz-engine.js';
-import { judgeAllLevels, LEVELS } from './level-judge.js';
-import { saveResult } from './storage.js';
+import { judgeAllLevels } from './level-judge.js';
+import { saveResult, saveFallbackResult } from './storage.js';
 
 const DOMAIN_FILES = [
   'data/questions/basic-operations.json',
@@ -63,6 +63,8 @@ async function main() {
     const allDomainData = await loadAllDomainData();
     quiz = buildQuiz(allDomainData, COUNT_PER_LEVEL, Math.random);
   } catch (err) {
+    progressLabel.textContent = '';
+    domainLabelEl.textContent = '';
     questionTextEl.textContent = '問題データの読み込みに失敗しました。ページを再読み込みしてください。';
     return;
   }
@@ -101,11 +103,18 @@ async function main() {
       };
     }
 
-    saveResult({
+    const resultObject = {
       domains,
       overall: judged.overall,
       completedAt: new Date().toISOString(),
-    });
+    };
+
+    const saved = saveResult(resultObject);
+    if (!saved) {
+      // localStorageが使えない環境（プライベートブラウジング等）では、
+      // 結果を失わないようセッション限りのフォールバック先に保存する。
+      saveFallbackResult(resultObject);
+    }
 
     window.location.href = 'result.html';
   }

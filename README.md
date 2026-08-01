@@ -22,7 +22,7 @@ python3 -m http.server 8000
 ## テストの実行
 
 ```bash
-node --test tests/
+node --test
 ```
 
 ## GitHub Pagesでの公開
@@ -37,3 +37,6 @@ node --test tests/
 `data/questions/*.json` を直接編集してください。各領域のファイルには
 `beginner`/`intermediate`/`advanced`/`expert` の4レベルがそれぞれ最低4問ずつ必要です
 （1回の診断で各レベルから抽出する問題数: 初級3問・中級3問・上級2問・エキスパート2問）。
+
+各問題の`id`はドメイン間で一意である必要があります。プレフィクス規約
+（`basic-`／`feature-`／`prompt-`／`security-`）に従って命名してください。

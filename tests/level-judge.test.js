@@ -64,3 +64,9 @@ test('judgeAllLevels overall equals the common level when all domains match', ()
   const result = judgeAllLevels(gradeResult);
   assert.equal(result.overall, 'advanced');
 });
+
+test('judgeAllLevels returns overall: null (not expert) for an empty gradeResult', () => {
+  const result = judgeAllLevels({});
+  assert.equal(result.overall, null);
+  assert.deepEqual(result.domains, {});
+});

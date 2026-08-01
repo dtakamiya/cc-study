@@ -1,8 +1,14 @@
-import { loadResult } from './storage.js';
+import { loadResult, loadFallbackResult } from './storage.js';
 import { LEVEL_LABELS, LEVELS } from './level-judge.js';
 import { getImprovementSuggestion } from './report-content.js';
 
-const result = loadResult();
+let result = loadResult();
+let usedFallback = false;
+
+if (!result) {
+  result = loadFallbackResult();
+  usedFallback = result != null;
+}
 
 const noResultEl = document.getElementById('no-result');
 const resultContentEl = document.getElementById('result-content');
@@ -11,6 +17,13 @@ if (!result) {
   noResultEl.style.display = 'block';
 } else {
   resultContentEl.style.display = 'block';
+
+  if (usedFallback) {
+    const fallbackNoticeEl = document.getElementById('fallback-notice');
+    fallbackNoticeEl.textContent =
+      'ブラウザの設定により結果を保存できませんでした（今回のみ表示）';
+    fallbackNoticeEl.style.display = 'block';
+  }
 
   document.getElementById('completed-at').textContent =
     `診断日時: ${new Date(result.completedAt).toLocaleString('ja-JP')}`;
@@ -34,24 +47,37 @@ if (!result) {
   for (const [domain, data] of domainEntries) {
     const row = document.createElement('div');
     row.className = 'domain-result';
+
+    const labelSpan = document.createElement('span');
+    labelSpan.textContent = data.domainLabel;
+
+    const detailSpan = document.createElement('span');
+    const levelBadge = document.createElement('span');
+    levelBadge.className = `level-badge ${data.level}`;
+    levelBadge.textContent = LEVEL_LABELS[data.level];
     const percent = Math.round(data.accuracy * 100);
-    row.innerHTML = `
-      <span>${data.domainLabel}</span>
-      <span>
-        <span class="level-badge ${data.level}">${LEVEL_LABELS[data.level]}</span>
-        <span> ${data.correct}/${data.total}問 (${percent}%)</span>
-      </span>
-    `;
+    const scoreSpan = document.createElement('span');
+    scoreSpan.textContent = ` ${data.correct}/${data.total}問 (${percent}%)`;
+    detailSpan.appendChild(levelBadge);
+    detailSpan.appendChild(scoreSpan);
+
+    row.appendChild(labelSpan);
+    row.appendChild(detailSpan);
     domainResultsEl.appendChild(row);
   }
 
   for (const [domain, data] of weakestDomains) {
     const suggestion = document.createElement('div');
     suggestion.className = 'suggestion';
-    suggestion.innerHTML = `
-      <strong>${data.domainLabel}（${LEVEL_LABELS[data.level]}）</strong>
-      <p>${getImprovementSuggestion(domain, data.level)}</p>
-    `;
+
+    const strong = document.createElement('strong');
+    strong.textContent = `${data.domainLabel}（${LEVEL_LABELS[data.level]}）`;
+
+    const p = document.createElement('p');
+    p.textContent = getImprovementSuggestion(domain, data.level);
+
+    suggestion.appendChild(strong);
+    suggestion.appendChild(p);
     suggestionsEl.appendChild(suggestion);
   }
 

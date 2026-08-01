@@ -7,6 +7,14 @@ function shuffle(array, rng) {
   return result;
 }
 
+function shuffleChoices(question, rng) {
+  const indices = question.choices.map((_, i) => i);
+  const shuffledIndices = shuffle(indices, rng);
+  const newChoices = shuffledIndices.map(i => question.choices[i]);
+  const newCorrectIndex = shuffledIndices.indexOf(question.correctIndex);
+  return { ...question, choices: newChoices, correctIndex: newCorrectIndex };
+}
+
 export function selectQuestions(domainData, countPerLevel, rng = Math.random) {
   const selected = [];
   for (const [level, count] of Object.entries(countPerLevel)) {
@@ -17,7 +25,7 @@ export function selectQuestions(domainData, countPerLevel, rng = Math.random) {
       );
     }
     const chosen = shuffle(pool, rng).slice(0, count);
-    selected.push(...chosen);
+    selected.push(...chosen.map(q => shuffleChoices(q, rng)));
   }
   return selected;
 }
