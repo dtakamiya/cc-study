@@ -1,6 +1,6 @@
-import { loadResult } from './storage.js';
+import { loadResult, loadFallbackResult } from './storage.js';
 
-const previousResult = loadResult();
+const previousResult = loadResult() ?? loadFallbackResult();
 const note = document.getElementById('previous-result-note');
 const viewLastResultButton = document.getElementById('view-last-result-button');
 

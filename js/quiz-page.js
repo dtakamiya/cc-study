@@ -72,6 +72,7 @@ async function main() {
   const flatQuestions = flattenQuiz(quiz);
   const answers = {};
   let currentIndex = 0;
+  let isAdvancing = false;
 
   function goToNext() {
     if (currentIndex < flatQuestions.length - 1) {
@@ -83,8 +84,16 @@ async function main() {
   }
 
   function handleAnswer(questionId, choiceIndex) {
+    if (isAdvancing) return;
+    isAdvancing = true;
     answers[questionId] = choiceIndex;
-    setTimeout(goToNext, 200);
+    choiceListEl.querySelectorAll('button').forEach(button => {
+      button.disabled = true;
+    });
+    setTimeout(() => {
+      isAdvancing = false;
+      goToNext();
+    }, 200);
   }
 
   function finishQuiz() {
