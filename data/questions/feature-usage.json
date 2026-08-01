@@ -1,0 +1,179 @@
+{
+  "domain": "feature-usage",
+  "domainLabel": "機能活用（ツール・MCP・フック）",
+  "questions": [
+    {
+      "id": "feature-001",
+      "level": "beginner",
+      "question": "Claude Codeがファイルを編集する際に使う基本的な機能はどれですか？",
+      "choices": ["Editツール", "外部エディタの手動起動のみ", "編集はできない", "音声入力"],
+      "correctIndex": 0,
+      "explanation": "Claude CodeはEditツールなどの組み込みツールを使ってファイルを直接編集します。"
+    },
+    {
+      "id": "feature-002",
+      "level": "beginner",
+      "question": "シェルコマンドを実行するためにClaude Codeが使う組み込みツールはどれですか？",
+      "choices": ["Bashツール", "Terminalアプリを開く", "SSH接続", "実行できない"],
+      "correctIndex": 0,
+      "explanation": "Bashツールを使ってシェルコマンドを実行します。"
+    },
+    {
+      "id": "feature-003",
+      "level": "beginner",
+      "question": "コードベース内のキーワードを検索する際に使われる仕組みはどれですか？",
+      "choices": ["Grepツール", "手動でファイルを1つずつ開く", "検索機能はない", "外部検索エンジン"],
+      "correctIndex": 0,
+      "explanation": "Grepツールでコードベース内を高速に検索できます。"
+    },
+    {
+      "id": "feature-004",
+      "level": "beginner",
+      "question": "MCPの正式名称として正しいものはどれですか？",
+      "choices": [
+        "Model Context Protocol",
+        "Multi Command Processor",
+        "Managed Code Pipeline",
+        "Model Configuration Preset"
+      ],
+      "correctIndex": 0,
+      "explanation": "MCPはModel Context Protocolの略で、外部ツールやデータソースと接続する標準規格です。"
+    },
+    {
+      "id": "feature-005",
+      "level": "intermediate",
+      "question": "MCPサーバーを追加する主な目的として適切なものはどれですか？",
+      "choices": [
+        "外部サービスやデータソースへのアクセス手段を追加する",
+        "会話履歴を暗号化する",
+        "ターミナルの色を変更する",
+        "モデルを別バージョンに切り替える"
+      ],
+      "correctIndex": 0,
+      "explanation": "MCPサーバーは外部ツールやAPI、データソースへのアクセスをClaude Codeに追加します。"
+    },
+    {
+      "id": "feature-006",
+      "level": "intermediate",
+      "question": "頻繁に使う定型的な指示をコマンドとして登録する機能はどれですか？",
+      "choices": ["カスタムスラッシュコマンド", "エイリアスの手動設定のみ", "登録機能はない", "環境変数"],
+      "correctIndex": 0,
+      "explanation": "`.claude/commands` 等にMarkdownファイルを置くことでカスタムスラッシュコマンドを定義できます。"
+    },
+    {
+      "id": "feature-007",
+      "level": "intermediate",
+      "question": "特定のイベント（ツール実行前後など）に合わせて自動でコマンドを実行させる仕組みはどれですか？",
+      "choices": ["フック（hooks）", "サブエージェント", "MCP", "スラッシュコマンド"],
+      "correctIndex": 0,
+      "explanation": "フックはツール実行前後などのイベントに応じて任意のコマンドを自動実行する仕組みです。"
+    },
+    {
+      "id": "feature-008",
+      "level": "intermediate",
+      "question": "Webページの情報を取得してコンテキストに含めたい場合に使うツールはどれですか？",
+      "choices": ["WebFetch", "Bashで直接curlするしかない", "取得する手段はない", "Editツール"],
+      "correctIndex": 0,
+      "explanation": "WebFetchツールでURLの内容を取得しコンテキストに含めることができます。"
+    },
+    {
+      "id": "feature-009",
+      "level": "advanced",
+      "question": "特定のタスクに特化した独立したエージェントを呼び出し、メインの会話コンテキストを圧迫せずに作業させる仕組みはどれですか？",
+      "choices": ["サブエージェント（Agent/Task機能）", "フック", "スラッシュコマンドのみ", "MCPサーバーの再起動"],
+      "correctIndex": 0,
+      "explanation": "サブエージェントを使うと、独立したコンテキストでタスクを実行し、メインの会話を圧迫しません。"
+    },
+    {
+      "id": "feature-010",
+      "level": "advanced",
+      "question": "PreToolUseフックを使う典型的な目的はどれですか？",
+      "choices": [
+        "ツール実行前に検証やブロックを行う",
+        "会話終了後にログを削除する",
+        "モデルのバージョンを変更する",
+        "UIのテーマを切り替える"
+      ],
+      "correctIndex": 0,
+      "explanation": "PreToolUseフックはツールが実行される前に検証・制御を行うために使われます。"
+    },
+    {
+      "id": "feature-011",
+      "level": "advanced",
+      "question": "独自のMCPサーバーを開発する際に定義する必要があるものはどれですか？",
+      "choices": [
+        "提供するツールやリソースのインターフェース",
+        "Claude本体のモデル重み",
+        "ターミナルのフォント設定",
+        "GitHubのブランチ保護ルール"
+      ],
+      "correctIndex": 0,
+      "explanation": "MCPサーバーは提供するツールやリソースのインターフェースを定義し、Claude Codeに公開します。"
+    },
+    {
+      "id": "feature-012",
+      "level": "advanced",
+      "question": "スキル（Skill）機能の主な目的として適切なものはどれですか？",
+      "choices": [
+        "特定タスクの手順や知識をパッケージ化し、必要な時に読み込ませる",
+        "ネットワーク接続を暗号化する",
+        "モデルの推論速度を上げる",
+        "OSのパーミッションを変更する"
+      ],
+      "correctIndex": 0,
+      "explanation": "スキルは特定タスクの手順・知識をパッケージ化し、該当するタスクの際に読み込まれる仕組みです。"
+    },
+    {
+      "id": "feature-013",
+      "level": "expert",
+      "question": "複数のMCPサーバーからのツールが競合・重複する場合の一般的な対処方針として適切なものはどれですか？",
+      "choices": [
+        "不要なサーバーを無効化するか、ツール名の衝突を避けるよう設定を見直す",
+        "常に全て有効化したまま放置する",
+        "MCPサーバーは同時に1つしか使えない",
+        "競合は自動的に解決されないため機能自体を使わない"
+      ],
+      "correctIndex": 0,
+      "explanation": "必要なMCPサーバーのみを有効化し、ツールの衝突を避ける設定管理が求められます。"
+    },
+    {
+      "id": "feature-014",
+      "level": "expert",
+      "question": "SessionStartフックとPreCompactフックの主な違いとして正しいものはどれですか？",
+      "choices": [
+        "SessionStartはセッション開始時、PreCompactは会話圧縮の直前に発火する",
+        "両者は完全に同じタイミングで発火する",
+        "PreCompactはセッション終了時にのみ発火する",
+        "SessionStartはツール実行のたびに発火する"
+      ],
+      "correctIndex": 0,
+      "explanation": "SessionStartはセッション開始時、PreCompactは会話履歴が圧縮される直前に発火するフックです。"
+    },
+    {
+      "id": "feature-015",
+      "level": "expert",
+      "question": "組織内で複数プロジェクト共通のMCPサーバー設定やフックを配布・共有する仕組みとして適切なものはどれですか？",
+      "choices": [
+        "プラグイン（plugin）機構でスキル・MCP・フックをまとめて配布する",
+        "各メンバーが個別にゼロから設定する",
+        "共有する仕組みは存在しない",
+        "メールで設定ファイルを送る"
+      ],
+      "correctIndex": 0,
+      "explanation": "プラグイン機構を使うと、スキル・MCPサーバー・フックなどをまとめてチームや組織内で配布・共有できます。"
+    },
+    {
+      "id": "feature-016",
+      "level": "expert",
+      "question": "自作のMCPサーバーとフックを組み合わせて、特定のツール実行結果を自動検証しブロックする仕組みを作る際、最も適した設計はどれですか？",
+      "choices": [
+        "PreToolUse/PostToolUseフックで検証ロジックを実行し、必要に応じて非ゼロ終了コードでブロックする",
+        "MCPサーバー側では何もせず、手動確認のみに頼る",
+        "検証はモデルの推論精度向上でしか実現できない",
+        "フックとMCPは同時に併用できない"
+      ],
+      "correctIndex": 0,
+      "explanation": "フックのPreToolUse/PostToolUseで検証を行い、終了コードによって処理をブロック・許可する設計が一般的です。"
+    }
+  ]
+}

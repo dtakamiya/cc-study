@@ -1,0 +1,184 @@
+{
+  "domain": "basic-operations",
+  "domainLabel": "基本操作・CLI使用法",
+  "questions": [
+    {
+      "id": "basic-001",
+      "level": "beginner",
+      "question": "Claude Codeを起動する基本的なコマンドはどれですか？",
+      "choices": ["claude", "claude-code start", "cc run", "anthropic claude"],
+      "correctIndex": 0,
+      "explanation": "ターミナルで `claude` と入力するとClaude Codeが起動します。"
+    },
+    {
+      "id": "basic-002",
+      "level": "beginner",
+      "question": "会話をクリアして新しいセッションを始めるスラッシュコマンドはどれですか？",
+      "choices": ["/reset", "/new", "/clear", "/restart"],
+      "correctIndex": 2,
+      "explanation": "`/clear` で会話履歴をクリアして新しいセッションを開始できます。"
+    },
+    {
+      "id": "basic-003",
+      "level": "beginner",
+      "question": "直前の操作を中断したいときに押すキー操作はどれですか？",
+      "choices": ["Ctrl+Z", "Ctrl+C", "Ctrl+D", "Esc Esc"],
+      "correctIndex": 1,
+      "explanation": "Ctrl+Cで実行中の処理を中断できます。"
+    },
+    {
+      "id": "basic-004",
+      "level": "beginner",
+      "question": "Claude Codeが現在の作業ディレクトリ内のファイルを読み書きするために必要な前提はどれですか？",
+      "choices": [
+        "インターネット接続のみ",
+        "対象ディレクトリでClaude Codeを起動していること",
+        "GitHubアカウントとの連携",
+        "root権限での実行"
+      ],
+      "correctIndex": 1,
+      "explanation": "Claude Codeは起動したディレクトリを作業ディレクトリとしてファイル操作を行います。"
+    },
+    {
+      "id": "basic-005",
+      "level": "intermediate",
+      "question": "現在のセッションで使えるスラッシュコマンドの一覧を確認する方法はどれですか？",
+      "choices": ["/list", "/help", "/commands", "/menu"],
+      "correctIndex": 1,
+      "explanation": "`/help` でClaude Codeの使い方やコマンド一覧を確認できます。"
+    },
+    {
+      "id": "basic-006",
+      "level": "intermediate",
+      "question": "特定のファイルをコンテキストに含めて質問したいとき、プロンプト内でファイルを参照する一般的な方法はどれですか？",
+      "choices": [
+        "ファイルパスを@で始めて記述する",
+        "ファイルをドラッグ&ドロップすることしかできない",
+        "ファイル名を#で囲む",
+        "参照する方法はない"
+      ],
+      "correctIndex": 0,
+      "explanation": "`@path/to/file` の形式でファイルを参照し、コンテキストに含めることができます。"
+    },
+    {
+      "id": "basic-007",
+      "level": "intermediate",
+      "question": "Claude Codeの応答中に処理を中断し、別の指示を出したい場合の適切な操作はどれですか？",
+      "choices": [
+        "ターミナルを閉じて再起動する",
+        "Escキーで中断してから新しい指示を入力する",
+        "新しいターミナルタブを開く",
+        "中断はできない"
+      ],
+      "correctIndex": 1,
+      "explanation": "Escキーで現在の処理を中断し、続けて新しい指示を入力できます。"
+    },
+    {
+      "id": "basic-008",
+      "level": "intermediate",
+      "question": "直前のコミットメッセージを確認する際、Claude Codeにどう依頼するのが自然ですか？",
+      "choices": [
+        "「git logを実行して」と自然言語で依頼する",
+        "専用のGUIを開く必要がある",
+        "コミットメッセージはClaude Codeから確認できない",
+        "ファイルを直接編集する"
+      ],
+      "correctIndex": 0,
+      "explanation": "Claude Codeは自然言語の指示からgitコマンドなどのツール実行を判断して実行します。"
+    },
+    {
+      "id": "basic-009",
+      "level": "advanced",
+      "question": "長時間のタスクを実行中に別の作業を並行して進めたい場合、Claude Codeで有効な手段はどれですか？",
+      "choices": [
+        "バックグラウンド実行を使い、完了時に通知を受け取る",
+        "並行作業はサポートされていない",
+        "毎回新しいインストールを行う",
+        "タスクを手動でファイルに書き出す"
+      ],
+      "correctIndex": 0,
+      "explanation": "長時間実行するコマンドやエージェントはバックグラウンドで実行し、完了時に通知を受け取れます。"
+    },
+    {
+      "id": "basic-010",
+      "level": "advanced",
+      "question": "プロジェクト固有の設定や指示を永続化するために使うファイルはどれですか？",
+      "choices": ["README.md", "CLAUDE.md", "config.json", ".env"],
+      "correctIndex": 1,
+      "explanation": "CLAUDE.mdにプロジェクト固有の指示やコンテキストを記述することで、セッションをまたいで参照されます。"
+    },
+    {
+      "id": "basic-011",
+      "level": "advanced",
+      "question": "会話履歴が長くなり文脈上限に近づいたとき、Claude Codeの標準的な挙動はどれですか？",
+      "choices": [
+        "強制終了する",
+        "古いメッセージを自動的に要約して継続する",
+        "エラーになり操作不能になる",
+        "手動で毎回全履歴を消す必要がある"
+      ],
+      "correctIndex": 1,
+      "explanation": "会話が長くなると自動的に要約が行われ、作業を継続できます。"
+    },
+    {
+      "id": "basic-012",
+      "level": "advanced",
+      "question": "複数の作業を並行して進めるために、独立した作業ツリーを作る仕組みはどれですか？",
+      "choices": ["git worktree", "git stash", "git cherry-pick", "git rebase"],
+      "correctIndex": 0,
+      "explanation": "git worktreeを使うことで、同じリポジトリの別ブランチを独立したディレクトリで並行して作業できます。"
+    },
+    {
+      "id": "basic-013",
+      "level": "expert",
+      "question": "Claude Codeをスクリプトやパイプラインから非対話的に呼び出す際に使う仕組みはどれですか？",
+      "choices": [
+        "対話モードを強制終了して使う",
+        "ヘッドレス/非対話モード（例: -pフラグでの実行）を使う",
+        "非対話的な利用はサポートされていない",
+        "ブラウザ拡張を使う"
+      ],
+      "correctIndex": 1,
+      "explanation": "Claude CodeはCLIの非対話モード（プリントモード）を提供しており、スクリプトやCIから呼び出せます。"
+    },
+    {
+      "id": "basic-014",
+      "level": "expert",
+      "question": "定期的に自動でタスクを実行させたい場合に使える仕組みはどれですか？",
+      "choices": [
+        "スケジュールされたcronベースの自動実行",
+        "手動実行のみサポート",
+        "OSのタスクスケジューラは併用できない",
+        "常にフォアグラウンドで待機する必要がある"
+      ],
+      "correctIndex": 0,
+      "explanation": "cronスケジュールに基づいてClaude Codeのタスクを定期実行する仕組みが提供されています。"
+    },
+    {
+      "id": "basic-015",
+      "level": "expert",
+      "question": "複数セッションを比較・管理し、進行中の作業を横断的に把握する仕組みとして適切なものはどれですか？",
+      "choices": [
+        "タスク一覧・状態管理の仕組みを使う",
+        "毎回ターミナルの履歴を目視で確認する",
+        "手動でログファイルを作成する",
+        "複数セッションの管理はできない"
+      ],
+      "correctIndex": 0,
+      "explanation": "タスクの一覧・状態確認の仕組みを使うことで、複数の進行中作業を横断的に把握できます。"
+    },
+    {
+      "id": "basic-016",
+      "level": "expert",
+      "question": "同一プロジェクトで複数のClaude Codeインスタンスを異なる作業ディレクトリで安全に並行稼働させる際、最も適した構成はどれですか？",
+      "choices": [
+        "同じディレクトリを複数プロセスで共有する",
+        "git worktreeなどで作業ディレクトリを分離して並行稼働させる",
+        "並行稼働は非推奨であり避けるべき",
+        "常に1インスタンスに制限される"
+      ],
+      "correctIndex": 1,
+      "explanation": "worktree等で作業ディレクトリを分離することで、複数インスタンスの競合を避けて並行作業ができます。"
+    }
+  ]
+}
