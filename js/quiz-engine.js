@@ -51,3 +51,26 @@ export function gradeAnswers(quiz, answers) {
   }
   return result;
 }
+
+export function collectWrongAnswers(quiz, answers) {
+  const wrong = [];
+  for (const entry of quiz) {
+    for (const question of entry.questions) {
+      const selectedIndex = Object.prototype.hasOwnProperty.call(answers, question.id)
+        ? answers[question.id]
+        : null;
+      if (selectedIndex !== question.correctIndex) {
+        wrong.push({
+          questionId: question.id,
+          domainLabel: entry.domainLabel,
+          question: question.question,
+          choices: question.choices,
+          selectedIndex,
+          correctIndex: question.correctIndex,
+          explanation: question.explanation,
+        });
+      }
+    }
+  }
+  return wrong;
+}

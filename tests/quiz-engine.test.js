@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { selectQuestions, buildQuiz, gradeAnswers } from '../js/quiz-engine.js';
+import { selectQuestions, buildQuiz, gradeAnswers, collectWrongAnswers } from '../js/quiz-engine.js';
 
 function makeDomainData(domain, countPerLevel = 4) {
   const levels = ['beginner', 'intermediate', 'advanced', 'expert'];
@@ -140,4 +140,66 @@ test('selectQuestions does not always put the correct answer at index 0 (choices
   for (const q of result) {
     assert.equal(q.choices[q.correctIndex], 'a');
   }
+});
+
+test('collectWrongAnswers returns only incorrect answers with full detail, in quiz order', () => {
+  const quiz = [
+    {
+      domain: 'basic-operations',
+      domainLabel: '基本操作・CLI使用法',
+      questions: [
+        { id: 'q1', level: 'beginner', question: 'Q1?', choices: ['a', 'b'], correctIndex: 0, explanation: 'exp1' },
+        { id: 'q2', level: 'beginner', question: 'Q2?', choices: ['a', 'b'], correctIndex: 1, explanation: 'exp2' },
+      ]
+    },
+    {
+      domain: 'feature-usage',
+      domainLabel: '機能活用',
+      questions: [
+        { id: 'q3', level: 'beginner', question: 'Q3?', choices: ['a', 'b'], correctIndex: 0, explanation: 'exp3' },
+      ]
+    }
+  ];
+  // q1: correct (0 === 0), q2: wrong (0 !== 1), q3: unanswered
+  const answers = { q1: 0, q2: 0 };
+
+  const result = collectWrongAnswers(quiz, answers);
+
+  assert.deepEqual(result, [
+    {
+      questionId: 'q2',
+      domainLabel: '基本操作・CLI使用法',
+      question: 'Q2?',
+      choices: ['a', 'b'],
+      selectedIndex: 0,
+      correctIndex: 1,
+      explanation: 'exp2',
+    },
+    {
+      questionId: 'q3',
+      domainLabel: '機能活用',
+      question: 'Q3?',
+      choices: ['a', 'b'],
+      selectedIndex: null,
+      correctIndex: 0,
+      explanation: 'exp3',
+    },
+  ]);
+});
+
+test('collectWrongAnswers returns empty array when all answers are correct', () => {
+  const quiz = [
+    {
+      domain: 'basic-operations',
+      domainLabel: '基本操作・CLI使用法',
+      questions: [
+        { id: 'q1', level: 'beginner', question: 'Q1?', choices: ['a', 'b'], correctIndex: 0, explanation: 'exp1' },
+      ]
+    }
+  ];
+  const answers = { q1: 0 };
+
+  const result = collectWrongAnswers(quiz, answers);
+
+  assert.deepEqual(result, []);
 });
