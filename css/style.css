@@ -141,6 +141,55 @@ h2 {
   margin-top: 1.5rem;
 }
 
+.wrong-answer-item {
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.wrong-answer-domain {
+  font-size: 0.85rem;
+  color: #57606a;
+  margin: 0 0 0.25rem;
+}
+
+.wrong-answer-question {
+  font-weight: bold;
+  margin: 0 0 0.75rem;
+}
+
+.wrong-answer-choices {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.75rem;
+}
+
+.wrong-answer-choices li {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  margin-bottom: 0.4rem;
+}
+
+.wrong-answer-choices li.correct-choice {
+  border-color: #16a34a;
+  background: #f0fdf4;
+  font-weight: bold;
+}
+
+.wrong-answer-choices li.selected-wrong-choice {
+  border-color: #dc2626;
+  background: #fef2f2;
+  text-decoration: line-through;
+}
+
+.wrong-answer-explanation {
+  font-size: 0.9rem;
+  color: var(--color-text);
+  margin: 0;
+}
+
 @media print {
   .no-print {
     display: none !important;
@@ -151,5 +200,8 @@ h2 {
   .card {
     border: none;
     box-shadow: none;
+  }
+  .wrong-answer-item {
+    break-inside: avoid;
   }
 }
