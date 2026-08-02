@@ -1,47 +1,38 @@
-import { buildQuiz, gradeAnswers, collectWrongAnswers } from './quiz-engine.js';
-import { judgeAllLevels } from './level-judge.js';
-import { saveResult, saveFallbackResult } from './storage.js';
+import { selectQuestions, scoreStage, collectWrongAnswers } from './quiz-engine.js';
+import {
+  DOMAINS,
+  DOMAIN_LABELS,
+  QUESTIONS_PER_STAGE,
+  normalizeProgress,
+  recordAttempt,
+  getStageStatus,
+  isPassed,
+} from './progress.js';
+import { loadProgressRaw, saveProgressRaw, saveStageResult } from './storage.js';
+import { LEVELS, LEVEL_LABELS } from './level-judge.js';
 
-const DOMAIN_FILES = [
-  'data/questions/basic-operations.json',
-  'data/questions/feature-usage.json',
-  'data/questions/prompt-design.json',
-  'data/questions/security-permissions.json',
-  'data/questions/token-efficiency.json',
-];
-
-const COUNT_PER_LEVEL = { beginner: 3, intermediate: 3, advanced: 2, expert: 2 };
-
+const stageLabelEl = document.getElementById('stage-label');
 const progressLabel = document.getElementById('progress-label');
-const domainLabelEl = document.getElementById('domain-label');
 const questionTextEl = document.getElementById('question-text');
 const choiceListEl = document.getElementById('choice-list');
 const answerFeedbackEl = document.getElementById('answer-feedback');
 const answerExplanationEl = document.getElementById('answer-explanation');
 const nextButton = document.getElementById('next-button');
 
-async function loadAllDomainData() {
-  const responses = await Promise.all(DOMAIN_FILES.map(path => fetch(path)));
-  return Promise.all(responses.map(res => {
-    if (!res.ok) throw new Error(`Failed to load ${res.url}`);
-    return res.json();
-  }));
+function goToDashboard() {
+  window.location.href = 'index.html';
 }
 
-function flattenQuiz(quiz) {
-  const flat = [];
-  for (const entry of quiz) {
-    for (const question of entry.questions) {
-      flat.push({ domain: entry.domain, domainLabel: entry.domainLabel, ...question });
-    }
-  }
-  return flat;
+function showLoadError() {
+  stageLabelEl.textContent = '';
+  progressLabel.textContent = '';
+  questionTextEl.textContent =
+    '問題データの読み込みに失敗しました。簡易HTTPサーバー経由で開いているか確認してください（例: python3 -m http.server 8000）。';
 }
 
-function renderQuestion(flatQuestions, index, answers, onAnswer) {
-  const item = flatQuestions[index];
-  progressLabel.textContent = `質問 ${index + 1} / ${flatQuestions.length}`;
-  domainLabelEl.textContent = item.domainLabel;
+function renderQuestion(questions, index, onAnswer) {
+  const item = questions[index];
+  progressLabel.textContent = `問題 ${index + 1} / ${questions.length}`;
   questionTextEl.textContent = item.question;
   choiceListEl.innerHTML = '';
   answerFeedbackEl.style.display = 'none';
@@ -55,7 +46,7 @@ function renderQuestion(flatQuestions, index, answers, onAnswer) {
     button.type = 'button';
     button.className = 'choice-button';
     button.textContent = choiceText;
-    button.addEventListener('click', () => onAnswer(item.id, choiceIndex));
+    button.addEventListener('click', () => onAnswer(choiceIndex));
     li.appendChild(button);
     choiceListEl.appendChild(li);
   });
@@ -86,77 +77,94 @@ function showAnswerFeedback(item, selectedIndex, isLastQuestion) {
 }
 
 async function main() {
-  let quiz;
-  try {
-    const allDomainData = await loadAllDomainData();
-    quiz = buildQuiz(allDomainData, COUNT_PER_LEVEL, Math.random);
-  } catch (err) {
-    progressLabel.textContent = '';
-    domainLabelEl.textContent = '';
-    questionTextEl.textContent = '問題データの読み込みに失敗しました。ページを再読み込みしてください。';
+  const params = new URLSearchParams(window.location.search);
+  const domain = params.get('domain');
+  const level = params.get('level');
+
+  // 不正なURLや古いブックマークからの流入はダッシュボードへ戻す。
+  if (!DOMAINS.includes(domain) || !LEVELS.includes(level)) {
+    goToDashboard();
     return;
   }
 
-  const flatQuestions = flattenQuiz(quiz);
+  const progress = normalizeProgress(loadProgressRaw());
+
+  // URL直打ちでロック中のステージに入られた場合も戻す。
+  // 厳密な防御ではないが、ゲート構造の一貫性を保つ。
+  if (getStageStatus(progress, domain, level) === 'locked') {
+    goToDashboard();
+    return;
+  }
+
+  const domainLabel = DOMAIN_LABELS[domain];
+  stageLabelEl.textContent = `${domainLabel} / ${LEVEL_LABELS[level]}`;
+
+  let questions;
+  try {
+    const response = await fetch(`data/questions/${domain}.json`);
+    if (!response.ok) throw new Error(`Failed to load ${response.url}`);
+    const domainData = await response.json();
+    questions = selectQuestions(domainData, level, QUESTIONS_PER_STAGE, Math.random);
+  } catch (err) {
+    showLoadError();
+    return;
+  }
+
   const answers = {};
   let currentIndex = 0;
   let hasAnswered = false;
 
-  function goToNext() {
-    if (currentIndex < flatQuestions.length - 1) {
-      currentIndex += 1;
-      hasAnswered = false;
-      renderQuestion(flatQuestions, currentIndex, answers, handleAnswer);
-    } else {
-      finishQuiz();
-    }
-  }
-
-  function handleAnswer(questionId, choiceIndex) {
+  function handleAnswer(choiceIndex) {
     if (hasAnswered) return;
     hasAnswered = true;
-    answers[questionId] = choiceIndex;
-    const isLastQuestion = currentIndex === flatQuestions.length - 1;
-    showAnswerFeedback(flatQuestions[currentIndex], choiceIndex, isLastQuestion);
+    answers[questions[currentIndex].id] = choiceIndex;
+    const isLastQuestion = currentIndex === questions.length - 1;
+    showAnswerFeedback(questions[currentIndex], choiceIndex, isLastQuestion);
   }
 
-  nextButton.addEventListener('click', goToNext);
+  function finishStage() {
+    const score = scoreStage(questions, answers);
+    const passed = isPassed(score);
+    const wasCleared = getStageStatus(progress, domain, level) === 'cleared';
 
-  function finishQuiz() {
-    const gradeResult = gradeAnswers(quiz, answers);
-    const judged = judgeAllLevels(gradeResult);
-    const wrongAnswers = collectWrongAnswers(quiz, answers);
+    const updatedProgress = recordAttempt(progress, domain, level, score);
+    saveProgressRaw(updatedProgress);
 
-    const domains = {};
-    for (const entry of quiz) {
-      const domainJudged = judged.domains[entry.domain];
-      domains[entry.domain] = {
-        domainLabel: entry.domainLabel,
-        level: domainJudged.level,
-        correct: domainJudged.correct,
-        total: domainJudged.total,
-        accuracy: domainJudged.accuracy,
-      };
+    // 今回の合格で新たに開いたレベルだけを案内する。
+    // すでに合格済みのステージを再挑戦した場合は、新たな開放はない。
+    let unlockedLevel = null;
+    if (passed && !wasCleared) {
+      const nextLevel = LEVELS[LEVELS.indexOf(level) + 1];
+      if (nextLevel) unlockedLevel = nextLevel;
     }
 
-    const resultObject = {
-      domains,
-      overall: judged.overall,
+    saveStageResult({
+      domain,
+      domainLabel,
+      level,
+      score,
+      total: questions.length,
+      passed,
+      unlockedLevel,
+      wrongAnswers: collectWrongAnswers(questions, answers, domainLabel),
       completedAt: new Date().toISOString(),
-      wrongAnswers,
-    };
-
-    const saved = saveResult(resultObject);
-    if (!saved) {
-      // localStorageが使えない環境（プライベートブラウジング等）では、
-      // 結果を失わないようセッション限りのフォールバック先に保存する。
-      saveFallbackResult(resultObject);
-    }
+    });
 
     window.location.href = 'result.html';
   }
 
-  renderQuestion(flatQuestions, currentIndex, answers, handleAnswer);
+  function goToNext() {
+    if (currentIndex < questions.length - 1) {
+      currentIndex += 1;
+      hasAnswered = false;
+      renderQuestion(questions, currentIndex, handleAnswer);
+    } else {
+      finishStage();
+    }
+  }
+
+  nextButton.addEventListener('click', goToNext);
+  renderQuestion(questions, currentIndex, handleAnswer);
 }
 
 main();
