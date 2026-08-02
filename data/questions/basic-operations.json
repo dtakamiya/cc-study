@@ -6,24 +6,24 @@
       "id": "basic-001",
       "level": "beginner",
       "question": "Claude Codeを起動する基本的なコマンドはどれですか？",
-      "choices": ["claude", "claude-code start", "cc run", "anthropic claude"],
-      "correctIndex": 0,
+      "choices": ["claude-code start", "cc run", "anthropic claude", "claude"],
+      "correctIndex": 3,
       "explanation": "ターミナルで `claude` と入力するとClaude Codeが起動します。"
     },
     {
       "id": "basic-002",
       "level": "beginner",
       "question": "会話をクリアして新しいセッションを始めるスラッシュコマンドはどれですか？",
-      "choices": ["/reset", "/new", "/clear", "/restart"],
-      "correctIndex": 2,
+      "choices": ["/clear", "/reset", "/new", "/restart"],
+      "correctIndex": 0,
       "explanation": "`/clear` で会話履歴をクリアして新しいセッションを開始できます。"
     },
     {
       "id": "basic-003",
       "level": "beginner",
       "question": "直前の操作を中断したいときに押すキー操作はどれですか？",
-      "choices": ["Ctrl+Z", "Ctrl+C", "Ctrl+D", "Esc Esc"],
-      "correctIndex": 1,
+      "choices": ["Ctrl+C", "Ctrl+Z", "Ctrl+D", "Esc Esc"],
+      "correctIndex": 0,
       "explanation": "Ctrl+Cで実行中の処理を中断できます。"
     },
     {
@@ -51,13 +51,8 @@
       "id": "basic-006",
       "level": "intermediate",
       "question": "特定のファイルをコンテキストに含めて質問したいとき、プロンプト内でファイルを参照する一般的な方法はどれですか？",
-      "choices": [
-        "ファイルパスを@で始めて記述する",
-        "ファイルをドラッグ&ドロップすることしかできない",
-        "ファイル名を#で囲む",
-        "参照する方法はない"
-      ],
-      "correctIndex": 0,
+      "choices": ["ファイルをドラッグ&ドロップすることしかできない", "ファイル名を#で囲む", "ファイルパスを@で始めて記述する", "参照する方法はない"],
+      "correctIndex": 2,
       "explanation": "`@path/to/file` の形式でファイルを参照し、コンテキストに含めることができます。"
     },
     {
@@ -65,25 +60,20 @@
       "level": "intermediate",
       "question": "Claude Codeの応答中に処理を中断し、別の指示を出したい場合の適切な操作はどれですか？",
       "choices": [
-        "作業中のターミナルウィンドウを閉じてから再起動する",
         "Escキーで中断してから新しい指示を入力する",
+        "作業中のターミナルウィンドウを閉じてから再起動する",
         "現在のセッションとは別に新しいターミナルタブを開いて作業する",
         "処理の途中で内容を変更することは一切できない"
       ],
-      "correctIndex": 1,
+      "correctIndex": 0,
       "explanation": "Escキーで現在の処理を中断し、続けて新しい指示を入力できます。"
     },
     {
       "id": "basic-008",
       "level": "intermediate",
       "question": "直前のコミットメッセージを確認する際、Claude Codeにどう依頼するのが自然ですか？",
-      "choices": [
-        "「git logを実行して」と自然言語で依頼する",
-        "専用のGUIを開く必要がある",
-        "コミットメッセージはClaude Codeから確認できない",
-        "ファイルを直接編集する"
-      ],
-      "correctIndex": 0,
+      "choices": ["専用のGUIを開く必要がある", "コミットメッセージはClaude Codeから確認できない", "ファイルを直接編集する", "「git logを実行して」と自然言語で依頼する"],
+      "correctIndex": 3,
       "explanation": "Claude Codeは自然言語の指示からgitコマンドなどのツール実行を判断して実行します。"
     },
     {
@@ -103,24 +93,24 @@
       "id": "basic-010",
       "level": "advanced",
       "question": "プロジェクト固有の設定や指示を永続化するために使うファイルはどれですか？",
-      "choices": ["README.md", "CLAUDE.md", "config.json", ".env"],
-      "correctIndex": 1,
+      "choices": ["README.md", "config.json", "CLAUDE.md", ".env"],
+      "correctIndex": 2,
       "explanation": "CLAUDE.mdにプロジェクト固有の指示やコンテキストを記述することで、セッションをまたいで参照されます。"
     },
     {
       "id": "basic-011",
       "level": "advanced",
       "question": "会話履歴を手動で要約し、それまでの文脈を圧縮して文脈ウィンドウの空き容量を増やしたい場合に使うスラッシュコマンドはどれですか？",
-      "choices": ["/summarize", "/compact", "/shrink", "/clear"],
-      "correctIndex": 1,
+      "choices": ["/compact", "/summarize", "/shrink", "/clear"],
+      "correctIndex": 0,
       "explanation": "`/compact [instructions]` を実行すると会話履歴が要約に置き換えられ、文脈ウィンドウの使用量を削減できます。要約の観点を指示として付け加えることも可能です。"
     },
     {
       "id": "basic-012",
       "level": "advanced",
       "question": "複数の作業を並行して進めるために、独立した作業ツリーを作る仕組みはどれですか？",
-      "choices": ["git worktree", "git stash", "git cherry-pick", "git rebase"],
-      "correctIndex": 0,
+      "choices": ["git stash", "git cherry-pick", "git rebase", "git worktree"],
+      "correctIndex": 3,
       "explanation": "git worktreeを使うことで、同じリポジトリの別ブランチを独立したディレクトリで並行して作業できます。"
     },
     {
@@ -129,32 +119,27 @@
       "question": "Claude Codeをスクリプトやパイプラインから非対話的に呼び出す際に使う仕組みはどれですか？",
       "choices": [
         "対話モードのウィンドウを開いた状態で強制終了して使う",
-        "ヘッドレス/非対話モード（例: -pフラグでの実行）を使う",
         "スクリプトやCIパイプラインからの非対話的な利用はサポートされていない",
+        "ヘッドレス/非対話モード（例: -pフラグでの実行）を使う",
         "専用のブラウザ拡張機能をインストールして使う"
       ],
-      "correctIndex": 1,
+      "correctIndex": 2,
       "explanation": "Claude CodeはCLIの非対話モード（プリントモード）を提供しており、スクリプトやCIから呼び出せます。"
     },
     {
       "id": "basic-014",
       "level": "expert",
       "question": "定期的に自動でタスクを実行させたい場合、対話中のセッション内だけで完結する手軽な方法として使えるスラッシュコマンドはどれですか？",
-      "choices": ["/loop", "/schedule", "/cron", "/repeat"],
-      "correctIndex": 0,
+      "choices": ["/schedule", "/cron", "/repeat", "/loop"],
+      "correctIndex": 3,
       "explanation": "`/loop` は現在のCLIセッション内でプロンプトを繰り返し実行する仕組みで、新しい会話を始めると停止します。マシン停止中も実行させたい場合はRoutines、ローカルファイルへの直接アクセスが必要な場合はデスクトップアプリのスケジュールタスク、リポジトリイベント連動ならGitHub Actionsが適しています。"
     },
     {
       "id": "basic-015",
       "level": "expert",
       "question": "複数セッションを比較・管理し、進行中の作業を横断的に把握する仕組みとして適切なものはどれですか？",
-      "choices": [
-        "タスク一覧・状態管理の仕組みを使う",
-        "毎回ターミナルの履歴を目視で確認する",
-        "手動でログファイルを作成する",
-        "複数セッションの管理はできない"
-      ],
-      "correctIndex": 0,
+      "choices": ["毎回ターミナルの履歴を目視で確認する", "タスク一覧・状態管理の仕組みを使う", "手動でログファイルを作成する", "複数セッションの管理はできない"],
+      "correctIndex": 1,
       "explanation": "タスクの一覧・状態確認の仕組みを使うことで、複数の進行中作業を横断的に把握できます。"
     },
     {
@@ -174,29 +159,24 @@
       "id": "basic-017",
       "level": "beginner",
       "question": "直前に送ったプロンプトの時点まで会話やコードを巻き戻したいとき、プロンプト入力欄が空の状態でEscキーを2回押すか、実行するスラッシュコマンドはどれですか？",
-      "choices": ["/undo", "/rewind", "/back", "/checkpoint"],
-      "correctIndex": 1,
+      "choices": ["/undo", "/back", "/checkpoint", "/rewind"],
+      "correctIndex": 3,
       "explanation": "`/rewind`（またはプロンプト入力欄が空の状態でEscキーを2回）を実行するとリワインドメニューが開き、送信した各プロンプトの時点まで会話やコードを戻せます。"
     },
     {
       "id": "basic-018",
       "level": "beginner",
       "question": "Claude Codeが自動的にチェックポイントを作成するタイミングとして正しいものはどれですか？",
-      "choices": [
-        "ユーザーが明示的に/saveを実行したとき",
-        "各ユーザープロンプトの送信時",
-        "1時間ごとの定期実行",
-        "セッション終了時のみ"
-      ],
-      "correctIndex": 1,
+      "choices": ["ユーザーが明示的に/saveを実行したとき", "1時間ごとの定期実行", "セッション終了時のみ", "各ユーザープロンプトの送信時"],
+      "correctIndex": 3,
       "explanation": "Claude Codeはユーザーがプロンプトを送信するたびに、その時点のコード状態を自動的にチェックポイントとして記録します。"
     },
     {
       "id": "basic-019",
       "level": "beginner",
       "question": "終了したClaude Codeのセッションのうち、現在の作業ディレクトリで最後に行った会話をそのまま再開したい場合に使うCLIフラグはどれですか？",
-      "choices": ["--continue", "--restart", "--attach", "--history"],
-      "correctIndex": 0,
+      "choices": ["--restart", "--continue", "--attach", "--history"],
+      "correctIndex": 1,
       "explanation": "`claude --continue`（短縮形 `-c`）は現在のディレクトリで直近に行われたセッションを再開します。該当するセッションがない場合はエラーメッセージを表示して終了します。"
     },
     {
@@ -211,16 +191,16 @@
       "id": "basic-021",
       "level": "beginner",
       "question": "ステータスラインに表示するスクリプトを、自然言語の指示から自動生成させたい場合に使うスラッシュコマンドはどれですか？",
-      "choices": ["/statusline", "/status", "/customize-bar", "/footer"],
-      "correctIndex": 0,
+      "choices": ["/status", "/customize-bar", "/statusline", "/footer"],
+      "correctIndex": 2,
       "explanation": "`/statusline` コマンドは自然言語の指示（例: 「モデル名と文脈使用率をプログレスバーで表示して」）を受け取り、スクリプトファイルを生成してsettingsに自動設定します。"
     },
     {
       "id": "basic-022",
       "level": "beginner",
       "question": "settings.jsonでステータスラインを手動設定する際、コマンドの種類を指定するフィールド`type`に設定する値はどれですか？",
-      "choices": ["\"command\"", "\"script\"", "\"shell\"", "\"exec\""],
-      "correctIndex": 0,
+      "choices": ["\"script\"", "\"command\"", "\"shell\"", "\"exec\""],
+      "correctIndex": 1,
       "explanation": "`statusLine` フィールドで `type` を `\"command\"` に設定し、`command` にスクリプトパスやインラインのシェルコマンドを指定します。"
     },
     {
@@ -236,54 +216,44 @@
       "level": "intermediate",
       "question": "`/rewind`によるチェックポイントの巻き戻しについて、公式ドキュメントで明記されている制限事項はどれですか？",
       "choices": [
-        "bashコマンド（rmやmvなど）によるファイル変更は追跡・復元できない",
         "編集ツール以外による変更も含め、全てのファイル変更が無条件に復元できる",
         "Gitリポジトリとして初期化されていないディレクトリでは基本的に使用できない",
+        "bashコマンド（rmやmvなど）によるファイル変更は追跡・復元できない",
         "バックグラウンドのサブエージェントが行った変更も標準設定のままで復元できる"
       ],
-      "correctIndex": 0,
+      "correctIndex": 2,
       "explanation": "チェックポイントはClaudeのファイル編集ツールによる変更のみを追跡します。`rm`や`mv`などbashコマンドによるファイル変更は追跡対象外で、rewindで元に戻すことはできません。"
     },
     {
       "id": "basic-025",
       "level": "intermediate",
       "question": "セッションを再開する際、`claude --resume`（引数なし）を実行すると開かれるものはどれですか？",
-      "choices": [
-        "最新のセッションが自動的に再開される",
-        "対話的なセッション選択ピッカーが開く",
-        "常にエラーになる",
-        "新しいセッションが強制的に作成される"
-      ],
-      "correctIndex": 1,
+      "choices": ["最新のセッションが自動的に再開される", "常にエラーになる", "対話的なセッション選択ピッカーが開く", "新しいセッションが強制的に作成される"],
+      "correctIndex": 2,
       "explanation": "`claude --resume` を引数なしで実行すると対話的なセッションピッカーが開き、一覧から選んで再開できます。名前を指定する場合は `claude --resume <name>` で直接再開されます。"
     },
     {
       "id": "basic-026",
       "level": "intermediate",
       "question": "セッションピッカー（`/resume`または`claude --resume`）が起動ディレクトリの現在のワークツリー以外の、リポジトリの全ワークツリーのセッションも表示するように切り替えるキーボードショートカットはどれですか？",
-      "choices": ["Ctrl+W", "Ctrl+A", "Ctrl+R", "Ctrl+B"],
-      "correctIndex": 0,
+      "choices": ["Ctrl+A", "Ctrl+R", "Ctrl+W", "Ctrl+B"],
+      "correctIndex": 2,
       "explanation": "`Ctrl+W` を押すとリポジトリの全ワークツリーのセッションを表示するよう切り替わります。`Ctrl+A` はマシン上の全プロジェクト、`Ctrl+R` はリネーム、`Ctrl+B` は現在のブランチへの絞り込みに使われます。"
     },
     {
       "id": "basic-027",
       "level": "intermediate",
       "question": "ステータスラインのスクリプトが標準入力（stdin）で受け取るデータの形式はどれですか？",
-      "choices": ["JSON形式のセッションデータ", "プレーンテキストのログ", "CSV形式の統計情報", "XML形式の設定情報"],
-      "correctIndex": 0,
+      "choices": ["プレーンテキストのログ", "CSV形式の統計情報", "XML形式の設定情報", "JSON形式のセッションデータ"],
+      "correctIndex": 3,
       "explanation": "Claude Codeはモデル名、コスト、文脈使用率などを含むJSONデータをスクリプトの標準入力（stdin）に渡し、スクリプトが出力した文字列をそのままステータスラインに表示します。"
     },
     {
       "id": "basic-028",
       "level": "intermediate",
       "question": "ステータスラインの表示を更新するトリガーとして、公式ドキュメントに明記されていないものはどれですか？",
-      "choices": [
-        "新しいアシスタントメッセージが届いたとき",
-        "/compactが完了したとき",
-        "1文字入力するたびに毎回",
-        "パーミッションモードが変更されたとき"
-      ],
-      "correctIndex": 2,
+      "choices": ["1文字入力するたびに毎回", "新しいアシスタントメッセージが届いたとき", "/compactが完了したとき", "パーミッションモードが変更されたとき"],
+      "correctIndex": 0,
       "explanation": "ステータスラインはセッション開始時、新しいアシスタントメッセージ到着時、/compact完了時、パーミッションモード変更時、vimモード切替時などに更新されます。1文字入力するたびの更新ではなく、300msでデバウンスされます。"
     },
     {
@@ -292,32 +262,32 @@
       "question": "`/branch`コマンドの動作として正しいものはどれですか？",
       "choices": [
         "実行中のセッションの名前を別名に変更するだけで、新しいセッションは作られない",
-        "現在までの会話のコピーを作成し、新しいセッションに切り替える。元のセッションはそのまま残る",
         "現在のセッションの履歴とコード変更を完全に削除してから新規に作り直す",
+        "現在までの会話のコピーを作成し、新しいセッションに切り替える。元のセッションはそのまま残る",
         "コードの変更履歴のみを分岐させ、会話履歴は元のセッションと共有し続ける"
       ],
-      "correctIndex": 1,
+      "correctIndex": 2,
       "explanation": "`/branch` はその時点までの会話のコピーを作成して新しいセッションに切り替えます。元のセッションはディスク上に変更されずに残り、`/resume` で戻れます。"
     },
     {
       "id": "basic-030",
       "level": "advanced",
       "question": "セッションを再開したとき、公式ドキュメントによれば常に復元されるとは限らない設定はどれですか？",
-      "choices": [
-        "ツール呼び出しを含む会話履歴全体",
-        "--mcp-configで指定したMCPサーバーの設定",
-        "セッションが使用していたモデル（原則として）",
-        "セッションIDそのもの"
-      ],
-      "correctIndex": 1,
+      "choices": ["--mcp-configで指定したMCPサーバーの設定", "ツール呼び出しを含む会話履歴全体", "セッションが使用していたモデル（原則として）", "セッションIDそのもの"],
+      "correctIndex": 0,
       "explanation": "`--mcp-config`、`--settings`、`--plugin-dir`、`--fallback-model`、`--add-dir`で追加したディレクトリなどは、再開時に元の起動フラグが自動的には復元されないため、必要であれば再度指定する必要があります。"
     },
     {
       "id": "basic-031",
       "level": "advanced",
       "question": "`claude -p`（非対話モード）でセッションを保存させず、再開もできないようにしたい場合に指定するフラグはどれですか？",
-      "choices": ["--no-session-persistence", "--ephemeral（一時実行用フラグ）", "--stateless（状態非保持モード）", "--disable-resume（再開機能の無効化）"],
-      "correctIndex": 0,
+      "choices": [
+        "--ephemeral（一時実行用フラグ）",
+        "--no-session-persistence",
+        "--stateless（状態非保持モード）",
+        "--disable-resume（再開機能の無効化）"
+      ],
+      "correctIndex": 1,
       "explanation": "`claude -p --no-session-persistence \"query\"` を指定すると、セッションがディスクに保存されなくなり、後から再開できなくなります。"
     },
     {
@@ -325,20 +295,20 @@
       "level": "advanced",
       "question": "文脈上限に近づいた長時間セッションを`--continue`や`--resume`で再開した際、Pro/Maxプランで表示されることがある「Resume from summary」ダイアログの動作として正しいものはどれですか？",
       "choices": [
-        "それまでの会話をすべて破棄し、完全に新規のセッションとして開始する",
         "/compactを即座に実行し、要約・直近のやり取り・最近読んだファイルで会話を置き換える",
+        "それまでの会話をすべて破棄し、完全に新規のセッションとして開始する",
         "会話履歴には手を付けず、ファイルへの変更内容のみを破棄する",
         "現在のセッションの内容を別のプロジェクトディレクトリへ移動する"
       ],
-      "correctIndex": 1,
+      "correctIndex": 0,
       "explanation": "「Resume from summary」を選ぶと`/compact`が即座に実行され、全履歴の要約1回のリクエストの後、要約・直近のやり取り・最近読んだファイル最大5件に置き換えられた状態で会話が継続します。"
     },
     {
       "id": "basic-033",
       "level": "advanced",
       "question": "ステータスラインで、ターミナルの列数・行数を取得するために読むべき環境変数はどれですか（`tput cols`などの直接検出が使えないため）？",
-      "choices": ["COLUMNS と LINES", "TERM_WIDTH と TERM_HEIGHT", "SCREEN_COLS と SCREEN_ROWS", "WIDTH と HEIGHT"],
-      "correctIndex": 0,
+      "choices": ["TERM_WIDTH と TERM_HEIGHT", "SCREEN_COLS と SCREEN_ROWS", "COLUMNS と LINES", "WIDTH と HEIGHT"],
+      "correctIndex": 2,
       "explanation": "Claude Codeはスクリプトの出力をキャプチャして表示するため、スクリプト内から`tput cols`等でターミナルサイズを直接検出できません。代わりにClaude Codeが実行前に設定する`COLUMNS`と`LINES`環境変数を読む必要があります。"
     },
     {
@@ -346,12 +316,12 @@
       "level": "advanced",
       "question": "ステータスラインのJSON入力に含まれる`context_window.used_percentage`の算出方法について正しい説明はどれですか？",
       "choices": [
-        "input_tokens・cache_creation_input_tokens・cache_read_input_tokensの合計のみから算出され、output_tokensは含まれない",
         "直近のアシスタント応答1回分で消費されたoutput_tokensの値のみを使って算出される",
+        "input_tokens・cache_creation_input_tokens・cache_read_input_tokensの合計のみから算出され、output_tokensは含まれない",
         "input_tokensとoutput_tokensをそれぞれ集計したうえで、両者の単純平均を取ることで算出される",
         "使用中のモデルの種類によらず、常に固定値200000を分母として割合が算出される"
       ],
-      "correctIndex": 0,
+      "correctIndex": 1,
       "explanation": "`used_percentage`は入力側のトークン（input_tokens + cache_creation_input_tokens + cache_read_input_tokens）のみから算出され、output_tokensは含まれません。"
     },
     {
@@ -359,12 +329,12 @@
       "level": "expert",
       "question": "`/rewind`のリワインドメニューにおいて、対象のチェックポイント以降にファイル変更が一切記録されていない場合の挙動として正しいものはどれですか？",
       "choices": [
-        "「Restore code」「Restore code and conversation」の2つのコード復元系選択肢は表示されず、Restore conversationや要約系の選択肢のみが表示される",
         "対象チェックポイントを選んだ時点で、リワインドメニュー自体がグレーアウトして開けなくなってしまう",
         "ユーザーへの確認を挟むことなく、会話全体を自動的に削除する処理が実行されてしまう",
-        "選択肢はいつもどおりすべて表示されるが、どれを選んで実行しても内部エラーになってしまう"
+        "選択肢はいつもどおりすべて表示されるが、どれを選んで実行しても内部エラーになってしまう",
+        "「Restore code」「Restore code and conversation」の2つのコード復元系選択肢は表示されず、Restore conversationや要約系の選択肢のみが表示される"
       ],
-      "correctIndex": 0,
+      "correctIndex": 3,
       "explanation": "選択したチェックポイント以降に追跡されたファイル変更がない場合、コード復元系の2つの選択肢は表示されず、Restore conversationや要約オプション、Never mindのみが提示されます。"
     },
     {
@@ -373,11 +343,11 @@
       "question": "バックグラウンドで実行中のサブエージェントがファイルを編集した場合、そのセッションで`/rewind`を実行したときの挙動として公式ドキュメントに明記されているものはどれですか？",
       "choices": [
         "メインセッションの編集と同様に、サブエージェントの編集も含めて全て復元される",
-        "フォアグラウンドで実行されるcontext: forkスキルを除き、バックグラウンドのサブエージェントによる編集はチェックポイント外で行われ、rewindでは復元されない",
         "サブエージェントを一度でも使用すると、以後そのセッションのチェックポイント機能自体が無効化される",
-        "サブエージェントの編集内容はデフォルト設定のままGitに自動コミットされるため、rewindは不要になる"
+        "サブエージェントの編集内容はデフォルト設定のままGitに自動コミットされるため、rewindは不要になる",
+        "フォアグラウンドで実行されるcontext: forkスキルを除き、バックグラウンドのサブエージェントによる編集はチェックポイント外で行われ、rewindでは復元されない"
       ],
-      "correctIndex": 1,
+      "correctIndex": 3,
       "explanation": "フォアグラウンドで動く`context: fork`スキルを除き、サブエージェントによる編集はセッションのチェックポイントの外側で行われるため、rewindしても復元されません。この場合はGitで変更を戻す必要があります。"
     },
     {
@@ -386,11 +356,11 @@
       "question": "シンボリックリンクやハードリンクされたファイルパスに対して`/rewind`で「Restore code」を実行した場合の挙動はどれですか？",
       "choices": [
         "リンク先の実体ファイルも含めて特に問題なく復元される",
-        "対象のトラッキング対象パスをスキップし、「Restored the code, but skipped N files」という警告を表示する",
         "復元処理の途中でセッション全体が応答不能になりクラッシュする",
-        "シンボリックリンクは復元時に自動的に通常ファイルへ変換された上で書き戻される"
+        "シンボリックリンクは復元時に自動的に通常ファイルへ変換された上で書き戻される",
+        "対象のトラッキング対象パスをスキップし、「Restored the code, but skipped N files」という警告を表示する"
       ],
-      "correctIndex": 1,
+      "correctIndex": 3,
       "explanation": "チェックポイント機能はシンボリックリンクやハードリンクされたファイルを巻き戻せません。該当パスはスキップされ、「Restored the code, but skipped N files」という警告が表示されます。スキップされたファイルは現在の内容のまま維持されます。"
     },
     {
@@ -398,12 +368,12 @@
       "level": "expert",
       "question": "組織内で複数メンバーがステータスラインの`subagentStatusLine`設定を使い、エージェントパネルのサブエージェント行の表示をカスタマイズする場合、スクリプトが標準出力に書き出すべき形式はどれですか？",
       "choices": [
-        "行ごとに{\"id\": \"<task id>\", \"content\": \"<row body>\"}形式のJSONを1行ずつ出力する",
         "カンマ区切りのCSV形式でタスクIDと表示内容の2列を出力する",
         "タスクIDを省略し、全サブエージェント共通の固定文字列のみを出力する",
+        "行ごとに{\"id\": \"<task id>\", \"content\": \"<row body>\"}形式のJSONを1行ずつ出力する",
         "開始タグと終了タグを含むXMLタグで表示内容全体を囲んで出力する"
       ],
-      "correctIndex": 0,
+      "correctIndex": 2,
       "explanation": "`subagentStatusLine`のコマンドは、上書きしたい行ごとに`{\"id\": \"<task id>\", \"content\": \"<row body>\"}`形式のJSON行を標準出力に書き出します。idを省略した行はデフォルト表示のまま維持されます。"
     },
     {
@@ -424,12 +394,12 @@
       "level": "expert",
       "question": "ステータスラインのスクリプトでgitコマンドなど時間のかかる処理をキャッシュする際、キャッシュファイル名の一意性を保つために使うべき識別子として公式ドキュメントが推奨しているものはどれですか？",
       "choices": [
-        "呼び出しごとに変わるプロセスID（$$やos.getpid()など）",
         "session_id（JSON入力に含まれるセッション識別子）",
+        "呼び出しごとに変わるプロセスID（$$やos.getpid()など）",
         "秒単位で変化する現在時刻のタイムスタンプのみ",
         "呼び出しのたびにその場で生成するランダムなUUID"
       ],
-      "correctIndex": 1,
+      "correctIndex": 0,
       "explanation": "プロセスIDはステータスライン呼び出しのたびに変わるためキャッシュが機能しません。セッションの生存期間中は安定しセッションごとに一意な`session_id`を使うことで、同時に動く複数セッション間でキャッシュファイルが衝突するのを防げます。"
     }
   ]

@@ -16,6 +16,9 @@ const progressLabel = document.getElementById('progress-label');
 const domainLabelEl = document.getElementById('domain-label');
 const questionTextEl = document.getElementById('question-text');
 const choiceListEl = document.getElementById('choice-list');
+const answerFeedbackEl = document.getElementById('answer-feedback');
+const answerExplanationEl = document.getElementById('answer-explanation');
+const nextButton = document.getElementById('next-button');
 
 async function loadAllDomainData() {
   const responses = await Promise.all(DOMAIN_FILES.map(path => fetch(path)));
@@ -41,6 +44,9 @@ function renderQuestion(flatQuestions, index, answers, onAnswer) {
   domainLabelEl.textContent = item.domainLabel;
   questionTextEl.textContent = item.question;
   choiceListEl.innerHTML = '';
+  answerFeedbackEl.style.display = 'none';
+  answerExplanationEl.style.display = 'none';
+  nextButton.style.display = 'none';
 
   item.choices.forEach((choiceText, choiceIndex) => {
     const li = document.createElement('li');
@@ -49,13 +55,34 @@ function renderQuestion(flatQuestions, index, answers, onAnswer) {
     button.type = 'button';
     button.className = 'choice-button';
     button.textContent = choiceText;
-    if (answers[item.id] === choiceIndex) {
-      button.classList.add('selected');
-    }
     button.addEventListener('click', () => onAnswer(item.id, choiceIndex));
     li.appendChild(button);
     choiceListEl.appendChild(li);
   });
+}
+
+function showAnswerFeedback(item, selectedIndex, isLastQuestion) {
+  const buttons = choiceListEl.querySelectorAll('.choice-button');
+  buttons.forEach(button => {
+    button.disabled = true;
+  });
+  buttons[selectedIndex].classList.add('selected');
+  buttons[item.correctIndex].classList.add('correct-choice');
+  if (selectedIndex !== item.correctIndex) {
+    buttons[selectedIndex].classList.add('incorrect-choice');
+  }
+
+  const isCorrect = selectedIndex === item.correctIndex;
+  answerFeedbackEl.textContent = isCorrect ? '正解！' : '不正解';
+  answerFeedbackEl.classList.toggle('correct', isCorrect);
+  answerFeedbackEl.classList.toggle('incorrect', !isCorrect);
+  answerFeedbackEl.style.display = 'block';
+
+  answerExplanationEl.textContent = item.explanation;
+  answerExplanationEl.style.display = 'block';
+
+  nextButton.textContent = isLastQuestion ? '結果を見る' : '次へ';
+  nextButton.style.display = 'inline-block';
 }
 
 async function main() {
@@ -73,11 +100,12 @@ async function main() {
   const flatQuestions = flattenQuiz(quiz);
   const answers = {};
   let currentIndex = 0;
-  let isAdvancing = false;
+  let hasAnswered = false;
 
   function goToNext() {
     if (currentIndex < flatQuestions.length - 1) {
       currentIndex += 1;
+      hasAnswered = false;
       renderQuestion(flatQuestions, currentIndex, answers, handleAnswer);
     } else {
       finishQuiz();
@@ -85,17 +113,14 @@ async function main() {
   }
 
   function handleAnswer(questionId, choiceIndex) {
-    if (isAdvancing) return;
-    isAdvancing = true;
+    if (hasAnswered) return;
+    hasAnswered = true;
     answers[questionId] = choiceIndex;
-    choiceListEl.querySelectorAll('button').forEach(button => {
-      button.disabled = true;
-    });
-    setTimeout(() => {
-      isAdvancing = false;
-      goToNext();
-    }, 200);
+    const isLastQuestion = currentIndex === flatQuestions.length - 1;
+    showAnswerFeedback(flatQuestions[currentIndex], choiceIndex, isLastQuestion);
   }
+
+  nextButton.addEventListener('click', goToNext);
 
   function finishQuiz() {
     const gradeResult = gradeAnswers(quiz, answers);
