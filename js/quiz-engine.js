@@ -15,61 +15,47 @@ function shuffleChoices(question, rng) {
   return { ...question, choices: newChoices, correctIndex: newCorrectIndex };
 }
 
-export function selectQuestions(domainData, countPerLevel, rng = Math.random) {
-  const selected = [];
-  for (const [level, count] of Object.entries(countPerLevel)) {
-    const pool = domainData.questions.filter(q => q.level === level);
-    if (pool.length < count) {
-      throw new Error(
-        `Domain "${domainData.domain}" does not have enough "${level}" questions: needs ${count}, has ${pool.length}`
-      );
-    }
-    const chosen = shuffle(pool, rng).slice(0, count);
-    selected.push(...chosen.map(q => shuffleChoices(q, rng)));
+// 指定領域・指定レベルのプールからcount問を抽出する。
+// プールがcount問ちょうどなら実質的に全問が順不同で出題される。
+// 将来プールを増やした場合は、そこからランダムにcount問が選ばれる。
+export function selectQuestions(domainData, level, count, rng = Math.random) {
+  const pool = domainData.questions.filter(q => q.level === level);
+  if (pool.length < count) {
+    throw new Error(
+      `Domain "${domainData.domain}" does not have enough "${level}" questions: needs ${count}, has ${pool.length}`
+    );
   }
-  return selected;
+  return shuffle(pool, rng)
+    .slice(0, count)
+    .map(q => shuffleChoices(q, rng));
 }
 
-export function buildQuiz(allDomainData, countPerLevel, rng = Math.random) {
-  return allDomainData.map(domainData => ({
-    domain: domainData.domain,
-    domainLabel: domainData.domainLabel,
-    questions: selectQuestions(domainData, countPerLevel, rng),
-  }));
-}
-
-export function gradeAnswers(quiz, answers) {
-  const result = {};
-  for (const entry of quiz) {
-    let correct = 0;
-    for (const question of entry.questions) {
-      if (answers[question.id] === question.correctIndex) {
-        correct += 1;
-      }
+export function scoreStage(questions, answers) {
+  let correct = 0;
+  for (const question of questions) {
+    if (answers[question.id] === question.correctIndex) {
+      correct += 1;
     }
-    result[entry.domain] = { correct, total: entry.questions.length };
   }
-  return result;
+  return correct;
 }
 
-export function collectWrongAnswers(quiz, answers) {
+export function collectWrongAnswers(questions, answers, domainLabel) {
   const wrong = [];
-  for (const entry of quiz) {
-    for (const question of entry.questions) {
-      const selectedIndex = Object.prototype.hasOwnProperty.call(answers, question.id)
-        ? answers[question.id]
-        : null;
-      if (selectedIndex !== question.correctIndex) {
-        wrong.push({
-          questionId: question.id,
-          domainLabel: entry.domainLabel,
-          question: question.question,
-          choices: question.choices,
-          selectedIndex,
-          correctIndex: question.correctIndex,
-          explanation: question.explanation,
-        });
-      }
+  for (const question of questions) {
+    const selectedIndex = Object.prototype.hasOwnProperty.call(answers, question.id)
+      ? answers[question.id]
+      : null;
+    if (selectedIndex !== question.correctIndex) {
+      wrong.push({
+        questionId: question.id,
+        domainLabel,
+        question: question.question,
+        choices: question.choices,
+        selectedIndex,
+        correctIndex: question.correctIndex,
+        explanation: question.explanation,
+      });
     }
   }
   return wrong;

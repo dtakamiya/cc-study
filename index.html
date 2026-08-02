@@ -3,23 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Claude Code 理解度診断</title>
+  <title>Claude Code ステップアップ問題集</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <div class="container">
     <div class="card">
-      <h1>Claude Code 理解度診断</h1>
+      <h1>Claude Code ステップアップ問題集</h1>
       <p>
-        基本操作・機能活用・プロンプト設計・安全性・トークン効率の5領域について、
-        各10問（計50問前後）の設問に回答すると、領域別・総合の理解度レベルを診断します。
-        診断結果はブラウザ内にのみ保存され、外部には送信されません。
+        5領域 × 4レベルの全20ステージ。各ステージは10問で、8問以上正解すると合格し、
+        同じ領域の次のレベルが開放されます。進捗はブラウザ内にのみ保存され、外部には送信されません。
       </p>
-      <p id="previous-result-note" class="progress" style="display: none;"></p>
-      <div class="actions">
-        <a class="button" href="quiz.html" id="start-button">診断を始める</a>
-        <a class="button secondary" href="result.html" id="view-last-result-button" style="display: none;">前回の結果を見る</a>
-      </div>
+      <p id="storage-notice" class="progress" style="display: none;"></p>
+    </div>
+
+    <div class="card">
+      <h2>進捗</h2>
+      <p class="progress" id="overall-progress"></p>
+      <div id="dashboard"></div>
+      <p class="dashboard-legend">
+        <span class="stage-mark cleared">✅</span> 合格済み（再挑戦できます）
+        <span class="stage-mark available">▶</span> 挑戦可能
+        <span class="stage-mark locked">🔒</span> 未開放
+      </p>
     </div>
   </div>
   <script type="module" src="js/top-page.js"></script>

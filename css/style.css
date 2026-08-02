@@ -244,3 +244,122 @@ h2 {
     break-inside: avoid;
   }
 }
+
+/* ===== ダッシュボード ===== */
+
+.dashboard-row {
+  margin-bottom: 1.5rem;
+}
+
+.dashboard-domain {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+.dashboard-stages {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.stage-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.7rem 0.3rem;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  text-decoration: none;
+  color: inherit;
+  text-align: center;
+}
+
+.stage-cell.cleared {
+  background: #eaf7ee;
+  border-color: #7bc48a;
+}
+
+.stage-cell.available {
+  background: #fff;
+  border-color: #4a90d9;
+}
+
+.stage-cell.locked {
+  background: #f2f2f2;
+  color: #999;
+  cursor: not-allowed;
+}
+
+a.stage-cell:hover {
+  border-width: 2px;
+  padding: calc(0.7rem - 1px) calc(0.3rem - 1px);
+}
+
+.stage-mark {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.stage-level {
+  font-size: 0.8rem;
+}
+
+.stage-score {
+  font-size: 0.75rem;
+  color: #666;
+  min-height: 1em;
+}
+
+.stage-cell.locked .stage-score {
+  color: #aaa;
+}
+
+.dashboard-legend {
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.dashboard-legend .stage-mark {
+  font-size: 0.9rem;
+  margin-left: 0.8rem;
+}
+
+.dashboard-legend .stage-mark:first-child {
+  margin-left: 0;
+}
+
+@media (max-width: 480px) {
+  .dashboard-stages {
+    gap: 0.3rem;
+  }
+
+  .stage-level {
+    font-size: 0.7rem;
+  }
+}
+
+/* ===== ステージ結果 ===== */
+
+.verdict.passed {
+  color: #2e7d32;
+}
+
+.verdict.failed {
+  color: #c62828;
+}
+
+.stage-score-line {
+  font-size: 1.1rem;
+  margin: 0.5rem 0;
+}
+
+.unlock-notice {
+  padding: 0.7rem 1rem;
+  border-radius: 6px;
+  background: #eaf7ee;
+  border: 1px solid #7bc48a;
+  color: #2e7d32;
+  font-weight: bold;
+}

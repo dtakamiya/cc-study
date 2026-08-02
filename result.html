@@ -3,34 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>診断結果 - Claude Code 理解度診断</title>
+  <title>ステージ結果 - Claude Code ステップアップ問題集</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <div class="container">
     <div id="no-result" class="card" style="display: none;">
-      <h1>診断結果がありません</h1>
-      <p>まだ診断が完了していないか、結果の保存に失敗しました。</p>
-      <a class="button" href="index.html">トップに戻る</a>
+      <h1>結果がありません</h1>
+      <p>まだステージに挑戦していないか、結果の受け渡しに失敗しました。進捗は保存されています。</p>
+      <a class="button" href="index.html">ダッシュボードに戻る</a>
     </div>
 
     <div id="result-content" style="display: none;">
       <div class="card">
-        <h1>診断結果</h1>
-        <p id="fallback-notice" class="progress" style="display: none;"></p>
-        <p id="completed-at" class="progress"></p>
-        <h2>総合レベル</h2>
-        <span id="overall-level-badge" class="level-badge"></span>
+        <p id="stage-label" class="progress"></p>
+        <h1 id="verdict"></h1>
+        <p id="score-line" class="stage-score-line"></p>
+        <p id="unlock-notice" class="unlock-notice" style="display: none;"></p>
+        <div class="actions no-print" id="result-actions"></div>
       </div>
 
-      <div class="card">
-        <h2>領域別レベル</h2>
-        <div id="domain-results"></div>
-      </div>
-
-      <div class="card">
-        <h2>改善提案</h2>
-        <div id="suggestions"></div>
+      <div class="card" id="advice-card" style="display: none;">
+        <h2>学習アドバイス</h2>
+        <p id="advice-text"></p>
       </div>
 
       <div class="card">
@@ -39,8 +34,7 @@
       </div>
 
       <div class="actions no-print">
-        <button class="button" id="print-button">PDFとして印刷 / 保存</button>
-        <a class="button secondary" href="index.html">トップに戻る</a>
+        <button class="button secondary" id="print-button">PDFとして印刷 / 保存</button>
       </div>
     </div>
   </div>
