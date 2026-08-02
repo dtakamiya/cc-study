@@ -1,5 +1,6 @@
 const PROGRESS_KEY = 'cc-diagnosis-progress';
 const STAGE_SESSION_KEY = 'cc-diagnosis-stage-result';
+const REVIEW_KEY = 'cc-diagnosis-review';
 
 // ブラウザやiframeのポリシーによっては、localStorage/sessionStorageは
 // プロパティに触れた時点でSecurityErrorを投げる。個々の操作をtryで囲むだけでは
@@ -72,4 +73,15 @@ export function saveStageResult(stageResult) {
 
 export function loadStageResult() {
   return readJson(getStore('sessionStorage'), STAGE_SESSION_KEY);
+}
+
+// 誤答履歴はゲートの前提ではないため、進捗のようなsessionStorageへの退避はしない。
+// タブを閉じたら消える誤答履歴は「あとで見返す」という目的を果たせず、
+// 保存できた／できないの判断を無駄に複雑にするだけになる。
+export function saveReviewRaw(reviewObject) {
+  return writeJson(getStore('localStorage'), REVIEW_KEY, reviewObject);
+}
+
+export function loadReviewRaw() {
+  return readJson(getStore('localStorage'), REVIEW_KEY);
 }
