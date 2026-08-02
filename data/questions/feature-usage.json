@@ -321,6 +321,62 @@
       "choices": ["managed settingsによるenterprise管理ポリシー（allowedMcpServers/deniedMcpServersなど）や、組織側でconnectorツールを`ask`に設定する仕組みを利用する", "Claude Codeには組織単位でMCPサーバーの利用状況を管理・制限する機能はデフォルト設定では存在しない", "MCPサーバーは追加設定を行わなくてもインストールした瞬間に全社の端末へ自動配布されるため、個別の制御は不要になる", "各開発者が個別に、社内ポリシーでMCPサーバーの追加が禁止されているディレクトリを探し出して手動で削除して回る"],
       "correctIndex": 0,
       "explanation": "組織管理者はmanaged settingsで`allowedMcpServers`/`deniedMcpServers`によるポリシーベースのMCPサーバー制御や、claude.ai connectorのツールを`ask`設定にして必ず承認プロンプトを出す、といった仕組みで組織全体のMCP利用を統制できます。"
+    },
+    {
+      "id": "feature-041",
+      "level": "intermediate",
+      "question": "プロジェクトを初めて開いた際に、コードベースを解析してCLAUDE.mdの雛形を自動生成させるスラッシュコマンドはどれですか？",
+      "choices": ["/setup", "/scaffold", "/init", "/bootstrap"],
+      "correctIndex": 2,
+      "explanation": "`/init`コマンドを実行すると、Claude Codeがプロジェクトの構成やビルドコマンドなどを解析し、CLAUDE.mdの雛形を自動生成します。"
+    },
+    {
+      "id": "feature-042",
+      "level": "advanced",
+      "question": "GitHub上のPull Requestで自動レビューやコメント対応をさせたい場合に組み込む公式のGitHub Actionはどれですか？",
+      "choices": ["claude-code-action", "anthropic-review-bot", "auto-merge-action", "claude-ci-runner"],
+      "correctIndex": 0,
+      "explanation": "公式の`claude-code-action`（例: `anthropics/claude-code-action@v1`）をワークフローに組み込むことで、Pull Requestに対する自動レビューやコメントへの応答をCI上で行えます。"
+    },
+    {
+      "id": "feature-043",
+      "level": "advanced",
+      "question": "自作のアプリケーションやスクリプトからプログラム的にClaude Codeを呼び出し、エージェント機能を組み込みたい場合に使う仕組みはどれですか？",
+      "choices": ["Claude Code SDK", "スラッシュコマンドの直接編集", "ステータスラインのカスタムスクリプト", "settings.jsonのhooksフィールド"],
+      "correctIndex": 0,
+      "explanation": "Claude Code SDKを使うと、対話的なCLIとしてだけでなく、独自のプログラムやパイプラインからClaude Codeのエージェント機能を呼び出して制御できます。"
+    },
+    {
+      "id": "feature-044",
+      "level": "intermediate",
+      "question": "Claude Codeを自分のパイプラインに組み込みたいが、Anthropicインフラ上のスケジュール実行（Routines）ではなく自前のスクリプトから制御したい場合に適した実行方式はどれですか？",
+      "choices": ["ヘッドレスモード（非対話モードでのCLI実行）", "Plan Mode", "Thinking Mode", "acceptEditsモード"],
+      "correctIndex": 0,
+      "explanation": "ヘッドレスモード（`claude -p`などの非対話的なCLI実行）を使うと、自前のスクリプトやCI/CDパイプラインからClaude Codeを呼び出して制御できます。Anthropicインフラ側でスケジュール実行させたい場合はRoutinesが適しています。"
+    },
+    {
+      "id": "feature-045",
+      "level": "advanced",
+      "question": "1つの司令塔役エージェントが複数のサブエージェントへタスクを振り分け、結果を集約するマルチエージェント構成の名称として適切なものはどれですか？",
+      "choices": ["ピア・ツー・ピア（peer-to-peer）構成", "ハブ・アンド・スポーク（hub-and-spoke）構成", "シングルトン（singleton）構成", "循環参照（circular reference）構成"],
+      "correctIndex": 1,
+      "explanation": "1つのオーケストレーター（司令塔）が複数のサブエージェントにタスクを振り分け、それぞれの結果を集約する構成はハブ・アンド・スポーク型のトポロジーと呼ばれます。他にも処理を順番にリレーするパイプライン型や、エージェント同士が対等に連携するピア・ツー・ピア型などのパターンがあります。"
+    },
+    {
+      "id": "feature-046",
+      "level": "advanced",
+      "question": "オーケストレーター（親エージェント）がサブエージェントに調査を委任する際、サブエージェントの権限や動作範囲を明確に絞り込む設計上の目的として適切なものはどれですか？",
+      "choices": ["サブエージェントの利用そのものを技術的に不可能にするため", "権限やコンテキストを分離することで、出力を予測可能かつ最小限で検証しやすい状態に保つため", "サブエージェントに親セッションと全く同じ全権限を無条件で与えるため", "サブエージェントを使うたびに毎回新しいAPIキーを発行する必要が生じるため"],
+      "correctIndex": 1,
+      "explanation": "サブエージェントの設計では、権限の範囲（scope）を絞り込み、コンテキストを分離し、指示を明確にすることで、出力が予測可能・最小限・検証しやすいものになるようにすることが重視されます。"
+    },
+    {
+      "id": "feature-047",
+      "level": "expert",
+      "question": "サブエージェント間でエラーが発生した際の扱いとして、堅牢なマルチエージェント設計に含まれる考え方はどれですか？",
+      "choices": ["エラーの種類を区別せず、発生したら常に人間へすべて即時エスカレーションする", "ツールエラー・推論エラー・環境エラーなどを分類し、それぞれに応じたフォールバックやリトライ戦略を設計する", "エラーが起きたサブエージェントの処理結果は、内容を確認せず常にそのまま採用する", "サブエージェントの内部でエラーが起きても、オーケストレーター側では一切関知しない設計にする"],
+      "correctIndex": 1,
+      "explanation": "堅牢なマルチエージェントシステムでは、エラーをツール・推論・環境などの種類に分類し、それぞれに適したフォールバックやリトライの戦略を設計します。過剰な人間へのエスカレーションや無条件の結果採用は避けるべき設計です。"
     }
   ]
 }

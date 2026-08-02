@@ -66,3 +66,37 @@ node --test
 - **正解の選択肢だけが極端に長い/短い**：文字数だけで正解を推測できてしまうため避ける
 - **正解の`correctIndex`が0〜3のいずれかに偏っている**：領域内でおおよそ均等になるようにする
 - **誤答の選択肢に「一切できない」「存在しない」「絶対に」等の極端な断定表現を多用しない**：消去法で正解が推測できてしまうため避ける
+
+## 問題の追加・更新時に参照する情報源
+
+Claude Codeは頻繁に機能追加・仕様変更が行われるため、既存の記憶や古い記事だけを根拠に出題しないこと。
+新規追加・改訂の際は、可能な限り以下の一次情報源にあたって内容を確認してください。
+
+### 公式ドキュメント（最優先・一次情報）
+
+- [Claude Code Docs](https://code.claude.com/docs) — CLIオプション、スラッシュコマンド、hooks、permission-modes、sandbox、MCP、subagents、skillsなど機能仕様の一次情報源。本問題集の`security-permissions`・`feature-usage`の詳細設問の多くはここに基づく
+- [Anthropic Engineering Blog](https://www.anthropic.com/engineering) — 「How we built Claude Code auto mode」「How we contain Claude across products」など、設計思想・安全機構の背景解説
+- [Claude Platform Docs](https://platform.claude.com/docs) — コンテキストウィンドウ、プロンプトキャッシング、Message Batches APIなどAPI/プラットフォーム側の仕様
+
+### 公式学習コンテンツ
+
+- [Anthropic Academy](https://anthropic.skilljar.com/)（`anthropic.skilljar.com`） — 無料の公式コース。特に以下の2つはClaude Code問題の土台として有用
+  - [Claude Code 101](https://anthropic.skilljar.com/claude-code-101) — agentic loop、context window、tools/permissions、explore→plan→code→commit、CLAUDE.md、subagents、skills、MCP、hooksの基礎
+  - [Claude Code in Action](https://anthropic.skilljar.com/claude-code-in-action) — Steering（長時間セッションの舵取り）、Permission Modes、Verification Skills、Routines/Headless、GitHub Actions連携、Plugins配布などの実践的ワークフロー
+- 新コースが追加されていないか、`anthropic.com/learn`のカタログも定期的に確認するとよい
+
+### 公式資格制度（発展的なアーキテクチャ知識）
+
+- [Claude Certification Program](https://www.pearsonvue.com/us/en/anthropic.html)（Pearson VUE実施） — Claude Certified Architect – Foundations (CCA-F) など。出題ドメインの一つ「Claude Code Configuration and Workflow」や、「Agentic Architecture & Orchestration」「Context Management」に含まれるmulti-agentトポロジー・セッション継続性・lost-in-the-middle対策などの概念は、Claude Code運用に関係する範囲に限定してこの問題集に取り込んでいる
+- API単体の仕様（`stop_reason`の値、Message Batches API、tool_choiceの詳細など）はこの問題集のスコープ外（Claude Code CLIの利用に閉じた問題集のため）
+
+### 二次情報を使う場合の注意
+
+日本語ブログ（サーバーワークス、クラスメソッド、AI総合研究所など）やUdemyコースの解説は仕様変更のキャッチアップに役立つが、**内容が古い・非公式の推測を含む場合がある**ため、出題に使う前に必ず上記の公式ドキュメントで裏取りすること。特にコマンド名・フラグ名・JSON構造など検証可能な事実は公式ドキュメントの記述を正とする。
+
+### 追加・更新の進め方の目安
+
+1. 上記の公式情報源で、既存5領域（基本操作／機能活用／プロンプト設計／安全性・権限管理／トークン効率）に対応する新機能・仕様変更がないか確認する
+2. 該当領域の`data/questions/*.json`を確認し、同じトピックの重複がないかチェックする
+3. 「問題作成時の妥当性チェック観点」に沿って選択肢を作成し、`id`はドメイン内で連番かつ一意にする
+4. `node --test`でテストが通ることを確認する
