@@ -81,6 +81,57 @@ if (!result) {
     suggestionsEl.appendChild(suggestion);
   }
 
+  const wrongAnswersEl = document.getElementById('wrong-answers');
+  const wrongAnswers = result.wrongAnswers;
+
+  if (!Array.isArray(wrongAnswers)) {
+    const notice = document.createElement('p');
+    notice.className = 'progress';
+    notice.textContent = 'この結果には間違えた問題の詳細データがありません（古い診断結果です）。';
+    wrongAnswersEl.appendChild(notice);
+  } else if (wrongAnswers.length === 0) {
+    const allCorrect = document.createElement('p');
+    allCorrect.textContent = '全問正解でした！';
+    wrongAnswersEl.appendChild(allCorrect);
+  } else {
+    for (const item of wrongAnswers) {
+      const entry = document.createElement('div');
+      entry.className = 'wrong-answer-item';
+
+      const domainLabel = document.createElement('p');
+      domainLabel.className = 'wrong-answer-domain';
+      domainLabel.textContent = item.domainLabel;
+      entry.appendChild(domainLabel);
+
+      const questionText = document.createElement('p');
+      questionText.className = 'wrong-answer-question';
+      questionText.textContent = item.question;
+      entry.appendChild(questionText);
+
+      const choiceList = document.createElement('ul');
+      choiceList.className = 'wrong-answer-choices';
+      item.choices.forEach((choiceText, index) => {
+        const li = document.createElement('li');
+        li.textContent = choiceText;
+        if (index === item.correctIndex) {
+          li.classList.add('correct-choice');
+        }
+        if (index === item.selectedIndex && index !== item.correctIndex) {
+          li.classList.add('selected-wrong-choice');
+        }
+        choiceList.appendChild(li);
+      });
+      entry.appendChild(choiceList);
+
+      const explanation = document.createElement('p');
+      explanation.className = 'wrong-answer-explanation';
+      explanation.textContent = item.explanation;
+      entry.appendChild(explanation);
+
+      wrongAnswersEl.appendChild(entry);
+    }
+  }
+
   document.getElementById('print-button').addEventListener('click', () => {
     window.print();
   });

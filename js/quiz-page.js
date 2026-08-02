@@ -1,4 +1,4 @@
-import { buildQuiz, gradeAnswers } from './quiz-engine.js';
+import { buildQuiz, gradeAnswers, collectWrongAnswers } from './quiz-engine.js';
 import { judgeAllLevels } from './level-judge.js';
 import { saveResult, saveFallbackResult } from './storage.js';
 
@@ -7,6 +7,7 @@ const DOMAIN_FILES = [
   'data/questions/feature-usage.json',
   'data/questions/prompt-design.json',
   'data/questions/security-permissions.json',
+  'data/questions/token-efficiency.json',
 ];
 
 const COUNT_PER_LEVEL = { beginner: 3, intermediate: 3, advanced: 2, expert: 2 };
@@ -99,6 +100,7 @@ async function main() {
   function finishQuiz() {
     const gradeResult = gradeAnswers(quiz, answers);
     const judged = judgeAllLevels(gradeResult);
+    const wrongAnswers = collectWrongAnswers(quiz, answers);
 
     const domains = {};
     for (const entry of quiz) {
@@ -116,6 +118,7 @@ async function main() {
       domains,
       overall: judged.overall,
       completedAt: new Date().toISOString(),
+      wrongAnswers,
     };
 
     const saved = saveResult(resultObject);
