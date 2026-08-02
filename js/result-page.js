@@ -14,40 +14,73 @@ if (!stageResult) {
 } else {
   resultContentEl.style.display = 'block';
 
-  const { domain, domainLabel, level, score, total, passed, unlockedLevel, wrongAnswers } = stageResult;
-
-  document.getElementById('stage-label').textContent =
-    `${domainLabel} / ${LEVEL_LABELS[level]}`;
-
-  const verdictEl = document.getElementById('verdict');
-  verdictEl.textContent = passed ? '合格！' : '不合格';
-  verdictEl.className = passed ? 'verdict passed' : 'verdict failed';
-
-  document.getElementById('score-line').textContent =
-    `${score} / ${total} 問正解（合格ラインは ${PASSING_SCORE} 問）`;
-
-  if (unlockedLevel) {
-    const unlockNoticeEl = document.getElementById('unlock-notice');
-    unlockNoticeEl.textContent = `${LEVEL_LABELS[unlockedLevel]}が開放されました！`;
-    unlockNoticeEl.style.display = 'block';
-  }
+  const {
+    isReview,
+    domain,
+    domainLabel,
+    level,
+    score,
+    total,
+    passed,
+    unlockedLevel,
+    wrongAnswers,
+    stageLabel,
+    reviewDomain,
+    reviewLevel,
+  } = stageResult;
 
   const actionsEl = document.getElementById('result-actions');
+  const verdictEl = document.getElementById('verdict');
 
-  if (unlockedLevel) {
-    const nextLink = document.createElement('a');
-    nextLink.className = 'button';
-    nextLink.href = `quiz.html?domain=${encodeURIComponent(domain)}&level=${encodeURIComponent(unlockedLevel)}`;
-    nextLink.textContent = `${LEVEL_LABELS[unlockedLevel]}に挑戦する`;
-    actionsEl.appendChild(nextLink);
-  }
+  if (isReview) {
+    // 復習は練習であって実力判定ではないため、合否も合格ラインも出さない。
+    // 学習アドバイスとレベル開放の案内も、ゲートに紐づくものなので出さない。
+    document.getElementById('stage-label').textContent = stageLabel;
+    verdictEl.textContent = '復習おつかれさまでした';
+    verdictEl.className = 'verdict';
+    document.getElementById('score-line').textContent = `${score} / ${total} 問正解`;
 
-  if (!passed) {
     const retryLink = document.createElement('a');
     retryLink.className = 'button';
-    retryLink.href = `quiz.html?domain=${encodeURIComponent(domain)}&level=${encodeURIComponent(level)}`;
-    retryLink.textContent = 'もう一度挑戦する';
+    retryLink.href =
+      reviewDomain === null
+        ? 'quiz.html?mode=review'
+        : `quiz.html?mode=review&domain=${encodeURIComponent(reviewDomain)}&level=${encodeURIComponent(reviewLevel)}`;
+    retryLink.textContent = 'もう一度復習する';
     actionsEl.appendChild(retryLink);
+  } else {
+    document.getElementById('stage-label').textContent =
+      `${domainLabel} / ${LEVEL_LABELS[level]}`;
+
+    verdictEl.textContent = passed ? '合格！' : '不合格';
+    verdictEl.className = passed ? 'verdict passed' : 'verdict failed';
+
+    document.getElementById('score-line').textContent =
+      `${score} / ${total} 問正解（合格ラインは ${PASSING_SCORE} 問）`;
+
+    if (unlockedLevel) {
+      const unlockNoticeEl = document.getElementById('unlock-notice');
+      unlockNoticeEl.textContent = `${LEVEL_LABELS[unlockedLevel]}が開放されました！`;
+      unlockNoticeEl.style.display = 'block';
+
+      const nextLink = document.createElement('a');
+      nextLink.className = 'button';
+      nextLink.href = `quiz.html?domain=${encodeURIComponent(domain)}&level=${encodeURIComponent(unlockedLevel)}`;
+      nextLink.textContent = `${LEVEL_LABELS[unlockedLevel]}に挑戦する`;
+      actionsEl.appendChild(nextLink);
+    }
+
+    if (!passed) {
+      const retryLink = document.createElement('a');
+      retryLink.className = 'button';
+      retryLink.href = `quiz.html?domain=${encodeURIComponent(domain)}&level=${encodeURIComponent(level)}`;
+      retryLink.textContent = 'もう一度挑戦する';
+      actionsEl.appendChild(retryLink);
+
+      // 不合格のときだけ、そのレベルの学習アドバイスを示す。
+      document.getElementById('advice-card').style.display = 'block';
+      document.getElementById('advice-text').textContent = getStudyAdvice(domain, level);
+    }
   }
 
   const dashboardLink = document.createElement('a');
@@ -55,12 +88,6 @@ if (!stageResult) {
   dashboardLink.href = 'index.html';
   dashboardLink.textContent = 'ダッシュボードに戻る';
   actionsEl.appendChild(dashboardLink);
-
-  // 不合格のときだけ、そのレベルの学習アドバイスを示す。
-  if (!passed) {
-    document.getElementById('advice-card').style.display = 'block';
-    document.getElementById('advice-text').textContent = getStudyAdvice(domain, level);
-  }
 
   const wrongAnswersEl = document.getElementById('wrong-answers');
 
