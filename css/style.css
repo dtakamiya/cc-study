@@ -233,6 +233,13 @@ h2 {
   .no-print {
     display: none !important;
   }
+  .stage-badge {
+    background: #fbeaea;
+    border-color: #d98a8a;
+    color: #a33;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
   body {
     background: #fff;
   }
@@ -263,16 +270,23 @@ h2 {
 }
 
 .stage-cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.stage-cell-main {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.2rem;
   padding: 0.7rem 0.3rem;
-  border: 1px solid #d0d0d0;
-  border-radius: 6px;
   text-decoration: none;
   color: inherit;
-  text-align: center;
+  border-radius: 5px;
 }
 
 .stage-cell.cleared {
@@ -288,12 +302,36 @@ h2 {
 .stage-cell.locked {
   background: #f2f2f2;
   color: #999;
+}
+
+.stage-cell.locked .stage-cell-main {
   cursor: not-allowed;
 }
 
-a.stage-cell:hover {
+.stage-cell:has(a.stage-cell-main:hover) {
   border-width: 2px;
+}
+
+.stage-cell:has(a.stage-cell-main:hover) .stage-cell-main {
   padding: calc(0.7rem - 1px) calc(0.3rem - 1px);
+}
+
+/* 誤答バッジはセル本体とは別のリンク。色だけに頼らず ⚠ と数字で示す。 */
+.stage-badge {
+  display: block;
+  margin: 0 0.3rem 0.4rem;
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+  background: #fbeaea;
+  border: 1px solid #d98a8a;
+  color: #a33;
+  font-size: 0.75rem;
+  text-decoration: none;
+  line-height: 1.4;
+}
+
+.stage-badge:hover {
+  background: #f6d8d8;
 }
 
 .stage-mark {
