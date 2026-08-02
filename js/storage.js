@@ -1,5 +1,5 @@
 const PROGRESS_KEY = 'cc-diagnosis-progress';
-export const STAGE_SESSION_KEY = 'cc-diagnosis-stage-result';
+const STAGE_SESSION_KEY = 'cc-diagnosis-stage-result';
 
 function readJson(storage, key) {
   try {
