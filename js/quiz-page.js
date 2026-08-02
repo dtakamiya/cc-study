@@ -7,6 +7,7 @@ const DOMAIN_FILES = [
   'data/questions/feature-usage.json',
   'data/questions/prompt-design.json',
   'data/questions/security-permissions.json',
+  'data/questions/token-efficiency.json',
 ];
 
 const COUNT_PER_LEVEL = { beginner: 3, intermediate: 3, advanced: 2, expert: 2 };

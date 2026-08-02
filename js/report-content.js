@@ -25,6 +25,12 @@ const SUGGESTIONS = {
     advanced: 'hooksを使った危険操作の自動検知・ブロックの仕組みや、MCPサーバー導入時のリスク評価を実践しましょう。',
     expert: '組織全体への権限ポリシーの展開や、CI/CDでの最小権限設計など、チーム・組織レベルの安全設計に取り組みましょう。',
   },
+  'token-efficiency': {
+    beginner: '`/clear`と`/compact`の違いを理解し、無関係なタスクに切り替える際は`/clear`で会話をリセットする習慣をつけましょう。',
+    intermediate: 'プロンプトキャッシングの仕組みを理解し、`/model`でタスクに応じてSonnet/Opus/Haikuを使い分けてみましょう。',
+    advanced: 'キャッシュのTTLやMCPツールの遅延ロードの仕組みを理解し、hookやCLAUDE.mdの設計でcontextを削減する工夫をしてみましょう。',
+    expert: '`/usage`のブレークダウンを活用して使用量の内訳を把握し、組織のスペンド管理やeffortレベルの調整によるコスト最適化に取り組みましょう。',
+  },
 };
 
 const FALLBACK_SUGGESTION = '基礎から着実に復習し、公式ドキュメントで該当領域の機能を確認してみましょう。';
