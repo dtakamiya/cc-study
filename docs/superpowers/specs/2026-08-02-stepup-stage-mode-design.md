@@ -164,7 +164,7 @@ recordAttempt(progress, domain, level, score)  // 純関数。新しい進捗オ
 saveProgress(progress)
 getStageStatus(progress, domain, level)        // 'cleared' | 'available' | 'locked'
 isPassed(score)                                // score >= 8
-buildDashboard(progress, domains)              // 全20ステージの状態一覧を返す
+buildDashboard(progress)                       // 全20ステージの状態一覧を返す
 ```
 
 `recordAttempt` を純関数にすることで、テストを保存機構から切り離す。
