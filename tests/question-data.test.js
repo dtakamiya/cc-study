@@ -6,7 +6,7 @@ import path from 'node:path';
 
 const QUESTIONS_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'data', 'questions');
 const REQUIRED_LEVELS = ['beginner', 'intermediate', 'advanced', 'expert'];
-const MIN_QUESTIONS_PER_LEVEL = 4;
+const MIN_QUESTIONS_PER_LEVEL = 10;
 
 function loadAllDomainData() {
   return readdirSync(QUESTIONS_DIR)
