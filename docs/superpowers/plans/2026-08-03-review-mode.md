@@ -30,12 +30,13 @@
 **新規作成:**
 
 - `js/review.js` — 誤答履歴の純粋関数。`REVIEW_VERSION` / `REVIEW_QUESTION_LIMIT` / `createEmptyReview` / `normalizeReview` / `recordAnswers` / `selectReviewQuestions` / `countUnreviewedByStage` / `countUnreviewedTotal`
-- `js/quiz-modes.js` — 出題モードの差分。`parseQuizMode` / `loadNormalQuestions` / `loadReviewQuestions` / `buildReviewStageLabel`
+- `js/quiz-modes.js` — 出題モードの差分。`parseQuizMode` / `buildStageLabel` / `fetchDomainQuestions` / `loadQuestionsForTarget`
 - `tests/review.test.js` — `js/review.js` のテスト
 - `tests/quiz-modes.test.js` — `js/quiz-modes.js` のテスト
 
 **変更:**
 
+- `js/quiz-engine.js` — `shuffleChoices` を export する（実装は変更しない）
 - `js/storage.js` — `saveReviewRaw` / `loadReviewRaw` を追加（既存関数は変更しない）
 - `js/quiz-page.js` — モード分岐。通常モードでも誤答履歴を記録する
 - `js/top-page.js` — ステージセルの構造変更、バッジ、全体復習ボタン
@@ -845,10 +846,12 @@ git commit -m "feat: 誤答履歴の保存・読み込みを storage に追加"
 
 **Files:**
 - Create: `js/quiz-modes.js`
+- Modify: `js/quiz-engine.js:10`（`shuffleChoices` に `export` を付けるだけ。実装は変更しない）
 - Test: `tests/quiz-modes.test.js`
 
 **Interfaces:**
-- Consumes: `DOMAINS` / `DOMAIN_LABELS` / `QUESTIONS_PER_STAGE` from `js/progress.js`、`LEVELS` / `LEVEL_LABELS` from `js/level-judge.js`、`selectQuestions` from `js/quiz-engine.js`、`selectReviewQuestions` from `js/review.js`
+- Consumes: `DOMAINS` / `DOMAIN_LABELS` / `QUESTIONS_PER_STAGE` from `js/progress.js`、`LEVELS` / `LEVEL_LABELS` from `js/level-judge.js`、`selectQuestions` / `shuffleChoices` from `js/quiz-engine.js`、`selectReviewQuestions` from `js/review.js`
+- Produces: `js/quiz-engine.js` が `shuffleChoices(question, rng)` を export するようになる
 - Produces:
   - `parseQuizMode(search: string): { mode: 'normal', domain: string, level: string } | { mode: 'review', domain: string | null, level: string | null } | null`
     - `search`: `window.location.search` の文字列（`'?mode=review&domain=...'`）
@@ -876,7 +879,20 @@ git commit -m "feat: 誤答履歴の保存・読み込みを storage に追加"
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { parseQuizMode, buildStageLabel, fetchDomainQuestions, loadQuestionsForTarget } from '../js/quiz-modes.js';
+import { shuffleChoices } from '../js/quiz-engine.js';
 import { REVIEW_VERSION } from '../js/review.js';
+
+// 選択肢シャッフルは通常ステージと復習で同じ規則である必要があるため、
+// quiz-engine の実装を共有する。ここが独自実装に戻ると規則が二重管理になる。
+test('quiz-engine の shuffleChoices が共有されている', () => {
+  assert.equal(typeof shuffleChoices, 'function');
+  const shuffled = shuffleChoices(
+    { id: 'x', choices: ['A', 'B', 'C', 'D'], correctIndex: 2 },
+    () => 0
+  );
+  assert.equal(shuffled.choices.length, 4);
+  assert.equal(shuffled.choices[shuffled.correctIndex], 'C');
+});
 
 test('parseQuizMode は mode 未指定を通常モードとして扱う', () => {
   assert.deepEqual(parseQuizMode('?domain=basic-operations&level=beginner'), {
@@ -1075,14 +1091,25 @@ test('復習モードは対象が 0 問なら空配列を返す（例外にし�
 Run: `node --test tests/quiz-modes.test.js`
 Expected: FAIL（`Cannot find module '../js/quiz-modes.js'`）
 
-- [ ] **Step 3: 最小の実装を書く**
+- [ ] **Step 3a: quiz-engine.js の shuffleChoices を export する**
+
+`js/quiz-engine.js` の 10 行目を以下に変更する。関数の中身は一切変えない。
+
+```javascript
+export function shuffleChoices(question, rng) {
+```
+
+選択肢シャッフルの規則は通常ステージと復習で同一である必要があるため（spec:
+「選択肢シャッフル・出題順シャッフルは通常ステージと同じ」）、実装は 1 つに保つ。
+
+- [ ] **Step 3b: 最小の実装を書く**
 
 `js/quiz-modes.js` を新規作成する。
 
 ```javascript
 import { DOMAINS, DOMAIN_LABELS, QUESTIONS_PER_STAGE } from './progress.js';
 import { LEVELS, LEVEL_LABELS } from './level-judge.js';
-import { selectQuestions } from './quiz-engine.js';
+import { selectQuestions, shuffleChoices } from './quiz-engine.js';
 import { selectReviewQuestions } from './review.js';
 
 // URLの解釈だけを担う。不正な組み合わせはすべてnullにし、
@@ -1126,19 +1153,6 @@ export async function fetchDomainQuestions(domain, fetchImpl) {
   if (!response.ok) throw new Error(`Failed to load ${response.url}`);
   const domainData = await response.json();
   return domainData.questions.map(question => ({ ...question, domain }));
-}
-
-function shuffleChoices(question, rng) {
-  const indices = question.choices.map((_, i) => i);
-  for (let i = indices.length - 1; i > 0; i--) {
-    const j = Math.floor(rng() * (i + 1));
-    [indices[i], indices[j]] = [indices[j], indices[i]];
-  }
-  return {
-    ...question,
-    choices: indices.map(i => question.choices[i]),
-    correctIndex: indices.indexOf(question.correctIndex),
-  };
 }
 
 async function loadReviewPool(target, fetchImpl) {
@@ -1188,7 +1202,7 @@ Expected: PASS
 - [ ] **Step 6: コミット**
 
 ```bash
-git add js/quiz-modes.js tests/quiz-modes.test.js
+git add js/quiz-engine.js js/quiz-modes.js tests/quiz-modes.test.js
 git commit -m "feat: 出題モードの差分を quiz-modes に切り出す"
 ```
 
