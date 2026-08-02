@@ -77,3 +77,58 @@ export function recordAnswers(review, questions, answers, now = new Date(), fall
 
   return { ...review, items };
 }
+
+function shuffle(array, rng) {
+  const result = array.slice();
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
+function isUnreviewed(entry) {
+  return entry.lastResult === 'wrong';
+}
+
+// 出題対象は「未復習の誤答」かつ「実在する問題」。
+// 問題が削除・ID変更されると孤児エントリが残るため、実物の側で照合する。
+// 絞り込みも履歴ではなく問題データのdomain/levelで行い、
+// 問題側のレベルが変わっても現物に従う。
+export function selectReviewQuestions(review, allQuestions, filter = {}, rng = Math.random) {
+  const targets = allQuestions.filter(question => {
+    const entry = review.items[question.id];
+    if (!entry || !isUnreviewed(entry)) return false;
+    if (filter.domain && question.domain !== filter.domain) return false;
+    if (filter.level && question.level !== filter.level) return false;
+    return true;
+  });
+
+  return shuffle(targets, rng).slice(0, REVIEW_QUESTION_LIMIT);
+}
+
+// バッジのためにdata/questions/*.jsonを読ませない。
+// エントリ自身がdomain/levelを持つのはこのため。
+export function countUnreviewedByStage(review) {
+  const counts = {};
+  for (const domain of DOMAINS) {
+    counts[domain] = {};
+    for (const level of LEVELS) {
+      counts[domain][level] = 0;
+    }
+  }
+
+  for (const entry of Object.values(review.items)) {
+    if (!isUnreviewed(entry)) continue;
+    // normalizeReview を通していれば必ず既知のdomain/levelだが、
+    // 素の値を渡された場合に落ちないよう存在を確かめる。
+    if (counts[entry.domain]?.[entry.level] === undefined) continue;
+    counts[entry.domain][entry.level] += 1;
+  }
+
+  return counts;
+}
+
+export function countUnreviewedTotal(review) {
+  return Object.values(review.items).filter(isUnreviewed).length;
+}

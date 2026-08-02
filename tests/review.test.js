@@ -6,6 +6,9 @@ import {
   createEmptyReview,
   normalizeReview,
   recordAnswers,
+  selectReviewQuestions,
+  countUnreviewedByStage,
+  countUnreviewedTotal,
 } from '../js/review.js';
 
 function entry(overrides = {}) {
@@ -179,4 +182,136 @@ test('recordAnswers は入力の review を書き換えない', () => {
 test('recordAnswers の結果は normalizeReview を通しても変わらない', () => {
   const result = recordAnswers(createEmptyReview(), [question('security-046')], { 'security-046': 0 }, NOW);
   assert.deepEqual(normalizeReview(result), result);
+});
+
+// rngを固定して抽出結果を決定的にする
+function fixedRng() {
+  return 0;
+}
+
+function pool(...specs) {
+  return specs.map(([id, domain, level]) => ({
+    id,
+    domain,
+    level,
+    question: `${id} の問題文`,
+    choices: ['A', 'B', 'C', 'D'],
+    correctIndex: 1,
+    explanation: `${id} の解説`,
+  }));
+}
+
+function reviewWith(items) {
+  return { version: REVIEW_VERSION, items };
+}
+
+test('selectReviewQuestions は lastResult が wrong の問題だけを返す', () => {
+  const review = reviewWith({
+    'security-046': entry(),
+    'security-047': entry({ lastResult: 'correct' }),
+  });
+  const questions = pool(
+    ['security-046', 'security-permissions', 'advanced'],
+    ['security-047', 'security-permissions', 'advanced']
+  );
+  const selected = selectReviewQuestions(review, questions, {}, fixedRng);
+  assert.deepEqual(selected.map(q => q.id), ['security-046']);
+});
+
+test('selectReviewQuestions は domain と level で絞り込む', () => {
+  const review = reviewWith({
+    'security-046': entry(),
+    'security-010': entry({ level: 'beginner' }),
+    'basic-001': entry({ domain: 'basic-operations', level: 'advanced' }),
+  });
+  const questions = pool(
+    ['security-046', 'security-permissions', 'advanced'],
+    ['security-010', 'security-permissions', 'beginner'],
+    ['basic-001', 'basic-operations', 'advanced']
+  );
+
+  assert.deepEqual(
+    selectReviewQuestions(review, questions, { domain: 'security-permissions', level: 'advanced' }, fixedRng)
+      .map(q => q.id),
+    ['security-046']
+  );
+  assert.deepEqual(
+    selectReviewQuestions(review, questions, {}, fixedRng).map(q => q.id).sort(),
+    ['basic-001', 'security-010', 'security-046']
+  );
+});
+
+test('selectReviewQuestions は実在しない問題IDを除外する', () => {
+  const review = reviewWith({
+    'security-046': entry(),
+    'deleted-999': entry(),
+  });
+  const questions = pool(['security-046', 'security-permissions', 'advanced']);
+  const selected = selectReviewQuestions(review, questions, {}, fixedRng);
+  assert.deepEqual(selected.map(q => q.id), ['security-046']);
+});
+
+test('selectReviewQuestions は 20 問を上限にする', () => {
+  const items = {};
+  const specs = [];
+  for (let i = 0; i < 25; i++) {
+    const id = `security-${String(i).padStart(3, '0')}`;
+    items[id] = entry();
+    specs.push([id, 'security-permissions', 'advanced']);
+  }
+  const selected = selectReviewQuestions(reviewWith(items), pool(...specs), {}, fixedRng);
+  assert.equal(selected.length, REVIEW_QUESTION_LIMIT);
+  assert.equal(new Set(selected.map(q => q.id)).size, REVIEW_QUESTION_LIMIT);
+});
+
+test('selectReviewQuestions は対象が無ければ空配列を返す', () => {
+  assert.deepEqual(selectReviewQuestions(createEmptyReview(), pool(['security-046', 'security-permissions', 'advanced']), {}, fixedRng), []);
+});
+
+test('selectReviewQuestions は履歴の domain / level ではなく問題データ側で絞る', () => {
+  // 問題データ側でレベルが変わった場合、実物のレベルを正とする
+  const review = reviewWith({ 'security-046': entry({ level: 'advanced' }) });
+  const questions = pool(['security-046', 'security-permissions', 'expert']);
+  assert.deepEqual(
+    selectReviewQuestions(review, questions, { domain: 'security-permissions', level: 'expert' }, fixedRng)
+      .map(q => q.id),
+    ['security-046']
+  );
+});
+
+test('countUnreviewedByStage は全ステージのキーを持ち、該当なしは 0', () => {
+  const counts = countUnreviewedByStage(createEmptyReview());
+  assert.equal(counts['security-permissions']['advanced'], 0);
+  assert.equal(counts['basic-operations']['beginner'], 0);
+  assert.equal(Object.keys(counts).length, 5);
+  assert.equal(Object.keys(counts['basic-operations']).length, 4);
+});
+
+test('countUnreviewedByStage は wrong のエントリだけをステージ別に数える', () => {
+  const review = reviewWith({
+    'security-046': entry(),
+    'security-047': entry(),
+    'security-048': entry({ lastResult: 'correct' }),
+    'basic-001': entry({ domain: 'basic-operations', level: 'beginner' }),
+  });
+  const counts = countUnreviewedByStage(review);
+  assert.equal(counts['security-permissions']['advanced'], 2);
+  assert.equal(counts['basic-operations']['beginner'], 1);
+  assert.equal(counts['basic-operations']['advanced'], 0);
+});
+
+test('countUnreviewedTotal はステージ別集計の合計と一致する', () => {
+  const review = reviewWith({
+    'security-046': entry(),
+    'security-047': entry(),
+    'security-048': entry({ lastResult: 'correct' }),
+    'basic-001': entry({ domain: 'basic-operations', level: 'beginner' }),
+  });
+  assert.equal(countUnreviewedTotal(review), 3);
+
+  const counts = countUnreviewedByStage(review);
+  const sum = Object.values(counts)
+    .flatMap(levels => Object.values(levels))
+    .reduce((acc, n) => acc + n, 0);
+  assert.equal(sum, countUnreviewedTotal(review));
 });
