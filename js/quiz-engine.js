@@ -7,7 +7,7 @@ function shuffle(array, rng) {
   return result;
 }
 
-function shuffleChoices(question, rng) {
+export function shuffleChoices(question, rng) {
   const indices = question.choices.map((_, i) => i);
   const shuffledIndices = shuffle(indices, rng);
   const newChoices = shuffledIndices.map(i => question.choices[i]);
