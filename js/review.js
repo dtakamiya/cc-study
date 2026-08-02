@@ -46,3 +46,34 @@ export function normalizeReview(raw) {
   }
   return normalized;
 }
+
+// 正答のみの問題は記録しない。誤答したことのない問題まで持つと
+// 履歴が全問題分に膨れ、バッジ集計も無駄に重くなる。
+export function recordAnswers(review, questions, answers, now = new Date(), fallbackDomain = null) {
+  const items = { ...review.items };
+  const answeredAt = now.toISOString();
+
+  for (const question of questions) {
+    const domain = question.domain ?? fallbackDomain;
+    // domainが分からないエントリはバッジ集計もステージ別復習もできないため記録しない。
+    if (!DOMAINS.includes(domain) || !LEVELS.includes(question.level)) continue;
+
+    const selectedIndex = Object.prototype.hasOwnProperty.call(answers, question.id)
+      ? answers[question.id]
+      : null;
+    const isCorrect = selectedIndex === question.correctIndex;
+    const previous = items[question.id] ?? null;
+
+    if (isCorrect && previous === null) continue;
+
+    items[question.id] = {
+      domain,
+      level: question.level,
+      wrongCount: (previous?.wrongCount ?? 0) + (isCorrect ? 0 : 1),
+      lastResult: isCorrect ? 'correct' : 'wrong',
+      lastAnsweredAt: answeredAt,
+    };
+  }
+
+  return { ...review, items };
+}

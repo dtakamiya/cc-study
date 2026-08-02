@@ -5,6 +5,7 @@ import {
   REVIEW_QUESTION_LIMIT,
   createEmptyReview,
   normalizeReview,
+  recordAnswers,
 } from '../js/review.js';
 
 function entry(overrides = {}) {
@@ -87,4 +88,95 @@ test('normalizeReview は入力を書き換えない', () => {
   const snapshot = JSON.parse(JSON.stringify(raw));
   normalizeReview(raw);
   assert.deepEqual(raw, snapshot);
+});
+
+const NOW = new Date('2026-08-03T12:00:00.000Z');
+
+function question(id, overrides = {}) {
+  return {
+    id,
+    domain: 'security-permissions',
+    level: 'advanced',
+    correctIndex: 1,
+    ...overrides,
+  };
+}
+
+test('recordAnswers は誤答した問題のエントリを作る', () => {
+  const result = recordAnswers(createEmptyReview(), [question('security-046')], { 'security-046': 0 }, NOW);
+  assert.deepEqual(result.items['security-046'], {
+    domain: 'security-permissions',
+    level: 'advanced',
+    wrongCount: 1,
+    lastResult: 'wrong',
+    lastAnsweredAt: '2026-08-03T12:00:00.000Z',
+  });
+});
+
+test('recordAnswers は誤答を繰り返すと wrongCount が増える', () => {
+  const first = recordAnswers(createEmptyReview(), [question('security-046')], { 'security-046': 0 }, NOW);
+  const second = recordAnswers(first, [question('security-046')], { 'security-046': 2 }, NOW);
+  assert.equal(second.items['security-046'].wrongCount, 2);
+  assert.equal(second.items['security-046'].lastResult, 'wrong');
+});
+
+test('recordAnswers は既存エントリの正解で lastResult を correct にする（消さない）', () => {
+  const wrong = recordAnswers(createEmptyReview(), [question('security-046')], { 'security-046': 0 }, NOW);
+  const correct = recordAnswers(wrong, [question('security-046')], { 'security-046': 1 }, NOW);
+  assert.equal(correct.items['security-046'].lastResult, 'correct');
+  assert.equal(correct.items['security-046'].wrongCount, 1);
+});
+
+test('recordAnswers は未登録の問題の正解を記録しない', () => {
+  const result = recordAnswers(createEmptyReview(), [question('security-046')], { 'security-046': 1 }, NOW);
+  assert.deepEqual(result.items, {});
+});
+
+test('recordAnswers は未解答（answersに無い）を誤答として扱う', () => {
+  const result = recordAnswers(createEmptyReview(), [question('security-046')], {}, NOW);
+  assert.equal(result.items['security-046'].lastResult, 'wrong');
+  assert.equal(result.items['security-046'].wrongCount, 1);
+});
+
+test('recordAnswers は複数問をまとめて処理する', () => {
+  const questions = [
+    question('security-046'),
+    question('security-047'),
+    question('basic-001', { domain: 'basic-operations', level: 'beginner' }),
+  ];
+  const answers = { 'security-046': 0, 'security-047': 1, 'basic-001': 3 };
+  const result = recordAnswers(createEmptyReview(), questions, answers, NOW);
+  assert.deepEqual(Object.keys(result.items).sort(), ['basic-001', 'security-046']);
+  assert.equal(result.items['basic-001'].domain, 'basic-operations');
+  assert.equal(result.items['basic-001'].level, 'beginner');
+});
+
+test('recordAnswers は domain が無い問題に fallbackDomain を使う', () => {
+  const questions = [{ id: 'security-046', level: 'advanced', correctIndex: 1 }];
+  const result = recordAnswers(
+    createEmptyReview(),
+    questions,
+    { 'security-046': 0 },
+    NOW,
+    'security-permissions'
+  );
+  assert.equal(result.items['security-046'].domain, 'security-permissions');
+});
+
+test('recordAnswers は domain も fallbackDomain も無い問題を記録しない', () => {
+  const questions = [{ id: 'security-046', level: 'advanced', correctIndex: 1 }];
+  const result = recordAnswers(createEmptyReview(), questions, { 'security-046': 0 }, NOW);
+  assert.deepEqual(result.items, {});
+});
+
+test('recordAnswers は入力の review を書き換えない', () => {
+  const before = recordAnswers(createEmptyReview(), [question('security-046')], { 'security-046': 0 }, NOW);
+  const snapshot = JSON.parse(JSON.stringify(before));
+  recordAnswers(before, [question('security-046')], { 'security-046': 0 }, NOW);
+  assert.deepEqual(before, snapshot);
+});
+
+test('recordAnswers の結果は normalizeReview を通しても変わらない', () => {
+  const result = recordAnswers(createEmptyReview(), [question('security-046')], { 'security-046': 0 }, NOW);
+  assert.deepEqual(normalizeReview(result), result);
 });
