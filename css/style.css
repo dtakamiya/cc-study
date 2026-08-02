@@ -339,3 +339,27 @@ a.stage-cell:hover {
     font-size: 0.7rem;
   }
 }
+
+/* ===== ステージ結果 ===== */
+
+.verdict.passed {
+  color: #2e7d32;
+}
+
+.verdict.failed {
+  color: #c62828;
+}
+
+.stage-score-line {
+  font-size: 1.1rem;
+  margin: 0.5rem 0;
+}
+
+.unlock-notice {
+  padding: 0.7rem 1rem;
+  border-radius: 6px;
+  background: #eaf7ee;
+  border: 1px solid #7bc48a;
+  color: #2e7d32;
+  font-weight: bold;
+}

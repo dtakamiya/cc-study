@@ -1,5 +1,3 @@
-import { LEVEL_LABELS } from './level-judge.js';
-
 const SUGGESTIONS = {
   'basic-operations': {
     beginner: '基本コマンド（起動、/clear、Ctrl+Cでの中断など）を実際に手を動かして繰り返し使い、CLI操作に慣れましょう。',
@@ -35,12 +33,8 @@ const SUGGESTIONS = {
 
 const FALLBACK_SUGGESTION = '基礎から着実に復習し、公式ドキュメントで該当領域の機能を確認してみましょう。';
 
-export function getImprovementSuggestion(domain, level) {
+export function getStudyAdvice(domain, level) {
   const domainSuggestions = SUGGESTIONS[domain];
   if (!domainSuggestions) return FALLBACK_SUGGESTION;
   return domainSuggestions[level] || FALLBACK_SUGGESTION;
-}
-
-export function getLevelLabel(level) {
-  return LEVEL_LABELS[level] || level;
 }
