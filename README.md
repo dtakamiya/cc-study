@@ -75,7 +75,12 @@ Claude Codeは頻繁に機能追加・仕様変更が行われるため、既存
 ### 公式ドキュメント（最優先・一次情報）
 
 - [Claude Code Docs](https://code.claude.com/docs) — CLIオプション、スラッシュコマンド、hooks、permission-modes、sandbox、MCP、subagents、skillsなど機能仕様の一次情報源。本問題集の`security-permissions`・`feature-usage`の詳細設問の多くはここに基づく
-- [Anthropic Engineering Blog](https://www.anthropic.com/engineering) — 「How we built Claude Code auto mode」「How we contain Claude across products」など、設計思想・安全機構の背景解説
+- [Anthropic Engineering Blog](https://www.anthropic.com/engineering) — 設計思想・安全機構の背景解説。公式ドキュメントが「何をするか」を書くのに対し、ブログは「なぜそう設計したか」を説明しており、上級・エキスパート級の設問の土台として有用。特に以下の記事を出典としている
+  - [How we built Claude Code auto mode](https://www.anthropic.com/engineering/claude-code-auto-mode) — auto modeの二層防御、transcript classifierが会話テキストとツール結果を入力から除外する理由、検知対象の4分類、deny-and-continueの挙動（`security-046`〜`security-051`）
+  - [Beyond permission prompts: making Claude Code more secure and autonomous](https://www.anthropic.com/engineering/claude-code-sandboxing) — 承認疲れ（approval fatigue）という逆説、ファイルシステム分離とネットワーク分離の両方が必要な理由（`feature-048`）
+  - [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) — コンテキストエンジニアリングの定義、attention budgetとcontext rot、just-in-time取得、structured note-taking（`token-046`〜`token-050`）
+  - [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents) / [How we built our multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system) — エージェント設計のパターンとマルチエージェントのコスト特性。ただしResearch製品固有の内容は本問題集のスコープ外
+  - 一部の記事（旧「Claude Code: Best practices for agentic coding」など）は公式ドキュメントへ統合・リダイレクトされているため、リンク先の最終到達地点を確認すること
 - [Claude Platform Docs](https://platform.claude.com/docs) — コンテキストウィンドウ、プロンプトキャッシング、Message Batches APIなどAPI/プラットフォーム側の仕様
 
 ### 公式学習コンテンツ
