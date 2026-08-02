@@ -102,19 +102,19 @@ export function recordAttempt(progress, domain, level, score, now = new Date()) 
 }
 
 export function getStageStatus(progress, domain, level) {
-  const record = getStageRecord(progress, domain, level);
-  if (record?.cleared) return 'cleared';
-
   const levelIndex = LEVELS.indexOf(level);
-  if (levelIndex <= 0) return 'available';
 
-  // 直前のレベルだけでなく、下位のレベルをすべて合格している必要がある。
-  // 保存データは手で書き換えられるため、途中を飛ばした記録があっても
-  // ゲートが崩れないようにする。
+  // 下位レベルの検査を先に行う。保存データは手で書き換えられるため、
+  // 自身のcleared記録を信じる前に前提条件の充足を確かめる。
+  // そうしないと、偽造したcleared記録だけで合格表示・挑戦が通ってしまう。
   for (let i = 0; i < levelIndex; i++) {
     const lowerRecord = getStageRecord(progress, domain, LEVELS[i]);
     if (!lowerRecord?.cleared) return 'locked';
   }
+
+  const record = getStageRecord(progress, domain, level);
+  if (record?.cleared) return 'cleared';
+
   return 'available';
 }
 

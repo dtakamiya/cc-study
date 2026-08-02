@@ -79,8 +79,11 @@ overallProgressEl.textContent = `合格したステージ: ${clearedCount} / ${t
 // ゲート方式では進捗の永続性が体験の前提になるため、黙って失わせない。
 function canPersist() {
   const probeKey = 'cc-diagnosis-storage-probe';
-  for (const store of [globalThis.localStorage, globalThis.sessionStorage]) {
+  // ストレージはプロパティに触れた時点で例外を投げることがあるため、
+  // 取得もtryの内側に置く。外に出すとここで throw して注記が出せない。
+  for (const name of ['localStorage', 'sessionStorage']) {
     try {
+      const store = globalThis[name];
       store.setItem(probeKey, '1');
       store.removeItem(probeKey);
       return true;

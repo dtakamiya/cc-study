@@ -30,6 +30,29 @@ function showLoadError() {
     '問題データの読み込みに失敗しました。簡易HTTPサーバー経由で開いているか確認してください（例: python3 -m http.server 8000）。';
 }
 
+// 保存に失敗した場合は遷移せず、その場で結果を伝える。
+// 結果画面はsessionStorage経由でデータを受け取るため、
+// 保存できていない状態で遷移すると解答内容が失われる。
+function showSaveFailure(score, total, passed, progressSaved) {
+  progressLabel.textContent = '';
+  choiceListEl.innerHTML = '';
+  answerFeedbackEl.style.display = 'none';
+  nextButton.style.display = 'none';
+
+  questionTextEl.textContent = `${score} / ${total} 問正解（${passed ? '合格' : '不合格'}）`;
+
+  answerExplanationEl.textContent = progressSaved
+    ? 'ブラウザの設定により結果画面へ引き継げませんでした。進捗は保存されています。'
+    : 'ブラウザの設定により進捗を保存できませんでした。この結果は記録されていません。';
+  answerExplanationEl.style.display = 'block';
+
+  const backLink = document.createElement('a');
+  backLink.className = 'button';
+  backLink.href = 'index.html';
+  backLink.textContent = 'ダッシュボードに戻る';
+  choiceListEl.appendChild(backLink);
+}
+
 function renderQuestion(questions, index, onAnswer) {
   const item = questions[index];
   progressLabel.textContent = `問題 ${index + 1} / ${questions.length}`;
@@ -128,7 +151,7 @@ async function main() {
     const wasCleared = getStageStatus(progress, domain, level) === 'cleared';
 
     const updatedProgress = recordAttempt(progress, domain, level, score);
-    saveProgressRaw(updatedProgress);
+    const progressSaved = saveProgressRaw(updatedProgress) !== 'none';
 
     // 今回の合格で新たに開いたレベルだけを案内する。
     // すでに合格済みのステージを再挑戦した場合は、新たな開放はない。
@@ -138,7 +161,7 @@ async function main() {
       if (nextLevel) unlockedLevel = nextLevel;
     }
 
-    saveStageResult({
+    const stageResultSaved = saveStageResult({
       domain,
       domainLabel,
       level,
@@ -149,6 +172,13 @@ async function main() {
       wrongAnswers: collectWrongAnswers(questions, answers, domainLabel),
       completedAt: new Date().toISOString(),
     });
+
+    // 保存できていないまま遷移すると、結果画面が「結果がありません」になり
+    // 10問分の解答が黙って失われる。この場では結果だけでも見せる。
+    if (!stageResultSaved || !progressSaved) {
+      showSaveFailure(score, questions.length, passed, progressSaved);
+      return;
+    }
 
     window.location.href = 'result.html';
   }

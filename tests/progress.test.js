@@ -159,3 +159,27 @@ test('buildDashboard は5領域それぞれに4ステージを返す', () => {
   assert.equal(featureRow.stages[2].status, 'locked');
   assert.equal(featureRow.stages[2].record, null);
 });
+
+test('偽造された cleared 記録は、下位レベルが未合格なら cleared として扱わない', () => {
+  // localStorageは手で書き換えられる。beginnerが未合格のまま
+  // intermediateにcleared:trueを書き込んでも、合格扱いにしてはならない。
+  const forged = normalizeProgress({
+    version: 1,
+    domains: {
+      'basic-operations': {
+        beginner: null,
+        intermediate: {
+          cleared: true,
+          bestScore: 10,
+          attempts: 1,
+          lastAttemptAt: '2026-01-01T00:00:00.000Z',
+        },
+        advanced: null,
+        expert: null,
+      },
+    },
+  });
+
+  assert.equal(getStageStatus(forged, 'basic-operations', 'intermediate'), 'locked');
+  assert.equal(getStageStatus(forged, 'basic-operations', 'advanced'), 'locked');
+});
