@@ -341,9 +341,14 @@ export function getStageStatus(progress, domain, level) {
   const levelIndex = LEVELS.indexOf(level);
   if (levelIndex <= 0) return 'available';
 
-  const previousLevel = LEVELS[levelIndex - 1];
-  const previousRecord = getStageRecord(progress, domain, previousLevel);
-  return previousRecord?.cleared ? 'available' : 'locked';
+  // 直前のレベルだけでなく、下位のレベルをすべて合格している必要がある。
+  // 保存データは手で書き換えられるため、途中を飛ばした記録があっても
+  // ゲートが崩れないようにする。
+  for (let i = 0; i < levelIndex; i++) {
+    const lowerRecord = getStageRecord(progress, domain, LEVELS[i]);
+    if (!lowerRecord?.cleared) return 'locked';
+  }
+  return 'available';
 }
 
 export function buildDashboard(progress) {
