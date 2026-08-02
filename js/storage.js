@@ -1,18 +1,9 @@
-const STORAGE_KEY = 'cc-diagnosis-result';
-const FALLBACK_STORAGE_KEY = 'cc-diagnosis-result-fallback';
+const PROGRESS_KEY = 'cc-diagnosis-progress';
+export const STAGE_SESSION_KEY = 'cc-diagnosis-stage-result';
 
-export function saveResult(resultObject) {
+function readJson(storage, key) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(resultObject));
-    return true;
-  } catch (err) {
-    return false;
-  }
-}
-
-export function loadResult() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = storage.getItem(key);
     if (!raw) return null;
     return JSON.parse(raw);
   } catch (err) {
@@ -20,32 +11,35 @@ export function loadResult() {
   }
 }
 
-export function clearResult() {
+function writeJson(storage, key, value) {
   try {
-    localStorage.removeItem(STORAGE_KEY);
+    storage.setItem(key, JSON.stringify(value));
     return true;
   } catch (err) {
     return false;
   }
 }
 
-// localStorageが利用できない環境（プライベートブラウジング等）向けの
-// その場限りのフォールバック保存先。sessionStorageも失敗しうるため同様に例外安全にする。
-export function saveFallbackResult(resultObject) {
-  try {
-    sessionStorage.setItem(FALLBACK_STORAGE_KEY, JSON.stringify(resultObject));
-    return true;
-  } catch (err) {
-    return false;
-  }
+// 進捗はゲート構造の前提なので、localStorageが使えない環境
+// （プライベートブラウジング等）ではsessionStorageに退避する。
+// どちらも使えない場合は 'none' を返し、呼び出し側が利用者に注記する。
+export function saveProgressRaw(progressObject) {
+  if (writeJson(globalThis.localStorage, PROGRESS_KEY, progressObject)) return 'local';
+  if (writeJson(globalThis.sessionStorage, PROGRESS_KEY, progressObject)) return 'session';
+  return 'none';
 }
 
-export function loadFallbackResult() {
-  try {
-    const raw = sessionStorage.getItem(FALLBACK_STORAGE_KEY);
-    if (!raw) return null;
-    return JSON.parse(raw);
-  } catch (err) {
-    return null;
-  }
+export function loadProgressRaw() {
+  return (
+    readJson(globalThis.localStorage, PROGRESS_KEY) ??
+    readJson(globalThis.sessionStorage, PROGRESS_KEY)
+  );
+}
+
+export function saveStageResult(stageResult) {
+  return writeJson(globalThis.sessionStorage, STAGE_SESSION_KEY, stageResult);
+}
+
+export function loadStageResult() {
+  return readJson(globalThis.sessionStorage, STAGE_SESSION_KEY);
 }
