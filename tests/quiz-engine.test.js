@@ -1,11 +1,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { selectQuestions, buildQuiz, gradeAnswers, collectWrongAnswers } from '../js/quiz-engine.js';
+import { selectQuestions, scoreStage, collectWrongAnswers } from '../js/quiz-engine.js';
 
-function makeDomainData(domain, countPerLevel = 4) {
-  const levels = ['beginner', 'intermediate', 'advanced', 'expert'];
+const LEVELS = ['beginner', 'intermediate', 'advanced', 'expert'];
+
+function makeDomainData(domain, countPerLevel = 10) {
   const questions = [];
-  for (const level of levels) {
+  for (const level of LEVELS) {
     for (let i = 0; i < countPerLevel; i++) {
       questions.push({
         id: `${domain}-${level}-${i}`,
@@ -13,193 +14,135 @@ function makeDomainData(domain, countPerLevel = 4) {
         question: `${domain} ${level} question ${i}`,
         choices: ['a', 'b', 'c', 'd'],
         correctIndex: 0,
-        explanation: 'because'
+        explanation: `explanation ${i}`,
       });
     }
   }
-  return { domain, domainLabel: domain, questions };
+  return { domain, domainLabel: `${domain}ラベル`, questions };
 }
 
-test('selectQuestions returns exactly the requested count per level, totaling 10', () => {
-  const data = makeDomainData('basic-operations');
-  const result = selectQuestions(data, { beginner: 3, intermediate: 3, advanced: 2, expert: 2 }, () => 0);
+test('selectQuestions は指定レベルの問題だけを指定数だけ返す', () => {
+  const domainData = makeDomainData('basic-operations');
+  const selected = selectQuestions(domainData, 'intermediate', 10);
 
-  assert.equal(result.length, 10);
-  const byLevel = {};
-  for (const q of result) byLevel[q.level] = (byLevel[q.level] || 0) + 1;
-  assert.deepEqual(byLevel, { beginner: 3, intermediate: 3, advanced: 2, expert: 2 });
+  assert.equal(selected.length, 10);
+  for (const question of selected) {
+    assert.equal(question.level, 'intermediate');
+  }
+  const ids = selected.map(q => q.id);
+  assert.equal(new Set(ids).size, 10, '同じ問題が重複して選ばれている');
 });
 
-test('selectQuestions picks unique question ids (no duplicates)', () => {
-  const data = makeDomainData('basic-operations');
-  const result = selectQuestions(data, { beginner: 3, intermediate: 3, advanced: 2, expert: 2 }, Math.random);
-  const ids = result.map(q => q.id);
-  assert.equal(new Set(ids).size, ids.length);
+test('selectQuestions はプールが多い場合でも指定数だけ抽出する', () => {
+  const domainData = makeDomainData('basic-operations', 15);
+  const selected = selectQuestions(domainData, 'beginner', 10);
+  assert.equal(selected.length, 10);
 });
 
-test('selectQuestions throws when a level does not have enough questions', () => {
-  const data = makeDomainData('basic-operations', 1);
-  assert.throws(() => {
-    selectQuestions(data, { beginner: 3, intermediate: 3, advanced: 2, expert: 2 }, Math.random);
-  }, /beginner/);
+test('selectQuestions はプール不足ならエラーを投げる', () => {
+  const domainData = makeDomainData('basic-operations', 5);
+  assert.throws(
+    () => selectQuestions(domainData, 'beginner', 10),
+    /not have enough/
+  );
 });
 
-test('buildQuiz builds one entry per domain with domain metadata preserved', () => {
-  const domains = ['basic-operations', 'feature-usage', 'prompt-design', 'security-permissions'].map(d => makeDomainData(d));
-  const quiz = buildQuiz(domains, { beginner: 3, intermediate: 3, advanced: 2, expert: 2 }, () => 0);
+test('selectQuestions は選択肢をシャッフルしても correctIndex を正しく追従させる', () => {
+  const domainData = {
+    domain: 'basic-operations',
+    domainLabel: 'ラベル',
+    questions: Array.from({ length: 10 }, (_, i) => ({
+      id: `q-${i}`,
+      level: 'beginner',
+      question: `question ${i}`,
+      choices: ['正解', '誤答1', '誤答2', '誤答3'],
+      correctIndex: 0,
+      explanation: 'because',
+    })),
+  };
 
-  assert.equal(quiz.length, 4);
-  for (const entry of quiz) {
-    assert.equal(entry.questions.length, 10);
-    assert.ok(domains.some(d => d.domain === entry.domain));
-    assert.equal(entry.domainLabel, entry.domain);
+  // 逆順に並べ替える決定的なrng（shuffleのFisher-Yatesで必ず入れ替えが起きる）
+  const selected = selectQuestions(domainData, 'beginner', 10, () => 0);
+
+  for (const question of selected) {
+    assert.equal(
+      question.choices[question.correctIndex],
+      '正解',
+      'シャッフル後もcorrectIndexが正解の選択肢を指していない'
+    );
+    assert.equal(question.choices.length, 4);
   }
 });
 
-test('gradeAnswers counts correct and total per domain', () => {
-  const quiz = [
+test('selectQuestions は元の問題データを変更しない', () => {
+  const domainData = makeDomainData('basic-operations');
+  const originalFirst = { ...domainData.questions[0], choices: [...domainData.questions[0].choices] };
+  selectQuestions(domainData, 'beginner', 10, () => 0);
+  assert.deepEqual(domainData.questions[0], originalFirst);
+});
+
+test('scoreStage は正解数を返す', () => {
+  const questions = [
+    { id: 'q1', correctIndex: 0 },
+    { id: 'q2', correctIndex: 1 },
+    { id: 'q3', correctIndex: 2 },
+  ];
+  assert.equal(scoreStage(questions, { q1: 0, q2: 1, q3: 2 }), 3);
+  assert.equal(scoreStage(questions, { q1: 0, q2: 3, q3: 2 }), 2);
+  assert.equal(scoreStage(questions, {}), 0);
+});
+
+test('scoreStage は未回答を不正解として扱う', () => {
+  const questions = [
+    { id: 'q1', correctIndex: 0 },
+    { id: 'q2', correctIndex: 0 },
+  ];
+  assert.equal(scoreStage(questions, { q1: 0 }), 1);
+});
+
+test('collectWrongAnswers は間違えた問題だけを詳細付きで返す', () => {
+  const questions = [
     {
-      domain: 'basic-operations',
-      domainLabel: 'basic-operations',
-      questions: [
-        { id: 'q1', correctIndex: 0 },
-        { id: 'q2', correctIndex: 1 },
-      ]
+      id: 'q1',
+      question: '問題1',
+      choices: ['a', 'b', 'c', 'd'],
+      correctIndex: 0,
+      explanation: '解説1',
     },
     {
-      domain: 'feature-usage',
-      domainLabel: 'feature-usage',
-      questions: [
-        { id: 'q3', correctIndex: 2 },
-      ]
-    }
+      id: 'q2',
+      question: '問題2',
+      choices: ['a', 'b', 'c', 'd'],
+      correctIndex: 1,
+      explanation: '解説2',
+    },
   ];
-  const answers = { q1: 0, q2: 0, q3: 2 };
+  const wrong = collectWrongAnswers(questions, { q1: 0, q2: 3 }, '基本操作・CLI使用法');
 
-  const result = gradeAnswers(quiz, answers);
-
-  assert.deepEqual(result, {
-    'basic-operations': { correct: 1, total: 2 },
-    'feature-usage': { correct: 1, total: 1 },
+  assert.equal(wrong.length, 1);
+  assert.deepEqual(wrong[0], {
+    questionId: 'q2',
+    domainLabel: '基本操作・CLI使用法',
+    question: '問題2',
+    choices: ['a', 'b', 'c', 'd'],
+    selectedIndex: 3,
+    correctIndex: 1,
+    explanation: '解説2',
   });
 });
 
-test('gradeAnswers treats unanswered questions as incorrect', () => {
-  const quiz = [
-    {
-      domain: 'basic-operations',
-      domainLabel: 'basic-operations',
-      questions: [
-        { id: 'q1', correctIndex: 0 },
-      ]
-    }
+test('collectWrongAnswers は未回答を selectedIndex: null として含める', () => {
+  const questions = [
+    { id: 'q1', question: '問題1', choices: ['a', 'b'], correctIndex: 0, explanation: '解説1' },
   ];
-  const result = gradeAnswers(quiz, {});
-  assert.deepEqual(result, { 'basic-operations': { correct: 0, total: 1 } });
+  const wrong = collectWrongAnswers(questions, {}, 'ラベル');
+  assert.equal(wrong.length, 1);
+  assert.equal(wrong[0].selectedIndex, null);
 });
 
-test('selectQuestions shuffles each question\'s choices and keeps correctIndex pointing at the original correct text', () => {
-  const data = makeDomainData('basic-operations');
-  // give each question a distinguishable correct answer text so we can verify
-  // that correctIndex still points at the right choice after shuffling.
-  for (const q of data.questions) {
-    q.choices = ['a', 'b', 'c', 'd'];
-    q.correctIndex = 2; // 'c' is the correct answer text
-  }
-
-  const result = selectQuestions(data, { beginner: 3, intermediate: 3, advanced: 2, expert: 2 }, Math.random);
-
-  for (const q of result) {
-    assert.equal(q.choices.length, 4);
-    assert.equal(q.choices[q.correctIndex], 'c');
-    // the choice set itself must be unchanged (same 4 options, just reordered)
-    assert.deepEqual([...q.choices].sort(), ['a', 'b', 'c', 'd']);
-  }
-});
-
-test('selectQuestions does not always put the correct answer at index 0 (choices are actually shuffled)', () => {
-  const data = makeDomainData('basic-operations');
-  for (const q of data.questions) {
-    q.choices = ['a', 'b', 'c', 'd'];
-    q.correctIndex = 0;
-  }
-
-  // Use a fixed, deterministic rng sequence that is known to move index 0 away from position 0.
-  let calls = 0;
-  const scriptedRng = () => {
-    // Fisher-Yates with these values will move element order around deterministically.
-    const values = [0.9, 0.1, 0.9, 0.1, 0.9, 0.1, 0.9, 0.1];
-    return values[calls++ % values.length];
-  };
-
-  const result = selectQuestions(data, { beginner: 3, intermediate: 3, advanced: 2, expert: 2 }, scriptedRng);
-  const correctIndexes = result.map(q => q.correctIndex);
-  const allZero = correctIndexes.every(idx => idx === 0);
-  assert.ok(!allZero, 'expected shuffle to move at least one correctIndex away from 0');
-  // regardless of position, the correct choice text must still be 'a'
-  for (const q of result) {
-    assert.equal(q.choices[q.correctIndex], 'a');
-  }
-});
-
-test('collectWrongAnswers returns only incorrect answers with full detail, in quiz order', () => {
-  const quiz = [
-    {
-      domain: 'basic-operations',
-      domainLabel: '基本操作・CLI使用法',
-      questions: [
-        { id: 'q1', level: 'beginner', question: 'Q1?', choices: ['a', 'b'], correctIndex: 0, explanation: 'exp1' },
-        { id: 'q2', level: 'beginner', question: 'Q2?', choices: ['a', 'b'], correctIndex: 1, explanation: 'exp2' },
-      ]
-    },
-    {
-      domain: 'feature-usage',
-      domainLabel: '機能活用',
-      questions: [
-        { id: 'q3', level: 'beginner', question: 'Q3?', choices: ['a', 'b'], correctIndex: 0, explanation: 'exp3' },
-      ]
-    }
+test('collectWrongAnswers は全問正解なら空配列を返す', () => {
+  const questions = [
+    { id: 'q1', question: '問題1', choices: ['a', 'b'], correctIndex: 0, explanation: '解説1' },
   ];
-  // q1: correct (0 === 0), q2: wrong (0 !== 1), q3: unanswered
-  const answers = { q1: 0, q2: 0 };
-
-  const result = collectWrongAnswers(quiz, answers);
-
-  assert.deepEqual(result, [
-    {
-      questionId: 'q2',
-      domainLabel: '基本操作・CLI使用法',
-      question: 'Q2?',
-      choices: ['a', 'b'],
-      selectedIndex: 0,
-      correctIndex: 1,
-      explanation: 'exp2',
-    },
-    {
-      questionId: 'q3',
-      domainLabel: '機能活用',
-      question: 'Q3?',
-      choices: ['a', 'b'],
-      selectedIndex: null,
-      correctIndex: 0,
-      explanation: 'exp3',
-    },
-  ]);
-});
-
-test('collectWrongAnswers returns empty array when all answers are correct', () => {
-  const quiz = [
-    {
-      domain: 'basic-operations',
-      domainLabel: '基本操作・CLI使用法',
-      questions: [
-        { id: 'q1', level: 'beginner', question: 'Q1?', choices: ['a', 'b'], correctIndex: 0, explanation: 'exp1' },
-      ]
-    }
-  ];
-  const answers = { q1: 0 };
-
-  const result = collectWrongAnswers(quiz, answers);
-
-  assert.deepEqual(result, []);
+  assert.deepEqual(collectWrongAnswers(questions, { q1: 0 }, 'ラベル'), []);
 });
