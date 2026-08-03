@@ -104,11 +104,12 @@ function showAnswerFeedback(item, selectedIndex, isLastQuestion) {
 }
 
 // 誤答履歴の保存はゲートの前提ではないため、失敗しても挑戦の完了を止めない。
-// 保存できない環境では何も残らないという既存の挙動と一貫している。
+// ただし保存できたかどうかは呼び出し側に返す。利用者に伝える文面が
+// 実態と食い違わないようにするため。
 function persistReview(questions, answers, fallbackDomain) {
   const review = normalizeReview(loadReviewRaw());
   const updated = recordAnswers(review, questions, answers, new Date(), fallbackDomain);
-  saveReviewRaw(updated);
+  return saveReviewRaw(updated);
 }
 
 async function main() {
@@ -220,7 +221,9 @@ async function main() {
   function finishReviewStage() {
     const score = scoreStage(questions, answers);
 
-    persistReview(questions, answers, target.domain);
+    // sessionStorageが使えない環境ではlocalStorageも使えないことが多い。
+    // 「誤答履歴は更新されています」と言い切ると嘘になりうるため、実際の結果で分ける。
+    const reviewSaved = persistReview(questions, answers, target.domain);
 
     const stageResultSaved = saveStageResult({
       isReview: true,
@@ -236,7 +239,9 @@ async function main() {
     if (!stageResultSaved) {
       showSaveFailure(
         `${score} / ${questions.length} 問正解`,
-        'ブラウザの設定により結果画面へ引き継げませんでした。誤答履歴は更新されています。'
+        reviewSaved
+          ? 'ブラウザの設定により結果画面へ引き継げませんでした。誤答履歴は更新されています。'
+          : 'ブラウザの設定により結果画面へ引き継げませんでした。誤答履歴も更新できませんでした。'
       );
       return;
     }

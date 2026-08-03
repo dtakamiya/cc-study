@@ -41,7 +41,7 @@
 
 ### 保存先
 
-```
+```text
 localStorage['cc-diagnosis-progress']  … 既存。ゲート判定用。変更なし
 localStorage['cc-diagnosis-review']    … 新規。誤答履歴
 ```
@@ -113,7 +113,7 @@ fetch せずに描画できる。
 
 URL は既存の `quiz.html` を流用する。
 
-```
+```text
 quiz.html?mode=review&domain=security-permissions&level=advanced
 quiz.html?mode=review
 ```
@@ -156,7 +156,7 @@ quiz.html?mode=review
 
 ## ダッシュボードのバッジ
 
-```
+```text
 ┌──────────────┐
 │  ✅   上級    │   ← 既存: マーク / レベル名 / スコア
 │    9/10  ⚠3  │   ← ⚠3 が追加分（クリックで復習へ）
@@ -183,7 +183,7 @@ quiz.html?mode=review
 
 進捗カードの下に配置。未復習誤答が 1 件以上あるときだけ表示する。
 
-```
+```text
 [ すべての誤答を復習（12問） ]
 ```
 
