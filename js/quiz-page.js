@@ -1,15 +1,21 @@
-import { selectQuestions, scoreStage, collectWrongAnswers } from './quiz-engine.js';
+import { scoreStage, collectWrongAnswers } from './quiz-engine.js';
 import {
-  DOMAINS,
   DOMAIN_LABELS,
-  QUESTIONS_PER_STAGE,
   normalizeProgress,
   recordAttempt,
   getStageStatus,
   isPassed,
 } from './progress.js';
-import { loadProgressRaw, saveProgressRaw, saveStageResult } from './storage.js';
+import { normalizeReview, recordAnswers } from './review.js';
+import {
+  loadProgressRaw,
+  saveProgressRaw,
+  saveStageResult,
+  loadReviewRaw,
+  saveReviewRaw,
+} from './storage.js';
 import { LEVELS, LEVEL_LABELS } from './level-judge.js';
+import { parseQuizMode, buildStageLabel, loadQuestionsForTarget } from './quiz-modes.js';
 
 const stageLabelEl = document.getElementById('stage-label');
 const progressLabel = document.getElementById('progress-label');
@@ -33,17 +39,15 @@ function showLoadError() {
 // 保存に失敗した場合は遷移せず、その場で結果を伝える。
 // 結果画面はsessionStorage経由でデータを受け取るため、
 // 保存できていない状態で遷移すると解答内容が失われる。
-function showSaveFailure(score, total, passed, progressSaved) {
+function showSaveFailure(headline, detail) {
   progressLabel.textContent = '';
   choiceListEl.innerHTML = '';
   answerFeedbackEl.style.display = 'none';
   nextButton.style.display = 'none';
 
-  questionTextEl.textContent = `${score} / ${total} 問正解（${passed ? '合格' : '不合格'}）`;
+  questionTextEl.textContent = headline;
 
-  answerExplanationEl.textContent = progressSaved
-    ? 'ブラウザの設定により結果画面へ引き継げませんでした。進捗は保存されています。'
-    : 'ブラウザの設定により進捗を保存できませんでした。この結果は記録されていません。';
+  answerExplanationEl.textContent = detail;
   answerExplanationEl.style.display = 'block';
 
   const backLink = document.createElement('a');
@@ -99,13 +103,20 @@ function showAnswerFeedback(item, selectedIndex, isLastQuestion) {
   nextButton.style.display = 'inline-block';
 }
 
+// 誤答履歴の保存はゲートの前提ではないため、失敗しても挑戦の完了を止めない。
+// ただし保存できたかどうかは呼び出し側に返す。利用者に伝える文面が
+// 実態と食い違わないようにするため。
+function persistReview(questions, answers, fallbackDomain) {
+  const review = normalizeReview(loadReviewRaw());
+  const updated = recordAnswers(review, questions, answers, new Date(), fallbackDomain);
+  return saveReviewRaw(updated);
+}
+
 async function main() {
-  const params = new URLSearchParams(window.location.search);
-  const domain = params.get('domain');
-  const level = params.get('level');
+  const target = parseQuizMode(window.location.search);
 
   // 不正なURLや古いブックマークからの流入はダッシュボードへ戻す。
-  if (!DOMAINS.includes(domain) || !LEVELS.includes(level)) {
+  if (target === null) {
     goToDashboard();
     return;
   }
@@ -114,22 +125,34 @@ async function main() {
 
   // URL直打ちでロック中のステージに入られた場合も戻す。
   // 厳密な防御ではないが、ゲート構造の一貫性を保つ。
-  if (getStageStatus(progress, domain, level) === 'locked') {
+  // 復習はゲートに影響しないため、この検査の対象外。
+  if (
+    target.mode === 'normal' &&
+    getStageStatus(progress, target.domain, target.level) === 'locked'
+  ) {
     goToDashboard();
     return;
   }
 
-  const domainLabel = DOMAIN_LABELS[domain];
-  stageLabelEl.textContent = `${domainLabel} / ${LEVEL_LABELS[level]}`;
+  const stageLabel = buildStageLabel(target);
+  stageLabelEl.textContent = stageLabel;
 
   let questions;
   try {
-    const response = await fetch(`data/questions/${domain}.json`);
-    if (!response.ok) throw new Error(`Failed to load ${response.url}`);
-    const domainData = await response.json();
-    questions = selectQuestions(domainData, level, QUESTIONS_PER_STAGE, Math.random);
+    questions = await loadQuestionsForTarget(
+      target,
+      normalizeReview(loadReviewRaw()),
+      fetch,
+      Math.random
+    );
   } catch (err) {
     showLoadError();
+    return;
+  }
+
+  // 別タブで復習を終えた後やURL直打ちでは、対象が0問になりうる。
+  if (questions.length === 0) {
+    goToDashboard();
     return;
   }
 
@@ -145,13 +168,17 @@ async function main() {
     showAnswerFeedback(questions[currentIndex], choiceIndex, isLastQuestion);
   }
 
-  function finishStage() {
+  function finishNormalStage() {
+    const { domain, level } = target;
+    const domainLabel = DOMAIN_LABELS[domain];
     const score = scoreStage(questions, answers);
     const passed = isPassed(score);
     const wasCleared = getStageStatus(progress, domain, level) === 'cleared';
 
     const updatedProgress = recordAttempt(progress, domain, level, score);
     const progressSaved = saveProgressRaw(updatedProgress) !== 'none';
+
+    persistReview(questions, answers, domain);
 
     // 今回の合格で新たに開いたレベルだけを案内する。
     // すでに合格済みのステージを再挑戦した場合は、新たな開放はない。
@@ -162,6 +189,7 @@ async function main() {
     }
 
     const stageResultSaved = saveStageResult({
+      isReview: false,
       domain,
       domainLabel,
       level,
@@ -176,7 +204,45 @@ async function main() {
     // 保存できていないまま遷移すると、結果画面が「結果がありません」になり
     // 10問分の解答が黙って失われる。この場では結果だけでも見せる。
     if (!stageResultSaved || !progressSaved) {
-      showSaveFailure(score, questions.length, passed, progressSaved);
+      showSaveFailure(
+        `${score} / ${questions.length} 問正解（${passed ? '合格' : '不合格'}）`,
+        progressSaved
+          ? 'ブラウザの設定により結果画面へ引き継げませんでした。進捗は保存されています。'
+          : 'ブラウザの設定により進捗を保存できませんでした。'
+      );
+      return;
+    }
+
+    window.location.href = 'result.html';
+  }
+
+  // 復習は練習であり実力判定ではない。cc-diagnosis-progress には一切触れない。
+  // ここでrecordAttemptを呼ぶと、見たことのある問題で合格でき、ゲートが形骸化する。
+  function finishReviewStage() {
+    const score = scoreStage(questions, answers);
+
+    // sessionStorageが使えない環境ではlocalStorageも使えないことが多い。
+    // 「誤答履歴は更新されています」と言い切ると嘘になりうるため、実際の結果で分ける。
+    const reviewSaved = persistReview(questions, answers, target.domain);
+
+    const stageResultSaved = saveStageResult({
+      isReview: true,
+      stageLabel,
+      reviewDomain: target.domain,
+      reviewLevel: target.level,
+      score,
+      total: questions.length,
+      wrongAnswers: collectWrongAnswers(questions, answers, ''),
+      completedAt: new Date().toISOString(),
+    });
+
+    if (!stageResultSaved) {
+      showSaveFailure(
+        `${score} / ${questions.length} 問正解`,
+        reviewSaved
+          ? 'ブラウザの設定により結果画面へ引き継げませんでした。誤答履歴は更新されています。'
+          : 'ブラウザの設定により結果画面へ引き継げませんでした。誤答履歴も更新できませんでした。'
+      );
       return;
     }
 
@@ -188,8 +254,10 @@ async function main() {
       currentIndex += 1;
       hasAnswered = false;
       renderQuestion(questions, currentIndex, handleAnswer);
+    } else if (target.mode === 'review') {
+      finishReviewStage();
     } else {
-      finishStage();
+      finishNormalStage();
     }
   }
 
