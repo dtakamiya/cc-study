@@ -1,5 +1,7 @@
 # Claude Code ステップアップ問題集
 
+**公開URL**: https://dtakamiya.github.io/cc-study/
+
 Claude Codeの理解を、5領域（基本操作・CLI使用法／機能活用／プロンプト設計・協働作法／安全性・権限管理／
 トークン効率・コスト管理）×4レベル（初級／中級／上級／エキスパート）の全20ステージで段階的に高めるWebアプリです。
 
@@ -64,6 +66,7 @@ node --test
 2. "Build and deployment" の Source を "Deploy from a branch" に設定
 3. Branch を `main`（またはデフォルトブランチ）、フォルダを `/ (root)` に設定して保存
 4. 数分後、`https://<ユーザー名>.github.io/<リポジトリ名>/` で公開される
+   （本リポジトリでは https://dtakamiya.github.io/cc-study/ で公開済み）
 
 ## 問題の追加・修正
 
