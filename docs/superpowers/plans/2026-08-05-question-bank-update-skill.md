@@ -515,11 +515,17 @@ Expected: 5並列ではなく1エージェントのみが起動する（対象�
 
 - [ ] **Step 3: レポートが`docs/superpowers/reports/`配下に保存されることを確認する**
 
+実行前に`docs/superpowers/reports/`の既存ファイル一覧を記録しておく
+（`ls docs/superpowers/reports/ 2>/dev/null > /tmp/reports-before.txt`）。
+既存の同名レポートがあると、単に一覧をgrepするだけでは「今回の実行で
+生成されたか」を判別できないため。
+
 ```bash
 ls docs/superpowers/reports/ 2>/dev/null | grep question-audit
 ```
 
-Expected: `YYYY-MM-DD-question-audit.md`（実行日の日付）というファイルが存在する。
+Expected: `YYYY-MM-DD-question-audit.md`（実行日の日付）というファイルが存在し、
+かつ実行前の一覧（`/tmp/reports-before.txt`）に無かった新規ファイルであること。
 存在しない場合は、SKILL.mdの`audit`モード手順の「保存し、gitにコミットする」ステップが
 サブエージェントの指示に正しく反映されているか確認し、SKILL.mdを修正する。
 
@@ -531,11 +537,17 @@ Expected: `YYYY-MM-DD-question-audit.md`（実行日の日付）というファ�
 
 - [ ] **Step 5: JSONファイルが変更されていないことを確認する**
 
+Step 1実行前の`git status --short data/questions/`が空だったことを前提に
+（実行前にリポジトリがcleanであることを確認しておく）、実行後に再度
+以下を実行し、差分が増えていないことを確認する。
+
 ```bash
 git status --short data/questions/
 ```
 
 Expected: 何も出力されない（`audit`モードはJSONを変更しないため）。
+実行前から既に変更があった場合、この結果だけでは`audit`モード実行による
+変更か元々あった変更かを区別できないため、必ず実行前にcleanな状態から始める。
 
 - [ ] **Step 6: 動作確認で見つかった問題をSKILL.md・referencesに反映し、Commit**
 

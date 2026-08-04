@@ -40,7 +40,7 @@
 | `level` | string | `beginner` / `intermediate` / `advanced` / `expert` のいずれか |
 | `question` | string | 問題文 |
 | `choices` | string[] | 必ず4要素 |
-| `correctIndex` | number | `0`〜`3`。`choices`の正解のインデックス |
+| `correctIndex` | integer | `0`・`1`・`2`・`3`のいずれか（整数）。`choices`の正解のインデックス |
 | `explanation` | string | 正解の根拠を説明する解説文 |
 
 ## idのドメインprefix規約
@@ -62,6 +62,6 @@
 
 - 各ドメイン×各レベルの組み合わせで、最低10問が必要
 - 各ドメイン内で`id`が一意であること（かつ全ドメイン間でも一意）
-- `correctIndex`は`choices`の範囲内（`0`以上`choices.length`未満）であること
+- `correctIndex`は`choices`の範囲内（`0`以上`choices.length`未満）の整数であること
 
 新規問題を追加する際、この制約を壊す変更（例えば既存問題の削除）は行わない。

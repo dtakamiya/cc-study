@@ -11,7 +11,7 @@
 - 必須フィールド（`id`, `level`, `question`, `choices`, `correctIndex`, `explanation`）の欠落・空文字
 - `choices`の要素数が4でない
 - `choices`内の重複
-- `correctIndex`が`0`〜`3`の範囲外
+- `correctIndex`が`0`〜`3`の範囲外、または整数でない
 - `level`が既定の4値（`beginner`/`intermediate`/`advanced`/`expert`）以外
 - 各ドメイン×各レベルの問題数が10未満（`tests/question-data.test.js`の制約）
 
