@@ -638,6 +638,30 @@
       ],
       "correctIndex": 2,
       "explanation": "`/btw`はサブエージェントの逆と説明されています。`/btw`は現在の会話全体を参照できる一方でツールを持たず（ファイル読み取りやコマンド実行はできない）、既にコンテキストにある情報だけから答えます。逆にサブエージェントはツールを使えますが空のコンテキストから始まります。既知の内容を尋ねるなら`/btw`、新しく調べさせるならサブエージェントを使い分けます。なお`/btw`の質問と回答は会話履歴に入らず、破棄可能なオーバーレイに表示されます。"
+    },
+    {
+      "id": "feature-050",
+      "level": "intermediate",
+      "question": "Claude Codeのステータスライン（statusline）を有効化する方法として正しいものはどれですか？",
+      "choices": ["`.claude/statusline.json`という専用ファイルを新規作成する", "`settings.json`に`statusLine`フィールドを追加し、`type: \"command\"`と実行するスクリプトの`command`を指定する", "`claude --statusline-enable`コマンドをターミナルで一度だけ実行する", "CLAUDE.mdの先頭に`## StatusLine`という見出しを追記する"],
+      "correctIndex": 1,
+      "explanation": "ステータスラインは`settings.json`（例: `~/.claude/settings.json`）に`statusLine`フィールドを追加して設定する。`type`は`\"command\"`を指定し、`command`に実行する任意のシェルスクリプトのパスを指定する。スクリプトはセッション情報を含むJSONを標準入力（stdin）で受け取り、標準出力に出したテキストがそのままステータスラインとして表示される。"
+    },
+    {
+      "id": "feature-051",
+      "level": "advanced",
+      "question": "ステータスライン用スクリプトが標準入力（stdin）で受け取るJSONに含まれる情報として適切でないものはどれですか？",
+      "choices": ["現在のモデル名（`model.display_name`）やセッションの作業ディレクトリ（`cwd`）", "セッションの累計コスト（`cost.total_cost_usd`）やAPI呼び出しの累計時間", "コンテキストウィンドウの使用率（`context_window.used_percentage`）", "直前のユーザープロンプトの全文とそれに対するClaudeの応答内容"],
+      "correctIndex": 3,
+      "explanation": "ステータスラインスクリプトが標準入力で受け取るJSONには、モデル名・作業ディレクトリ・セッションコスト・API呼び出し時間・コンテキストウィンドウの使用率など、セッションのメタ情報が含まれる。しかし会話の中身（直前のプロンプトや応答のテキスト本文）は含まれない。"
+    },
+    {
+      "id": "feature-052",
+      "level": "expert",
+      "question": "出力スタイル（output styles）に関する記述として正しいものはどれですか？",
+      "choices": ["`keep-coding-instructions: true`をfrontmatterに指定すると、Claude Codeの組み込みソフトウェアエンジニアリング指示を保持したまま、独自の指示を追加できる", "出力スタイルはサブエージェントにも自動的に継承され、サブエージェントの応答トーンも変化する", "出力スタイルを切り替えると、既存の会話履歴の途中からでも即座に反映され、`/clear`や新規セッションを挟む必要はない", "カスタム出力スタイルはCLAUDE.mdと同様、システムプロンプトの後にユーザーメッセージとして追加される仕組みである"],
+      "correctIndex": 0,
+      "explanation": "出力スタイルのfrontmatterで`keep-coding-instructions: true`を指定すると、Claude Codeの組み込みのソフトウェアエンジニアリング指示（変更範囲の絞り方、コメントの書き方、検証方法など）を維持したまま、追加の指示（トーンや出力形式など）を反映できる。出力スタイルはメイン会話にのみ適用され、サブエージェントは通常継承しない。変更はシステムプロンプトの書き換えのため`/clear`または新規セッションを経てから反映される。"
     }
   ]
 }
