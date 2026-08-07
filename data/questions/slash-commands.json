@@ -391,6 +391,201 @@
       ],
       "correctIndex": 1,
       "explanation": "`/context [all]`は現在のコンテキストウィンドウの使用状況を色分けされたグリッドとして可視化し、最適化提案を示すコマンドです。一方`/usage`（エイリアス`/cost`）はセッションのコスト、プランの利用制限、アクティビティ統計を表示します。前者はトークンの使い方、後者はお金や利用枠の消費を確認する用途で使い分けます。"
+    },
+    {
+      "id": "slash-031",
+      "level": "advanced",
+      "question": "Claude Code v2.1.198以降で`/agents`コマンドを実行したときの挙動として正しいものはどれですか？",
+      "choices": [
+        "サブエージェントを作成・管理するようClaudeに依頼するか、`.claude/agents/`または`~/.claude/agents/`を直接編集するよう促すリマインダーが表示される",
+        "サブエージェントの作成・編集ができる対話的な管理インターフェースがそのまま開く",
+        "現在アクティブなサブエージェントの一覧とその実行状況が表示される",
+        "コマンドは廃止されており、`Unknown command: /agents`というエラーになる"
+      ],
+      "correctIndex": 0,
+      "explanation": "v2.1.198以降、`/agents`を実行すると対話的な管理インターフェースの代わりに、Claudeにサブエージェントの作成・管理を依頼するか、`.claude/agents/`（プロジェクト）または`~/.claude/agents/`（ユーザー）配下の設定ファイルを直接編集するよう促すリマインダーが表示されます。v2.1.197以前では対話的インターフェースが開いていました。"
+    },
+    {
+      "id": "slash-032",
+      "level": "advanced",
+      "question": "`/mcp`コマンドに引数を渡した場合の挙動として正しいものはどれですか？",
+      "choices": [
+        "`/mcp list`で接続中のサーバー一覧をテキストで出力する",
+        "`/mcp auth <server>`でOAuth認証フローを個別に開始する",
+        "`/mcp remove <server>`で指定したサーバーの設定を削除する",
+        "`/mcp reconnect <server>`で切断中の特定サーバーに再接続し、`/mcp enable`・`/mcp disable`にサーバー名または`all`を渡して接続状態をダイアログを開かずに変更できる"
+      ],
+      "correctIndex": 3,
+      "explanation": "`/mcp [reconnect <server>|enable|disable [<server>|all]]`という構文が用意されており、`reconnect <server>`は切断中の特定サーバーへの再接続、`enable`・`disable`はサーバー名または`all`を渡すことで対話的な一覧を開かずに接続状態を切り替えられます。引数なしで実行すると対話的な一覧が開き、非対話モード（`-p`）では引数なし実行時にテキストのステータス要約が出力されます。"
+    },
+    {
+      "id": "slash-033",
+      "level": "advanced",
+      "question": "`/mcp`パネルでMCPサーバーを「無効化（トグルオフ）」した場合の挙動として正しいものはどれですか？",
+      "choices": [
+        "サーバーの設定自体は保持されたまま接続だけが停止し、`/mcp`一覧にはdisabledとして表示され続ける",
+        "サーバーの設定ファイルからそのサーバーのエントリが完全に削除される",
+        "そのサーバーが提供するツールの定義だけがキャッシュされ、設定は削除される",
+        "無効化は一時的なものであり、Claude Codeを再起動すると自動的に再度有効になる"
+      ],
+      "correctIndex": 0,
+      "explanation": "`/mcp`パネルでサーバーをトグルオフすると、設定を失うことなくClaude Codeがそのサーバーへ接続しないようになります。Claude Codeはそのサーバーを`/mcp`の一覧に引き続き表示し、disabled（無効）と明示します。この選択はプロジェクトごとに`~/.claude.json`内の`disabledMcpServers`または`enabledMcpServers`リストに記録されます。"
+    },
+    {
+      "id": "slash-034",
+      "level": "advanced",
+      "question": "MCPサーバー設定における`disabledMcpServers`と`enabledMcpServers`の関係について正しい説明はどれですか？",
+      "choices": [
+        "両方とも同じ意味を持つ設定で、どちらか片方だけを使えばよい",
+        "`disabledMcpServers`はユーザー設定、`enabledMcpServers`はプロジェクト設定というスコープの違いのみである",
+        "`enabledMcpServers`に登録すると、どのサーバーであっても強制的に接続が有効になる",
+        "既定でオンのサーバー向けのオプトアウトリストが`disabledMcpServers`、既定でオフのサーバー（例:`computer-use`）向けのオプトインリストが`enabledMcpServers`であり、Claude Codeはサーバーごとにどちらか一方のリストのみを参照する"
+      ],
+      "correctIndex": 3,
+      "explanation": "`disabledMcpServers`はユーザー設定サーバー・プラグインサーバー・claude.aiコネクタ・既定オンの組み込みサーバー向けのオプトアウトリストで、ここに載ったサーバーには接続しません。`enabledMcpServers`は`computer-use`のように既定オフの組み込みサーバー向けのオプトインリストです。Claude Codeはサーバーごとにこの2つのリストのうち一方だけを参照するため、通常サーバーを`enabledMcpServers`に入れたり既定オフサーバーを`disabledMcpServers`に入れたりしても、そのエントリは無視されます。"
+    },
+    {
+      "id": "slash-035",
+      "level": "advanced",
+      "question": "リモート（HTTPまたはSSE）のMCPサーバーが`/mcp`で`cached 2h ago · connects on first use`のように表示される場合について正しい説明はどれですか？",
+      "choices": [
+        "サーバーが応答不能になっているため、古いキャッシュ情報だけが表示されている",
+        "以前のセッションで取得したツール一覧をキャッシュから読み込んでおり、実際の接続はそのサーバーのツールが最初に呼び出されたタイミングで行われる。ツール自体は最初のメッセージから利用可能である",
+        "このサーバーは無効化されており、手動で`/mcp enable`しない限り一切利用できない",
+        "`MCP_DISCOVERY_CACHE`を明示的に`1`に設定しない限り発生しない特殊な状態である"
+      ],
+      "correctIndex": 1,
+      "explanation": "この`cached`ステータスは、Claude Codeが起動時に接続する代わりに前回セッションのツール一覧をキャッシュから読み込んでいることを示します。実際の接続はClaudeがそのサーバーのツールを初めて呼び出す時点で行われますが、ツール自体は最初のメッセージから利用可能です。すべてのサーバーを起動時に接続させたい場合は`MCP_DISCOVERY_CACHE=0`を設定します（`1`を設定するのではありません）。"
+    },
+    {
+      "id": "slash-036",
+      "level": "advanced",
+      "question": "OAuth 2.0認証が必要なリモートMCPサーバーへの対応として正しいものはどれですか？",
+      "choices": [
+        "OAuth認証は`.mcp.json`の設定だけで完結し、`/mcp`から操作する必要はない",
+        "OAuthに対応したリモートサーバーは常に`claude mcp add`実行時点で認証が完了する",
+        "`/mcp`を使ってOAuth 2.0認証が必要なリモートサーバーとの認証を行い、サーバーが`401`や`403`を返した場合は`/mcp`上でそのサーバーが認証が必要な状態として示される",
+        "OAuth認証はEnterpriseプランでのみサポートされ、個人アカウントでは利用できない"
+      ],
+      "correctIndex": 2,
+      "explanation": "Claude CodeはOAuth 2.0によるリモートMCPサーバーへの認証をサポートしており、`/mcp`から認証フローを完了できます。未サインインのサーバーが`401 Unauthorized`や`403 Forbidden`を返すと、`/mcp`上でそのサーバーが認証待ちとして示されます。既にサインイン済みのサーバーで`401`が返った場合は、まず保存済みトークンのリフレッシュと再接続・リトライが行われ、それでも失敗した場合にのみ認証が必要な状態としてフラグが立ちます。"
+    },
+    {
+      "id": "slash-037",
+      "level": "advanced",
+      "question": "MCPサーバー名として予約されており、自分の設定でサーバー名に使うとClaude Codeが読み込み時にスキップして警告を出す名前はどれですか？",
+      "choices": [
+        "`default`",
+        "`mcp-server`",
+        "`local`",
+        "`workspace`"
+      ],
+      "correctIndex": 3,
+      "explanation": "`workspace`、`claude-in-chrome`、`computer-use`、`Claude Preview`、`Claude Browser`はClaude Codeの組み込みサーバー用に予約された名前です。設定でこれらの名前のサーバーを定義すると、Claude Codeは読み込み時にそのサーバーをスキップしリネームを促す警告を表示します。また`claude mcp add`はこれらの予約名をエラーとして拒否します。"
+    },
+    {
+      "id": "slash-038",
+      "level": "advanced",
+      "question": "`/config`コマンドに`key=value`形式の引数を渡した場合の挙動として正しいものはどれですか？",
+      "choices": [
+        "設定インターフェースを開かずに直接その設定を変更でき、非対話モード（`-p`）でも利用できる",
+        "設定インターフェースが開き、該当のキーがあらかじめハイライトされた状態で表示される",
+        "指定したキーの現在値だけが表示され、値の変更は対話的な確認を経てから行われる",
+        "この形式は`/settings`エイリアスでは使えず、`/config`本体でのみ有効である"
+      ],
+      "correctIndex": 0,
+      "explanation": "`/config [key=value ...]`は1つ以上の`key=value`ペアを渡すことで、Settingsインターフェースを開かずに直接設定を変更できます（例:`/config thinking=false`、`/config theme=dark`）。この`key=value`形式は非対話モード（`-p`）でも利用できます。`/config --help`を実行すると設定可能な全キーとその選択肢の一覧が表示されます。エイリアスの`/settings`でも同様に動作します。"
+    },
+    {
+      "id": "slash-039",
+      "level": "advanced",
+      "question": "`/status`コマンドが表示する情報として正しい組み合わせはどれですか？",
+      "choices": [
+        "接続中のMCPサーバーが提供する全ツールの詳細一覧",
+        "プロジェクトの`CLAUDE.md`に記載された内容の全文",
+        "直近のセッションで発生したエラーログの一覧",
+        "セッションID、モデル、コンテキスト使用量、effortレベル、権限モード、fast modeの状態などのセッションメタデータ"
+      ],
+      "correctIndex": 3,
+      "explanation": "`/status`はセッションID、モデル、コンテキスト使用量、effortレベル、権限モード、fast modeの状態といったセッションのメタデータを表示します。応答が生成中であっても、Claudeの応答完了を待たずに即座に実行される点も特徴です。"
+    },
+    {
+      "id": "slash-040",
+      "level": "advanced",
+      "question": "`/tasks`コマンドが一覧表示する対象として正しいものはどれですか？",
+      "choices": [
+        "作業中または直近で完了した、サブエージェントとバックグラウンドセッションの一覧",
+        "`.claude/agents/`に定義されているサブエージェント設定ファイルの一覧",
+        "これまでに実行したすべてのスラッシュコマンドの履歴",
+        "MCPサーバーが公開しているツールのうち、まだ一度も呼び出されていないものの一覧"
+      ],
+      "correctIndex": 0,
+      "explanation": "`/tasks`は作業が進行中、または直近で完了したサブエージェントやバックグラウンドセッションといったバックグラウンド作業を一覧表示します。`/status`や`/usage`と同様に、Claudeの応答完了を待たずに即座に実行されるコマンドの1つです。"
+    },
+    {
+      "id": "slash-041",
+      "level": "advanced",
+      "question": "`/effort`コマンドに指定できる引数について正しい説明はどれですか？",
+      "choices": [
+        "`low`・`medium`・`high`・`xhigh`・`max`・`ultracode`のいずれかを指定でき、`auto`を指定するとモデルのデフォルトに戻る",
+        "指定できるのは`low`・`medium`・`high`の3段階のみで、モデルによる違いはない",
+        "数値（0〜100）でeffortの割合を細かく指定する必要がある",
+        "一度設定すると現在の応答が終わるまで反映が保留される"
+      ],
+      "correctIndex": 0,
+      "explanation": "`/effort [level|auto]`は`low`・`medium`・`high`・`xhigh`・`max`・`ultracode`を指定でき、利用可能なレベルはモデルによって異なります。`max`と`ultracode`はセッション限定です。`auto`を指定するとモデルのデフォルトにリセットされます。設定は現在生成中の応答を待たずに即座に反映されます。"
+    },
+    {
+      "id": "slash-042",
+      "level": "advanced",
+      "question": "`/autocompact`コマンドについて正しい説明はどれですか？",
+      "choices": [
+        "実行すると即座に会話が要約され、`/compact`と全く同じ効果を持つ",
+        "自動コンパクトが発生するコンテキストウィンドウの充填率のしきい値を設定するコマンドで、`500k`のようなサイズや`auto`を引数に取り、設定はユーザー設定として保存される",
+        "自動コンパクト機能そのもののオン・オフを切り替えるだけで、しきい値の調整はできない",
+        "セッションを再起動しない限り、一度設定した値を変更することはできない"
+      ],
+      "correctIndex": 1,
+      "explanation": "`/autocompact [auto|<tokens>]`は、コンテキストウィンドウがどれだけ埋まったら自動的にコンパクトするかというウィンドウを設定するコマンドです。`500k`のようなサイズを渡すか、モデルに合わせて調整された既定のウィンドウに戻す`auto`を渡します。設定はユーザー設定に保存され現在のセッションにも適用されます。引数なしで実行すると現在のウィンドウを示すダイアログが開きます。"
+    },
+    {
+      "id": "slash-043",
+      "level": "advanced",
+      "question": "`/output-style`コマンドに指定できる引数の組み合わせとして正しいものはどれですか？",
+      "choices": [
+        "`markdown`・`plain`・`auto`で表示形式を切り替え、`compact`・`expanded`で現在のスタイル内の余白を調整する",
+        "`light`・`dark`でカラーテーマを切り替える",
+        "`json`・`yaml`・`text`で出力のシリアライズ形式を指定する",
+        "`verbose`・`quiet`でログの詳細度を切り替える"
+      ],
+      "correctIndex": 0,
+      "explanation": "`/output-style [style]`は`markdown`・`plain`・`auto`を指定して応答のレンダリング形式を切り替え、`compact`・`expanded`を指定すると現在のスタイル内での余白（スペーシング）を調整できます。引数なしで実行すると、現在のスタイルと各選択肢の説明を示すダイアログが開きます。"
+    },
+    {
+      "id": "slash-044",
+      "level": "advanced",
+      "question": "`/color`コマンドに指定できない値はどれですか？",
+      "choices": [
+        "`cyan`",
+        "`purple`",
+        "`magenta`",
+        "`orange`"
+      ],
+      "correctIndex": 2,
+      "explanation": "`/color [color|default]`で指定できる色は`red`・`blue`・`green`・`yellow`・`purple`・`orange`・`pink`・`cyan`の8色で、`magenta`という名前の色は用意されていません。`default`を渡すと既定値にリセットされ、引数なしで実行するとランダムな色が選ばれます。"
+    },
+    {
+      "id": "slash-045",
+      "level": "advanced",
+      "question": "非対話モード（`-p`）における`/fast`コマンドの制約について正しい説明はどれですか？",
+      "choices": [
+        "非対話モードでは`/fast`は常に無条件で利用でき、制約は一切ない",
+        "起動時の`--settings`でfast modeを有効にしたセッションでのみ`/fast`のトグルが機能し、その場合も切り替えは現在のセッション限定でデフォルトとしては保存されない。それ以外の非対話セッションでは利用できない旨が報告される",
+        "非対話モードでは`/fast`は常に無視され、何のメッセージも表示されずに終了する",
+        "非対話モードでfast modeを使うには`MAX_MCP_OUTPUT_TOKENS`環境変数を設定する必要がある"
+      ],
+      "correctIndex": 1,
+      "explanation": "非対話モード（`-p`）で`/fast`が機能するのは、`claude -p --settings '{\"fastMode\": true}'`のように起動時の`--settings`値でfast modeが有効になっているセッションに限られます。その場合でもトグルは現在のセッションのみに適用され、デフォルト設定としては保存されません。それ以外の非対話セッションで`/fast`を実行すると、fast modeが利用できない旨が報告されます。"
     }
   ]
 }
