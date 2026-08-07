@@ -17,13 +17,14 @@ import {
 test('定数が設計どおりの値である', () => {
   assert.equal(QUESTIONS_PER_STAGE, 10);
   assert.equal(PASSING_SCORE, 8);
-  assert.equal(DOMAINS.length, 5);
+  assert.equal(DOMAINS.length, 6);
   assert.deepEqual(DOMAINS, [
     'basic-operations',
     'feature-usage',
     'prompt-design',
     'security-permissions',
     'token-efficiency',
+    'slash-commands',
   ]);
   for (const domain of DOMAINS) {
     assert.ok(DOMAIN_LABELS[domain], `${domain} のラベルが未定義`);
@@ -138,12 +139,12 @@ test('normalizeProgress は未知の領域・レベルのキーを取り除く',
   assert.equal(normalized.domains['basic-operations']['unknown-level'], undefined);
 });
 
-test('buildDashboard は5領域それぞれに4ステージを返す', () => {
+test('buildDashboard は6領域それぞれに4ステージを返す', () => {
   let progress = createEmptyProgress();
   progress = recordAttempt(progress, 'feature-usage', 'beginner', 10);
   const dashboard = buildDashboard(progress);
 
-  assert.equal(dashboard.length, 5);
+  assert.equal(dashboard.length, 6);
   assert.equal(dashboard[0].domain, 'basic-operations');
   assert.equal(dashboard[0].domainLabel, DOMAIN_LABELS['basic-operations']);
 
