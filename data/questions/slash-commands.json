@@ -31,7 +31,7 @@
     {
       "id": "slash-003",
       "level": "beginner",
-      "question": "現在のセッションのバージョン・モデル・アカウント・接続状況を表示するコマンドはどれですか？",
+      "question": "現在のモデル・effortレベル・アクティブなゴールをワンラインで要約表示するコマンドはどれですか？",
       "choices": [
         "/context",
         "/usage",
@@ -39,7 +39,7 @@
         "/status"
       ],
       "correctIndex": 3,
-      "explanation": "`/status`はSettingsインターフェースのStatusタブを開き、バージョン、モデル、アカウント、接続状況などの現在のセッション状態を表示します。応答が生成中でも割り込まずに即座に実行される点も特徴です。"
+      "explanation": "`/status`はモデル、effortレベル、アクティブなゴール（設定されていれば）のワンライン要約を表示します。非対話モードで現在の設定状況を素早く確認する際に便利です。応答が生成中でも割り込まずに即座に実行されます。"
     },
     {
       "id": "slash-004",
@@ -109,7 +109,7 @@
     {
       "id": "slash-009",
       "level": "beginner",
-      "question": "現在のセッションのコスト、プランの利用制限、アクティビティ統計を表示するコマンドはどれですか？",
+      "question": "現在のセッションのトークン使用量（input・output・cacheトークン）とコストの見積りを表示するコマンドはどれですか？",
       "choices": [
         "/usage",
         "/config",
@@ -117,7 +117,7 @@
         "/context"
       ],
       "correctIndex": 0,
-      "explanation": "`/usage`はセッションのコスト、プランの利用制限、アクティビティ統計を表示します。Pro/Max/Team/Enterpriseプランでは、skill・subagent・plugin・MCPサーバーごとの利用内訳も表示されます。`/cost`と`/stats`はそのエイリアスです。"
+      "explanation": "`/usage`は現在のセッションのトークン使用量（input・output・cacheトークン）と、それに基づくコストの見積りを表示します。直近のセッションの累積使用量もあわせて表示されます。`/cost`はそのエイリアスです。応答が生成中でも割り込まずに即座に実行されます。"
     },
     {
       "id": "slash-010",
@@ -182,7 +182,7 @@
         "/resume"
       ],
       "correctIndex": 3,
-      "explanation": "`/resume [session]`はIDや名前を指定するか、セッション一覧から選ぶことで以前の会話を再開します。エイリアスは`/continue`です。"
+      "explanation": "`/resume [session-id|name]`はセッションIDや名前を指定するか、引数なしでピッカーを開いてセッション一覧から選ぶことで以前の会話を再開します。再開時にはモデル・コンテキスト・アクティブなゴールが引き継がれます。なお`--continue`はCLI起動時に現在のディレクトリの最新セッションを再開するフラグであり、`/resume`とは挙動が異なります。"
     },
     {
       "id": "slash-015",
@@ -436,10 +436,10 @@
       "level": "advanced",
       "question": "MCPサーバー設定における`disabledMcpServers`と`enabledMcpServers`の関係について正しい説明はどれですか？",
       "choices": [
-        "両方とも同じ意味を持つ設定で、どちらか片方だけを使えばよい",
-        "`disabledMcpServers`はユーザー設定、`enabledMcpServers`はプロジェクト設定というスコープの違いのみである",
-        "`enabledMcpServers`に登録すると、どのサーバーであっても強制的に接続が有効になる",
-        "既定でオンのサーバー向けのオプトアウトリストが`disabledMcpServers`、既定でオフのサーバー（例:`computer-use`）向けのオプトインリストが`enabledMcpServers`であり、Claude Codeはサーバーごとにどちらか一方のリストのみを参照する"
+        "両方とも同じ意味を持つ設定であり、`disabledMcpServers`と`enabledMcpServers`のどちらか片方だけを設定ファイルに書けば、もう一方を書かなくても同じ結果になる",
+        "`disabledMcpServers`はユーザー設定ファイルのみに書けるスコープ、`enabledMcpServers`はプロジェクト設定ファイルのみに書けるスコープという、書き込み先の違いだけを表す設定である",
+        "`enabledMcpServers`にサーバー名を登録すると、そのサーバーがもともと既定オフであっても既定オンであっても、常に強制的に接続が有効になる",
+        "既定オンのサーバー向けのオプトアウトリストが`disabledMcpServers`、既定オフのサーバー（例:`computer-use`）向けのオプトインリストが`enabledMcpServers`で、一方のみ参照される"
       ],
       "correctIndex": 3,
       "explanation": "`disabledMcpServers`はユーザー設定サーバー・プラグインサーバー・claude.aiコネクタ・既定オンの組み込みサーバー向けのオプトアウトリストで、ここに載ったサーバーには接続しません。`enabledMcpServers`は`computer-use`のように既定オフの組み込みサーバー向けのオプトインリストです。Claude Codeはサーバーごとにこの2つのリストのうち一方だけを参照するため、通常サーバーを`enabledMcpServers`に入れたり既定オフサーバーを`disabledMcpServers`に入れたりしても、そのエントリは無視されます。"
@@ -502,12 +502,12 @@
       "question": "`/status`コマンドが表示する情報として正しい組み合わせはどれですか？",
       "choices": [
         "接続中のMCPサーバーが提供する全ツールの詳細一覧",
-        "プロジェクトの`CLAUDE.md`に記載された内容の全文",
+        "現在のセッションのトークン使用量（input・output・cacheトークン）とコストの見積り",
         "直近のセッションで発生したエラーログの一覧",
-        "セッションID、モデル、コンテキスト使用量、effortレベル、権限モード、fast modeの状態などのセッションメタデータ"
+        "モデル、effortレベル、アクティブなゴール（設定されていれば）のワンライン要約"
       ],
       "correctIndex": 3,
-      "explanation": "`/status`はセッションID、モデル、コンテキスト使用量、effortレベル、権限モード、fast modeの状態といったセッションのメタデータを表示します。応答が生成中であっても、Claudeの応答完了を待たずに即座に実行される点も特徴です。"
+      "explanation": "`/status`はモデル、effortレベル、アクティブなゴール（設定されていれば）をワンラインで要約表示します。非対話モードで現在の設定状況を素早く確認する用途に向いています。応答が生成中であっても、Claudeの応答完了を待たずに即座に実行される点も特徴です。なお、トークン使用量やコストの見積りを表示するのは`/status`ではなく`/usage`（エイリアス`/cost`）です。"
     },
     {
       "id": "slash-040",
@@ -553,13 +553,13 @@
       "level": "advanced",
       "question": "`/output-style`コマンドに指定できる引数の組み合わせとして正しいものはどれですか？",
       "choices": [
-        "`markdown`・`plain`・`auto`で表示形式を切り替え、`compact`・`expanded`で現在のスタイル内の余白を調整する",
+        "`normal`・`terse`・`detailed`・`story`のいずれかを指定して応答のスタイルを切り替える。引数なしで実行するとピッカーが開く",
         "`light`・`dark`でカラーテーマを切り替える",
         "`json`・`yaml`・`text`で出力のシリアライズ形式を指定する",
         "`verbose`・`quiet`でログの詳細度を切り替える"
       ],
       "correctIndex": 0,
-      "explanation": "`/output-style [style]`は`markdown`・`plain`・`auto`を指定して応答のレンダリング形式を切り替え、`compact`・`expanded`を指定すると現在のスタイル内での余白（スペーシング）を調整できます。引数なしで実行すると、現在のスタイルと各選択肢の説明を示すダイアログが開きます。"
+      "explanation": "`/output-style [style]`は`normal`・`terse`・`detailed`・`story`のいずれかを指定して、Claudeの応答のスタイルを切り替えます。引数なしで実行するとピッカーが開きます。選択したスタイルは設定に保存され、以降のセッションでも維持されます。非対話モード（`-p`）でも利用できます。"
     },
     {
       "id": "slash-044",
@@ -579,10 +579,10 @@
       "level": "advanced",
       "question": "非対話モード（`-p`）における`/fast`コマンドの制約について正しい説明はどれですか？",
       "choices": [
-        "非対話モードでは`/fast`は常に無条件で利用でき、制約は一切ない",
+        "非対話モードでは`/fast`は起動時の設定に関係なく常に利用でき、対話モードと全く同じように動作するため制約は一切存在しない",
         "起動時の`--settings`でfast modeを有効にしたセッションでのみ`/fast`のトグルが機能し、その場合も切り替えは現在のセッション限定でデフォルトとしては保存されない。それ以外の非対話セッションでは利用できない旨が報告される",
-        "非対話モードでは`/fast`は常に無視され、何のメッセージも表示されずに終了する",
-        "非対話モードでfast modeを使うには`MAX_MCP_OUTPUT_TOKENS`環境変数を設定する必要がある"
+        "非対話モードでは`/fast`は常に無視され、実行してもエラーや通知など何のメッセージも表示されずにプロセスがそのまま終了する",
+        "非対話モードでfast modeを使うには、起動時の`--settings`ではなく`MAX_MCP_OUTPUT_TOKENS`という環境変数を別途設定する必要がある"
       ],
       "correctIndex": 1,
       "explanation": "非対話モード（`-p`）で`/fast`が機能するのは、`claude -p --settings '{\"fastMode\": true}'`のように起動時の`--settings`値でfast modeが有効になっているセッションに限られます。その場合でもトグルは現在のセッションのみに適用され、デフォルト設定としては保存されません。それ以外の非対話セッションで`/fast`を実行すると、fast modeが利用できない旨が報告されます。"
