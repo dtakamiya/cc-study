@@ -769,7 +769,7 @@
       "question": "git log --oneline -20 | claude -p \"summarize these recent commits\"のように、Unixパイプを使ってClaude Codeへ指示を渡す進め方の特徴として適切なものはどれですか？",
       "choices": ["標準入力やCIパイプラインからClaudeへデータを渡す非対話的な使い方で、標準的なUnixツールと同様に標準入出力を扱える", "パイプ経由の実行は対話モードの完全な代替であり、対話モードにあるすべての機能を同じように利用できる", "パイプを使った起動では権限確認を一切行わずに任意のコマンドを常に自動実行してしまう", "-pオプションを付けると、渡された標準入力は無視されプロンプト文字列のみが使用される"],
       "correctIndex": 0,
-      "explanation": "claude -pは非対話モード（headless/print mode）でClaudeを実行し、CIや事前コミットフック、バッチ処理などで標準入出力を通常のUnixツールと同様に扱えます。対話モードの全機能の代替ではなく、権限の扱いも対話モードとは別に出力形式や許可フラグで制御する仕組みです。"
+      "explanation": "claude -pは非対話モード（headless/print mode）でClaudeを実行し、CIや事前コミットフック、バッチ処理などで標準入出力を通常のUnixツールと同様に扱えます。対話モードの全機能の代替ではなく、権限は--permission-mode・--allowed-tools・--permission-prompt-toolといったフラグで個別に制御し、出力形式は--output-formatで指定するというように、それぞれ別のフラグで制御する仕組みです。"
     }
   ]
 }
