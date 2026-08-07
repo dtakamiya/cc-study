@@ -690,6 +690,38 @@
       ],
       "correctIndex": 0,
       "explanation": "長寿命の1時間TTLブレークポイントを短命な5分TTLより前（先頭側）に配置する必要がある。変わりにくいシステムプロンプト等を1時間TTLで先頭固定し、変わりやすい直近の会話を5分TTLで末尾に置く構成に対応する。"
+    },
+    {
+      "id": "token-054",
+      "level": "beginner",
+      "question": "/contextコマンドの役割として正しいものはどれですか？",
+      "choices": ["現在のコンテキストウィンドウで何がどれだけ消費されているかを表示する", "コンテキストウィンドウの上限サイズを一時的に拡張する", "過去のセッションの会話履歴を検索する", "MCPサーバーの認証情報を再設定する"],
+      "correctIndex": 0,
+      "explanation": "/contextは現在のコンテキストが何によって消費されているか（MCPツール、システムプロンプト、会話履歴など）の内訳を表示し、圧迫箇所の把握に使う。"
+    },
+    {
+      "id": "token-055",
+      "level": "intermediate",
+      "question": "Pro/Maxプランで、1時間以上操作しておらず10万トークンを超える大きなセッションをresumeしようとした場合の挙動として正しいものはどれですか？",
+      "choices": ["セッションは自動削除されresume不可になる", "「Resume from summary」「Resume full session as-is」「Don't ask me again」の3択ダイアログが表示される", "強制的に/clearが実行される", "自動的にHaikuに切り替わる"],
+      "correctIndex": 1,
+      "explanation": "「Resume from summary」は/compact相当の即時要約でコスト抑制、「Resume full session as-is」は全履歴再読込。いずれも最初の1リクエストはキャッシュ失効済みのため全履歴再処理が発生する。"
+    },
+    {
+      "id": "token-056",
+      "level": "intermediate",
+      "question": "型付き言語向けの「code intelligence plugins」をコスト削減の観点で導入するメリットとして述べられているものはどれですか？",
+      "choices": ["シンボルへの正確なナビゲーションが可能になり、テキストベース検索に比べて無関係なファイルの読み込みを減らせる", "MCPサーバーの遅延ロードが無効化される", "コンパイラ実行結果のキャッシュでビルド時間を短縮する", "拡張思考のトークン予算を自動的に半減する"],
+      "correctIndex": 0,
+      "explanation": "code intelligence pluginsは正確なシンボルナビゲーションを提供し、grep後に複数候補ファイルを読むような従来の探索より無関係な読み込みを削減する。"
+    },
+    {
+      "id": "token-057",
+      "level": "advanced",
+      "question": "/usageのSessionブロックが示す合計コストのリセット挙動について、Claude Code v2.1.211での変更点として正しいものはどれですか？",
+      "choices": ["v2.1.211以前は/clearをまたいでもプロセス生存中はコストが累積し続けたが、以降は/clearで始まる新セッションのコストは$0から始まる", "v2.1.211で/usageコマンド自体が新設された", "v2.1.211以前は/compactのたびにリセットされていた", "v2.1.211で/usageが廃止され/costに統合された"],
+      "correctIndex": 0,
+      "explanation": "公式ドキュメントに明記「These totals reset when /clear starts a new session... Before v2.1.211, they kept accumulating across /clear for the lifetime of the Claude Code process.」"
     }
   ]
 }
