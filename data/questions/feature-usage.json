@@ -710,6 +710,46 @@
       "choices": [".claude-plugin/plugin.json内のwatchフィールド", "monitors/monitors.json", "hooks/hooks.json内のBackgroundWatchイベント", "settings.json内のsubagentStatusLineフィールド"],
       "correctIndex": 1,
       "explanation": "プラグインのルートにmonitors/monitors.jsonファイルを置くと、バックグラウンドモニターの配列を定義できます。各エントリのcommandが出力する標準出力の各行が、セッション中Claudeへの通知として届けられます。Claude Codeはプラグインが有効な間、指示なしに各モニターを自動的に起動します。なおsettings.jsonのsubagentStatusLineはプラグインが適用できるデフォルト設定の一つですが、監視機能とは無関係です。"
+    },
+    {
+      "id": "feature-059",
+      "level": "intermediate",
+      "question": "UserPromptSubmitフックの説明として正しいものはどれですか？",
+      "choices": ["ユーザーがプロンプトを送信し、Claudeが処理する前に発火し、decision: \"block\"でそのプロンプトの処理自体を拒否できる", "ツールの実行が完了した直後にのみ発火し、ツールの出力内容を書き換えるための仕組みである", "セッションが終了した後にのみ発火し、後片付け処理の記録用にのみ使われ、処理を止める機能はない", "会話が要約（compact）される直前にのみ発火し、要約対象の範囲を指定するための仕組みである"],
+      "correctIndex": 0,
+      "explanation": "UserPromptSubmitフックはユーザーがプロンプトを送信し、Claudeが処理する前に発火します。マッチャーによる絞り込みはなく常に発火し、JSON出力でdecision: \"block\"を返すとそのプロンプトの処理自体を拒否できます。hookSpecificOutput.additionalContextでClaudeに渡すコンテキストを追加することもできます。"
+    },
+    {
+      "id": "feature-060",
+      "level": "advanced",
+      "question": "プロジェクトスコープの.mcp.jsonに定義されたMCPサーバーを、対話セッションでは使ってよいが特定のプロジェクトでは絶対に読み込ませたくない場合に使う設定はどれですか？",
+      "choices": [".mcp.jsonファイル自体をリポジトリから削除する以外に確実な方法はない", "settingsのdisabledMcpjsonServersに対象サーバー名を追加する", "MCPサーバーの--scopeをlocalに変更するだけで自動的に除外される", "claude mcp reset-project-choicesを実行すれば恒久的に無効化できる"],
+      "correctIndex": 1,
+      "explanation": "対話セッションではプロジェクトスコープのMCPサーバー利用前に承認プロンプトが出ますが、claude -p（ヘッドレスモード）やAgent SDK、クラウドセッションではこの確認は表示されず自動的に読み込まれます。確実にそのサーバーを除外したい場合はsettingsのdisabledMcpjsonServersに指定します。claude mcp reset-project-choicesは承認済みの選択をリセットするだけで恒久的な無効化ではありません。"
+    },
+    {
+      "id": "feature-061",
+      "level": "intermediate",
+      "question": "MCPサーバーが1回のツール呼び出しで大量の出力を返した場合のClaude Codeの既定動作として正しいものはどれですか？",
+      "choices": ["出力サイズに関わらず常に全文がそのままコンテキストに渡される", "出力が10,000トークンを超えると警告が表示され、既定では25,000トークンで出力が制限される", "MCPツールの出力は仕様上あらかじめ1,000トークンで固定的に打ち切られ、変更する手段はない", "出力が大きい場合はツール呼び出し自体がエラーとして即座に失敗する"],
+      "correctIndex": 1,
+      "explanation": "Claude CodeはMCPツールの出力が10,000トークンを超えると警告を表示し、既定では25,000トークンで出力を制限します。この上限は環境変数MAX_MCP_OUTPUT_TOKENSで引き上げられますが、警告閾値（10,000トークン）自体は固定です。"
+    },
+    {
+      "id": "feature-062",
+      "level": "advanced",
+      "question": "スキルのSKILL.md内で !`git status --short` のように記述した場合の動作として正しいものはどれですか？",
+      "choices": ["Claudeがスキルを読み込んだ後、必要に応じてBashツールでこのコマンドを自律的に実行するかどうかを判断する", "スキルが呼び出される前にこのシェルコマンドが実行され、その出力がプレースホルダーの位置にプレーンテキストとして挿入された状態でClaudeに渡される", "このような記法は現在サポートされておらず、記述してもそのまま文字列としてClaudeに渡されるだけである", "コマンドの実行結果はコンテキストには含まれず、実行ログとしてローカルファイルにのみ保存される"],
+      "correctIndex": 1,
+      "explanation": "!`<command>` 構文はSKILL.mdの内容がClaudeに送られる前に実行され、出力がその位置にプレーンテキストとして挿入されます。これは前処理であり、Claude自身がコマンドを実行するわけではありません。disableSkillShellExecution: trueを設定するとこの機能を無効化できます。"
+    },
+    {
+      "id": "feature-063",
+      "level": "expert",
+      "question": "スキルのfrontmatterにおけるdisable-model-invocation: trueとuser-invocable: falseの違いとして正しいものはどれですか？",
+      "choices": ["前者はユーザーのみが/スキル名で呼び出せるようにしClaudeによる自動呼び出しを禁じ、後者はClaudeのみが呼び出せるようにしユーザーによる明示的な呼び出しを禁じる", "両者は設定名が異なるだけで、実際の効果としては完全に同一のフラグとして扱われる", "前者はスキルファイル自体を削除し、後者はスキルの内容を暗号化して読めなくする", "前者はスキルをセッション開始時に必ず自動実行させ、後者はスキルの実行を完全に禁止する"],
+      "correctIndex": 0,
+      "explanation": "disable-model-invocation: trueは/commitや/deployのように副作用があり実行タイミングをユーザーが制御したいスキルに使い、Claudeが会話の流れで自動的に呼び出すことを防ぎます（ユーザーは引き続き/スキル名で呼び出し可能）。逆にuser-invocable: falseは、背景知識を説明するだけでユーザーが能動的に呼び出す意味を持たないスキルに使い、Claudeの自動呼び出しのみを許可します。"
     }
   ]
 }
