@@ -534,6 +534,46 @@
       "choices": ["hooks・skills・plugins・MCP・自動メモリ・CLAUDE.mdの自動検出を省略し起動を高速化するが、Bashとファイル読み書きは使える", "Bashを含む全てのツール実行が無効化され、テキストのみを生成する対話専用モードに切り替わる", "--permission-mode bypassPermissionsと同じ意味を持ち、パーミッション確認が一切行われなくなる", "CLAUDE.mdの自動検出は省略されず、hooksとskillsの2つのみが無効化される設定である"],
       "correctIndex": 0,
       "explanation": "--bareはhooks・skills・plugins・MCPサーバー・自動メモリ・CLAUDE.mdの自動検出をスキップしてスクリプト化された呼び出しの起動を高速化するミニマルモードです。Bash・ファイル読み取り・ファイル編集ツールへのアクセスは維持され、パーミッションモードの挙動やbypassPermissionsとは無関係です。"
+    },
+    {
+      "id": "basic-057",
+      "level": "intermediate",
+      "question": "/btwコマンドの説明として正しいものはどれですか？",
+      "choices": ["会話履歴に新しいターンとして追加され、以後の文脈として保持される質問を送る", "Claudeが処理中の応答を中断してから、side questionを送信する", "現在の会話に見えている内容から回答するのみで、ファイル読み取りやコマンド実行はできない", "一度使うと、以後そのセッションでは/btwを再度使えなくなる"],
+      "correctIndex": 2,
+      "explanation": "/btwは現在の会話への可視性を持ちますが、ツールへのアクセスは一切なく、既に文脈にある情報のみから回答します。質問と回答は会話履歴に追加されない一時的なオーバーレイに表示され、Claudeが処理中でも並行して実行でき、メインの応答を中断しません。何度でも使用できます。"
+    },
+    {
+      "id": "basic-058",
+      "level": "beginner",
+      "question": "入力欄に書きかけのテキストがある状態でCtrl+Sを押すとどうなりますか？",
+      "choices": ["現在の会話をファイルに保存（エクスポート）する", "Claude Codeの設定をsettings.jsonに書き込んで保存する", "直前に送信したプロンプトを再送信する", "入力中のテキストを一時的に退避し、入力欄を空にする。再度空の状態で押すと退避した内容が復元される"],
+      "correctIndex": 3,
+      "explanation": "Ctrl+Sは入力欄にテキストがある状態で押すとその内容をスタッシュ（一時退避）してプロンプトをクリアします。空の入力欄でもう一度押すと、スタッシュしていたテキスト・カーソル位置・貼り付け内容が復元されます。会話のエクスポートは/export、設定変更は/configで行います。"
+    },
+    {
+      "id": "basic-059",
+      "level": "advanced",
+      "question": "プロンプト入力欄の先頭に!を付けるシェルモードで、v2.1.186以降のデフォルト動作として正しいものはどれですか？",
+      "choices": ["コマンドの出力は会話コンテキストに追加されるが、Claudeが自動で応答することはなく、必ず別途プロンプトを送る必要がある", "コマンドの出力がトランスクリプトに反映されると、Claudeが自動的にその内容に応答する。この応答は通常のプロンプト送信と同じコストがかかる", "コマンドの出力はコンテキストに一切追加されず、画面表示のみに使われる", "Claudeが応答するかどうかは--respond-to-shellというCLIフラグでのみ制御でき、settings.jsonからは変更できない"],
+      "correctIndex": 1,
+      "explanation": "v2.1.186以降、シェルモードで実行したコマンドの出力がトランスクリプトに反映されると、Claudeは自動的にその内容へ応答するようになりました（この応答は通常のプロンプト送信と同等のコストがかかります）。以前の挙動に戻したい場合は、settings.jsonのrespondToBashCommandsをfalseに設定します。"
+    },
+    {
+      "id": "basic-060",
+      "level": "expert",
+      "question": "vimモードのvimInsertModeRemaps設定（例: \"jj\"を\"<Esc>\"にマップする）について、公式ドキュメントに明記されている読み込み元の制約として正しいものはどれですか？",
+      "choices": ["ユーザー設定ファイル・--settingsフラグ・managed settingsからのみ読み込まれ、プロジェクトの.claude/settings.jsonや.claude/settings.local.jsonに書いても無視される", "プロジェクトの.claude/settings.jsonに書いた場合のみ有効になり、ユーザー設定ファイルに書いても無視される", "どの設定ファイルに書いても等しく有効になり、読み込み元による制約はない", ".claude/settings.local.jsonにのみ書くことができ、他のいずれの設定ファイルに書いても無視される"],
+      "correctIndex": 0,
+      "explanation": "vimInsertModeRemapsはユーザー設定ファイル、--settingsフラグ、managed settingsからのみ読み込まれます。プロジェクトの.claude/settings.jsonや.claude/settings.local.jsonに書いても無視されるため、チェックアウトしたリポジトリが利用者本人のキー入力を勝手にリマップすることはできません。"
+    },
+    {
+      "id": "basic-061",
+      "level": "advanced",
+      "question": "claude -p（非対話モード）でエージェンティックなターン数の上限を指定するフラグはどれですか？",
+      "choices": ["--max-steps", "--turn-limit", "--agent-cap", "--max-turns"],
+      "correctIndex": 3,
+      "explanation": "claude -p --max-turns 3 \"query\"のように指定すると、エージェンティックなターン数の上限を設定でき、上限に到達するとエラー終了します。似た用途のフラグに--max-budget-usd（API呼び出しコストの上限）がありますが、こちらは金額ベースの制限です。"
     }
   ]
 }
