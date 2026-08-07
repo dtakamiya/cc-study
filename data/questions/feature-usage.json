@@ -489,12 +489,12 @@
       "question": "同じ名前のMCPサーバーが複数のスコープ（local・project・user・plugin）で定義されていた場合、Claude Codeはどのように解決しますか？",
       "choices": [
         "設定した場所に関わらず、pluginスコープで配布された定義が他のどのスコープよりも優先される",
-        "local > project > user > pluginの優先順位で最も優先度の高い定義を1つだけ使用する（フィールドはマージされない）",
+        "local > project > user > plugin > claude.ai connectorsの優先順位で最も優先度の高い定義を1つだけ使用する（フィールドはマージされない）",
         "定義の重複がそのままエラーとして扱われ、Claude Code自体が起動できなくなってしまう",
         "すべてのスコープに定義されたコマンドや環境変数の設定を自動的にマージして1つのサーバー定義に統合する"
       ],
       "correctIndex": 1,
-      "explanation": "同名のMCPサーバーが複数箇所で定義されている場合、local > project > user > plugin（> claude.ai connector）の優先順位に従い、最も優先度の高いスコープの定義がそのまま使われます。異なるスコープの設定がフィールド単位でマージされることはありません。"
+      "explanation": "同名のMCPサーバーが複数箇所で定義されている場合、local > project > user > plugin > claude.ai connectorsの優先順位に従い、最も優先度の高いスコープの定義がそのまま使われます。異なるスコープの設定がフィールド単位でマージされることはありません。"
     },
     {
       "id": "feature-039",

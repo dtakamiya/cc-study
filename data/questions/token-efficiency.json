@@ -273,7 +273,7 @@
         "TTLはモデルの種類（Sonnet/Opus/Haiku）によってのみ決まり、認証方法とは無関係である"
       ],
       "correctIndex": 2,
-      "explanation": "APIは5分TTLと1時間TTLの2種類を提供します。Claude Codeは認証方法に応じてTTLを自動選択します。Claudeサブスクリプションでは1時間TTLを自動的にリクエストし、APIキーやサードパーティプロバイダでは5分TTLがデフォルトです。"
+      "explanation": "APIは5分TTLと1時間TTLの2種類を提供します。Claude Codeは認証方法に応じてTTLを自動選択します。Claudeサブスクリプションでは1時間TTLを自動的にリクエストしますが、利用クレジット（usage credits）を使い始めると5分TTLに自動的に低下します。APIキーやサードパーティプロバイダでは5分TTLがデフォルトです。"
     },
     {
       "id": "token-022",
@@ -499,15 +499,15 @@
     {
       "id": "token-039",
       "level": "expert",
-      "question": "組織のEnterpriseプランにおける「effort limits」の説明として正しいものはどれですか？",
+      "question": "Claude Enterpriseプランにおける「organization effort limits」の説明として正しいものはどれですか？",
       "choices": [
         "個々のユーザーのAPIキーごとに異なるモデルを割り当てる機能である",
         "組織全体でeffortレベルの変更を完全に禁止する機能であり、`/effort`コマンド自体が使えなくなる",
-        "組織の管理者が、モデルに対して許可する最大のeffortレベルを設定できる機能である",
+        "組織の管理者がcustom roleごとにモデルの最大effortレベルを設定できる機能で、organization model restrictionsと一緒に提供されるが、Amazon Bedrock・Google Cloud・Microsoft Foundry等の一部プラットフォームでは提供されない",
         "Enterpriseプランに限らずすべてのプランで利用できる機能である"
       ],
       "correctIndex": 2,
-      "explanation": "Claude Enterpriseプランの組織管理者は、モデルに対して許可する最大のeffortレベルを設定できます。これによりユーザーが選べるeffortレベルの上限を組織側でコントロールできます。"
+      "explanation": "Claude Enterpriseプランの組織管理者は、custom roleごとにモデルへ許可する最大のeffortレベルを設定できます。この機能はorganization model restrictionsと一緒に提供され、同じプロバイダ可用性の制約に従うため、Amazon Bedrock・Google Cloud・Microsoft Foundry・Claude Platform on AWS上のセッションには適用されません。"
     },
     {
       "id": "token-040",
