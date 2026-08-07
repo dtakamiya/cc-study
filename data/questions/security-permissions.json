@@ -735,6 +735,22 @@
       "choices": ["exit 0とexit 1は同じ意味を持ち、どちらを使ってもブロックできる", "exit 2（stderrの内容がClaudeへのエラーメッセージとして渡され、ツール呼び出しがブロックされる）", "exit 1（多くのイベントで非ブロッキングエラーとして扱われ、ツール呼び出しはそのまま実行されてしまう）", "どの終了コードを使ってもフックの出力内容だけで自動的に判別されるため、終了コード自体に意味はない"],
       "correctIndex": 1,
       "explanation": "公式「Hooks reference」によると、ほとんどのフックイベントではexit 2のみがブロッキングエラーとして扱われ、PreToolUseではツール呼び出しがブロックされる。exit 1は非ブロッキングエラー扱いでツール呼び出しはそのまま実行されてしまう点に注意が必要。"
+    },
+    {
+      "id": "security-059",
+      "level": "intermediate",
+      "question": "権限モードにおける「protected paths」（.git、.claude、.vscode、.gitconfig、.npmrcなど保護対象のディレクトリ・ファイル）への書き込みについて、permissions.allowルールとの関係として正しいものはどれですか？",
+      "choices": ["allowルールで明示的に許可すれば、bypassPermissionsモード以外でも自動承認されるようになる", "protected pathsという概念はBashコマンドにのみ適用され、Write・Editツールによる変更には影響しない", ".claudeディレクトリはprotected pathsの対象外であり、他の設定ファイルのみが保護される", "bypassPermissionsモードなど一部の例外を除き、allowルールがあっても常に確認が必要になる"],
+      "correctIndex": 3,
+      "explanation": "公式「Permission modes」ページによると、protected pathsへの書き込みはbypassPermissionsモード（および一部のplanモードの状況）を除き、常に確認プロンプトが必要です。安全性チェックは設定ファイルのallowルール評価より先に行われるため、~/.claude/settings.jsonなどにEdit(.claude/**)のようなルールを書いても、この per-mode の挙動は変わりません。保護対象には.git・.claude（.claude/worktreesを除く）・.vscode・.ideaなどのディレクトリと、.gitconfig・.npmrc・.bashrcなどの設定ファイルが含まれ、リポジトリの状態やClaude Code自身の設定が誤って壊れることを防いでいます。"
+    },
+    {
+      "id": "security-060",
+      "level": "intermediate",
+      "question": "dontAskモードで、permissions.allowルールに一致するツール呼び出しであっても自動承認されず拒否される例外として正しいものはどれですか？",
+      "choices": ["dontAskモードではpermissions.allowルールに一致すれば、AskUserQuestionツールであっても常に自動承認される", "このモードでは全てのツール呼び出しについて確認プロンプトが一切表示されず即座に実行される", "AskUserQuestionツールや、組織側がrequiresUserInteractionを指定したMCPツールは、許可ルールに一致していても拒否される", "dontAskモードには他モードと異なる特別な挙動はなく、defaultモードと全く同じ確認フローをたどる"],
+      "correctIndex": 2,
+      "explanation": "公式「Permission modes」ページのdontAskモード節によると、このモードは事前承認されていない呼び出しを自動拒否しますが、permissions.allowルールに一致する呼び出しは許可されます。ただし例外として、組み込みのAskUserQuestionツールと、組織側がrequiresUserInteractionと設定したMCPツールは、許可ルールに一致していても常に拒否されます。これはCI等の非対話環境で「回答を待つ」動作自体が成立しないためで、承認が本来必要な操作を裏で自動承認してしまわないための設計です。"
     }
   ]
 }

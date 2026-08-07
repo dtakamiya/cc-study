@@ -694,6 +694,22 @@
       "choices": ["Ctrl+B", "Ctrl+Z", "Ctrl+C", "Ctrl+L"],
       "correctIndex": 0,
       "explanation": "Ctrl+Bは実行中のBashコマンドやエージェントをバックグラウンドへ移す（backgrounding）ショートカットです（tmux使用時は2回押す必要があります）。バックグラウンドで実行中のシェルやサブエージェントの一覧は/tasksコマンドで確認できます。なおCtrl+ZはUnix環境でのプロセス自体のサスペンド、Ctrl+Cは操作の中断、Ctrl+Lは画面の再描画であり、いずれもバックグラウンド化とは異なります。"
+    },
+    {
+      "id": "feature-057",
+      "level": "advanced",
+      "question": "サンドボックス化されたBashコマンドが、許可されていないネットワークホストへのアクセスなど、サンドボックスの制約が原因で失敗した場合にClaude Codeが取りうる挙動として正しいものはどれですか？",
+      "choices": ["サンドボックスの制約により失敗したタスクは自動的に破棄され、ユーザーへの通知なしにそのまま処理が終了する", "Claudeが失敗の原因を分析し、dangerouslyDisableSandboxパラメータを付けてコマンドをサンドボックス外で再実行しようと試みることがある", "失敗のたびにサンドボックス機能自体が現在のセッション全体で無効化され、以降のすべてのBashコマンドが無条件に実行される", "サンドボックスに起因する失敗は例外なくallowUnsandboxedCommandsの設定値に関わらず即座にセッションが終了する"],
+      "correctIndex": 1,
+      "explanation": "サンドボックス制約でコマンドが失敗すると、Claude Codeは失敗を分析し、dangerouslyDisableSandboxパラメータを付けてサンドボックス外で再実行を試みることがあります。この再実行は通常の権限フローを経由し、デフォルトモードでは確認プロンプトが表示され、auto modeではクラシファイアが判定します。sandbox.allowUnsandboxedCommandsをfalseに設定するとこのエスケープハッチ自体を無効化でき、その場合はすべてのコマンドがサンドボックス内で実行されるかexcludedCommandsに明示的にリストされている必要があります。"
+    },
+    {
+      "id": "feature-058",
+      "level": "intermediate",
+      "question": "プラグインにログファイルや外部サービスのステータスをバックグラウンドで監視させ、変化があった際にClaudeへ通知として届けたい場合、プラグインのどのファイルにその設定を記述しますか？",
+      "choices": [".claude-plugin/plugin.json内のwatchフィールド", "monitors/monitors.json", "hooks/hooks.json内のBackgroundWatchイベント", "settings.json内のsubagentStatusLineフィールド"],
+      "correctIndex": 1,
+      "explanation": "プラグインのルートにmonitors/monitors.jsonファイルを置くと、バックグラウンドモニターの配列を定義できます。各エントリのcommandが出力する標準出力の各行が、セッション中Claudeへの通知として届けられます。Claude Codeはプラグインが有効な間、指示なしに各モニターを自動的に起動します。なおsettings.jsonのsubagentStatusLineはプラグインが適用できるデフォルト設定の一つですが、監視機能とは無関係です。"
     }
   ]
 }
