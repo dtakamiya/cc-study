@@ -1,0 +1,201 @@
+{
+  "domain": "slash-commands",
+  "domainLabel": "スラッシュコマンド",
+  "questions": [
+    {
+      "id": "slash-001",
+      "level": "beginner",
+      "question": "会話履歴をリセットして次のタスクにコンテキストを持ち越さないために使うコマンドはどれですか？",
+      "choices": [
+        "/compact",
+        "/clear",
+        "/status",
+        "/model"
+      ],
+      "correctIndex": 1,
+      "explanation": "`/clear`は空のコンテキストで新しい会話を開始します。プロジェクトメモリ（CLAUDE.mdなど）は保持されます。コンテキストを空にせず同じ会話を続けたまま圧縮したい場合は`/compact`を使います。"
+    },
+    {
+      "id": "slash-002",
+      "level": "beginner",
+      "question": "利用可能なコマンドの一覧とヘルプを表示するコマンドはどれですか？",
+      "choices": [
+        "/help",
+        "/hooks",
+        "/status",
+        "/skills"
+      ],
+      "correctIndex": 0,
+      "explanation": "`/help`はヘルプと利用可能なコマンドの一覧を表示します。"
+    },
+    {
+      "id": "slash-003",
+      "level": "beginner",
+      "question": "現在のセッションのバージョン・モデル・アカウント・接続状況を表示するコマンドはどれですか？",
+      "choices": [
+        "/context",
+        "/usage",
+        "/doctor",
+        "/status"
+      ],
+      "correctIndex": 3,
+      "explanation": "`/status`はSettingsインターフェースのStatusタブを開き、バージョン、モデル、アカウント、接続状況などの現在のセッション状態を表示します。応答が生成中でも割り込まずに即座に実行される点も特徴です。"
+    },
+    {
+      "id": "slash-004",
+      "level": "beginner",
+      "question": "使用するAIモデルを切り替えるコマンドはどれですか？",
+      "choices": [
+        "/effort",
+        "/model",
+        "/config",
+        "/advisor"
+      ],
+      "correctIndex": 1,
+      "explanation": "`/model [model]`で使用するモデルを切り替え、新しいセッションのデフォルトとしても保存されます。引数なしで実行するとピッカーが開きます。"
+    },
+    {
+      "id": "slash-005",
+      "level": "beginner",
+      "question": "メッセージ入力欄で`/`だけを入力したときの挙動として正しいものはどれですか？",
+      "choices": [
+        "直前に実行したコマンドがそのまま再実行される",
+        "そのセッションで利用可能なコマンドの一覧が表示される",
+        "何も起こらず、通常の文字として扱われる",
+        "自動的に`/help`が実行され別画面に遷移する"
+      ],
+      "correctIndex": 1,
+      "explanation": "`/`を入力するとそのセッションで利用可能なコマンドが表示されます。続けて文字を入力するとコマンドが名前でフィルタリングされます。コマンドはメッセージの先頭でのみ認識されます。"
+    },
+    {
+      "id": "slash-006",
+      "level": "beginner",
+      "question": "コマンド名の直後に続けて入力した文字列は、そのコマンドにとってどのように扱われますか？",
+      "choices": [
+        "無視され、コマンドの実行結果には一切影響しない",
+        "そのコマンドの引数として扱われる",
+        "次に送信するメッセージとして自動的にキューされる",
+        "自動的にファイルパスとして解釈され読み込まれる"
+      ],
+      "correctIndex": 1,
+      "explanation": "コマンドはメッセージの先頭でのみ認識され、コマンド名に続くテキストはその引数になります。例えば`/clear my-task`のように名前を渡すこともできます。"
+    },
+    {
+      "id": "slash-007",
+      "level": "beginner",
+      "question": "会話を空にせず、これまでの会話を要約してコンテキストの空きを作りたい場合に使うコマンドはどれですか？",
+      "choices": [
+        "/clear",
+        "/rewind",
+        "/reset",
+        "/compact"
+      ],
+      "correctIndex": 3,
+      "explanation": "`/compact [instructions]`はこれまでの会話を要約してコンテキストの空きを作ります。会話を完全に空にする`/clear`とは異なり、要約という形で内容を引き継ぎます。要約の際に注目してほしい点を指示として渡すこともできます。"
+    },
+    {
+      "id": "slash-008",
+      "level": "beginner",
+      "question": "Claudeが応答を生成している最中に送信したコマンドは、通常どのように扱われますか？",
+      "choices": [
+        "エラーとして拒否され、再入力を求められる",
+        "現在の応答が終わるまでキューされ、その後に実行される",
+        "現在生成中の応答を即座に中断してすぐに実行される",
+        "無視され、何も実行されない"
+      ],
+      "correctIndex": 1,
+      "explanation": "Claudeが応答している最中にコマンドを送信すると、通常はキューされ現在のターンが終わってから実行されます。ただし`/status`・`/tasks`・`/usage`のように、応答を中断せず即座に実行される例外的なコマンドもあります。"
+    },
+    {
+      "id": "slash-009",
+      "level": "beginner",
+      "question": "現在のセッションのコスト、プランの利用制限、アクティビティ統計を表示するコマンドはどれですか？",
+      "choices": [
+        "/usage",
+        "/config",
+        "/status",
+        "/context"
+      ],
+      "correctIndex": 0,
+      "explanation": "`/usage`はセッションのコスト、プランの利用制限、アクティビティ統計を表示します。Pro/Max/Team/Enterpriseプランでは、skill・subagent・plugin・MCPサーバーごとの利用内訳も表示されます。`/cost`と`/stats`はそのエイリアスです。"
+    },
+    {
+      "id": "slash-010",
+      "level": "beginner",
+      "question": "現在のコンテキストウィンドウの使用状況を色分けされたグリッドで可視化するコマンドはどれですか？",
+      "choices": [
+        "/context",
+        "/status",
+        "/doctor",
+        "/memory"
+      ],
+      "correctIndex": 0,
+      "explanation": "`/context [all]`は現在のコンテキスト使用量を色分けされたグリッドとして可視化し、コンテキストを消費しているツールやメモリの肥大化についての最適化提案も表示します。"
+    },
+    {
+      "id": "slash-011",
+      "level": "beginner",
+      "question": "テーマ、モデル、出力スタイルなどの設定インターフェースを開くコマンドはどれですか？",
+      "choices": [
+        "/theme",
+        "/status",
+        "/config",
+        "/model"
+      ],
+      "correctIndex": 2,
+      "explanation": "`/config [key=value ...]`はSettingsインターフェースを開き、テーマ、モデル、出力スタイルなどの各種設定を調整できます。`key=value`の形式を渡すと、インターフェースを開かずに直接設定できます。エイリアスは`/settings`です。"
+    },
+    {
+      "id": "slash-012",
+      "level": "beginner",
+      "question": "許可（allow）・確認（ask）・拒否（deny）のツール権限ルールを管理するコマンドはどれですか？",
+      "choices": [
+        "/permissions",
+        "/sandbox",
+        "/hooks",
+        "/mcp"
+      ],
+      "correctIndex": 0,
+      "explanation": "`/permissions`はツール権限のallow・ask・denyルールを管理する対話的なダイアログを開きます。スコープごとのルール表示、ルールの追加・削除、作業ディレクトリの管理などができます。エイリアスは`/allowed-tools`です。"
+    },
+    {
+      "id": "slash-013",
+      "level": "beginner",
+      "question": "スターター用の`CLAUDE.md`を生成するために、新しいプロジェクトで最初に実行するとよいコマンドはどれですか？",
+      "choices": [
+        "/memory",
+        "/init",
+        "/config",
+        "/doctor"
+      ],
+      "correctIndex": 1,
+      "explanation": "リポジトリでの最初のセッションでは、`/init`を実行してスターター用の`CLAUDE.md`を生成することが案内されています。その後`/memory`で内容を編集・改善していく流れになります。"
+    },
+    {
+      "id": "slash-014",
+      "level": "beginner",
+      "question": "IDによる指定や一覧からの選択で、以前の会話を再開するコマンドはどれですか？",
+      "choices": [
+        "/branch",
+        "/fork",
+        "/rewind",
+        "/resume"
+      ],
+      "correctIndex": 3,
+      "explanation": "`/resume [session]`はIDや名前を指定するか、セッション一覧から選ぶことで以前の会話を再開します。エイリアスは`/continue`です。"
+    },
+    {
+      "id": "slash-015",
+      "level": "beginner",
+      "question": "CLIのセッションを終了するコマンドはどれですか？",
+      "choices": [
+        "/logout",
+        "/stop",
+        "/exit",
+        "/reset"
+      ],
+      "correctIndex": 2,
+      "explanation": "`/exit`はCLIを終了します。アタッチ中のバックグラウンドセッションではデタッチのみを行い、セッション自体は動作し続けます。エイリアスは`/quit`です。"
+    }
+  ]
+}
