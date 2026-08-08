@@ -791,6 +791,30 @@
       "choices": ["example.orgのようにドット間の1区間だけを置き換える形にはマッチするが、example.evil.comのようにドットをまたぐ置き換えにはマッチしない", "ワイルドカードは常にサブドメインを含む任意の深さの文字列にマッチするため、example.evil.comにもマッチしてしまう", "末尾に*を置く形は構文として認識されず、設定時にエラーで起動が拒否される", "このルールはexample.comというドメイン単体にのみマッチし、example.orgのような別のTLDにはマッチしない"],
       "correctIndex": 0,
       "explanation": "先頭の*.または単独の*以外の位置にあるワイルドカードは、2つのドットの間のテキストとのみマッチします。WebFetch(domain:example.*)はexample.org（*がorg）にはマッチしますが、example.evil.comのようにドットをまたぐ必要があるものにはマッチしません。末尾ワイルドカード悪用によるなりすましドメイン登録を防ぐ設計です。"
+    },
+    {
+      "id": "security-066",
+      "level": "intermediate",
+      "question": "2026年8月14日以降、Pro・Max・Teamプランの新規セッションにおいて、権限モードのデフォルトがどのように変わりますか？",
+      "choices": ["auto modeがデフォルトの権限モードになるが、ユーザーが独自に設定したデフォルトモードや組織側の管理設定があればそれが優先される", "全プランで一律にbypassPermissionsモードがデフォルトとなり、確認プロンプトは原則発生しなくなる", "defaultモード（Manual）が引き続きデフォルトのままであり、今後もこの方針が変わる予定はない", "dontAskモードがデフォルトとなり、事前に許可ルールを設定していないツール呼び出しはすべて自動的に拒否されるようになる"],
+      "correctIndex": 0,
+      "explanation": "公式ドキュメント「Choose a permission mode」には、2026年8月14日よりPro・Max・Teamプランの新規セッションでauto modeがデフォルトの権限モードになると明記されています。ただしユーザー自身が設定したデフォルトモードがある場合はワンタイムの切り替え確認を承諾しない限りそのまま維持され、組織が管理するデフォルトがある場合はそちらが変更されずに優先されます。"
+    },
+    {
+      "id": "security-067",
+      "level": "advanced",
+      "question": "Windows環境でClaude Codeを利用する際、公式ドキュメントがセキュリティ上の理由から避けるよう明示的に警告している設定はどれですか？",
+      "choices": ["`.claude/settings.local.json`をGit管理対象外に設定すること", "Bashツールの`sandbox.filesystem.allowWrite`で作業ディレクトリ外への書き込みを許可すること", "WebDAVを有効化したり、`\\\\*`のようなWebDAVサブディレクトリを含みうるパスへのアクセスをClaude Codeに許可したりすること", "`acceptEdits`モードで`mkdir`や`touch`などの一般的なファイル操作コマンドを自動承認すること"],
+      "correctIndex": 2,
+      "explanation": "公式「Security」ページには、Windows上でWebDAVを有効にしたり`\\\\*`のようなWebDAVサブディレクトリを含みうるパスへのアクセスを許可したりしないことが推奨されています。WebDAVはMicrosoftによって非推奨とされたセキュリティリスクのある機能であり、これを有効化するとClaude Codeが権限システムを迂回してリモートホストへのネットワークリクエストを発生させてしまう可能性があるためです。"
+    },
+    {
+      "id": "security-068",
+      "level": "intermediate",
+      "question": "`.mcp.json`や`.claude.json`ファイルへの書き込みについて、権限モードの扱いとして正しいものはどれですか？",
+      "choices": ["これらは通常のファイルと同様に扱われ、作業ディレクトリ内であれば`acceptEdits`モードで確認なしに書き込める", "`.mcp.json`と`.claude.json`はprotected filesに含まれており、`bypassPermissions`モードなどの例外を除き常に確認が必要になる", "これらのファイルはClaude Codeの権限システムの対象外であり、いかなるモードでも一切変更できない", "`.mcp.json`のみがprotected filesの対象であり、`.claude.json`は通常のファイルとして扱われる"],
+      "correctIndex": 1,
+      "explanation": "公式「Choose a permission mode」ページのProtected pathsの一覧には、`.git`や`.claude`ディレクトリに加え、`.mcp.json`・`.claude.json`もprotected filesとして明記されています。これらへの書き込みは`bypassPermissions`モード（および一部のplanモードの状況）を除き常に確認プロンプトが必要で、`permissions.allow`ルールで明示的に許可していても、この安全性チェックの方が先に評価されるため挙動は変わりません。"
     }
   ]
 }
