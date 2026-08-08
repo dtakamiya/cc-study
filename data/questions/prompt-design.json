@@ -772,14 +772,6 @@
       "explanation": "claude -pは非対話モード（headless/print mode）でClaudeを実行し、CIや事前コミットフック、バッチ処理などで標準入出力を通常のUnixツールと同様に扱えます。対話モードの全機能の代替ではなく、権限は--permission-mode・--allowed-tools・--permission-prompt-toolといったフラグで個別に制御し、出力形式は--output-formatで指定するというように、それぞれ別のフラグで制御する仕組みです。"
     },
     {
-      "id": "prompt-064",
-      "level": "beginner",
-      "question": "前回の作業の続きを、コンテキストを再度説明し直すことなく再開したい場合、ターミナルで使うコマンドとして適切なものはどれですか？",
-      "choices": ["`claude --continue`（現在のディレクトリで最も新しいセッションを自動的に再開する）", "`claude --new`（常に新規セッションのみを開始し、過去の会話は一切参照できない）", "Claude Codeにはセッションを再開する仕組みはなく、毎回最初から会話し直す必要がある", "`claude --resume`は選択肢を提示せず、常にランダムな過去セッションを開く"],
-      "correctIndex": 0,
-      "explanation": "`claude --continue`は現在のディレクトリで最も新しいセッションを自動的に再開します。該当セッションがない場合は`No conversation found to continue`と表示されて終了します。複数の過去セッションから選びたい場合は`claude --resume`（または起動中のセッション内での`/resume`）を使うと、一覧から選択するピッカーが表示されます。"
-    },
-    {
       "id": "prompt-065",
       "level": "intermediate",
       "question": "プロンプト中で`@src/auth/login.js`のように特定ファイルを`@`参照すると、指定したファイルの内容以外にも自動的にコンテキストへ追加されるものはどれですか？",
