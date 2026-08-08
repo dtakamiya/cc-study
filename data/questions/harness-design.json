@@ -161,6 +161,196 @@
       ],
       "correctIndex": 3,
       "explanation": "CLAUDE.mdの指示はコンテキストとしてClaudeの判断を導くものであり厳密な強制力はありません。特定の操作を確実にブロックしたい場合はパーミッション設定（`permissions.deny`）やフックのような、Claudeの判断に関わらずクライアント側で強制される仕組みを使う必要があります。"
+    },
+    {
+      "id": "harness-016",
+      "level": "intermediate",
+      "question": "公式ドキュメントが推奨するCLAUDE.mdファイル1つあたりの目安の行数と、それを超えた場合に生じるとされる問題の組み合わせとして正しいものはどれですか？",
+      "choices": [
+        "50行を目安とし、超えるとJSONパースエラーになる",
+        "200行を目安とし、超えるとより多くのコンテキストを消費し指示への追従性が下がる",
+        "1000行を目安とし、超えるとClaude Codeの起動自体が失敗する",
+        "行数の目安は設けられておらず、内容の質だけが問題になる"
+      ],
+      "correctIndex": 1,
+      "explanation": "公式ドキュメントは「target under 200 lines per CLAUDE.md file」とし、ファイルが長くなるほどコンテキストを消費し追従性（adherence）が下がるとしています。大きくなりすぎた場合はパス限定ルール（`.claude/rules/`の`paths`フロントマター）で必要なときだけ読み込むよう分割することが推奨されています。"
+    },
+    {
+      "id": "harness-017",
+      "level": "intermediate",
+      "question": "CLAUDE.mdに追記すべきタイミングとして公式ドキュメントが挙げていないものはどれですか？",
+      "choices": [
+        "Claudeが同じ間違いを2回目も繰り返したとき",
+        "コードレビューで、このコードベースについてClaudeが知っておくべきだった点が指摘されたとき",
+        "前回のセッションでも入力したのと同じ訂正や補足を今回もチャットに入力しているとき",
+        "Claudeがテストに1回失敗し、次の試行で自力修正できたとき"
+      ],
+      "correctIndex": 3,
+      "explanation": "公式ドキュメントは「Claudeが同じ間違いを2回目も繰り返したとき」「コードレビューで指摘が出たとき」「同じ訂正を毎回チャットに入力しているとき」「新しいチームメンバーが生産的になるために同じ文脈が必要なとき」をCLAUDE.md追記のタイミングとして挙げています。1回の失敗をClaude自身がその場で修正できたケースは、繰り返し発生していない限り追記の判断基準には含まれません。"
+    },
+    {
+      "id": "harness-018",
+      "level": "intermediate",
+      "question": "CLAUDE.mdの記述として「具体的すぎて検証可能」な例に該当するのはどれですか？",
+      "choices": [
+        "「2スペースインデントを使用する」「コミット前に`npm test`を実行する」",
+        "「コードをきれいにフォーマットしてください」",
+        "「ファイルは整理された状態を保ってください」",
+        "「テストをちゃんと書いてください」"
+      ],
+      "correctIndex": 0,
+      "explanation": "公式ドキュメントは具体性（Specificity）の例として「Use 2-space indentation」を「Format code properly」より、「Run `npm test` before committing」を「Test your changes」より推奨しています。検証可能な具体的表現の方がClaudeの遵守率が高くなるためです。"
+    },
+    {
+      "id": "harness-019",
+      "level": "intermediate",
+      "question": "プロジェクトの作業ディレクトリの上位階層にある複数のCLAUDE.mdファイルが存在する場合、それらがコンテキストに読み込まれる順序についての説明として正しいものはどれですか？",
+      "choices": [
+        "最も近い（作業ディレクトリに近い）ファイルのみが読み込まれ、他は無視される",
+        "全ファイルがファイルシステムのルートから作業ディレクトリに向かって連結され、作業ディレクトリに近いものほど後（最後）に読み込まれる",
+        "ランダムな順序で連結される",
+        "アルファベット順にファイルパスでソートされて連結される"
+      ],
+      "correctIndex": 1,
+      "explanation": "公式ドキュメントによれば、上位階層のCLAUDE.mdファイルは互いを上書きするのではなく全て連結され、ファイルシステムのルートから作業ディレクトリに向かう順で並びます。つまり起動したディレクトリに近い指示ほど後に（最後の方に）読み込まれます。各ディレクトリ内では`CLAUDE.local.md`が`CLAUDE.md`の後に追加されます。"
+    },
+    {
+      "id": "harness-020",
+      "level": "intermediate",
+      "question": "サブディレクトリにある（作業ディレクトリより下の階層の）CLAUDE.mdファイルは、いつコンテキストに読み込まれますか？",
+      "choices": [
+        "セッション起動時に、上位階層のファイルと同時にすべて読み込まれる",
+        "ユーザーが明示的に`/memory`コマンドで指定したときのみ読み込まれる",
+        "Claudeがそのサブディレクトリ配下のファイルを読み取ったときにオンデマンドで読み込まれる",
+        "サブディレクトリのCLAUDE.mdはそもそも認識されず無視される"
+      ],
+      "correctIndex": 2,
+      "explanation": "作業ディレクトリより上位階層のCLAUDE.mdは起動時に全文読み込まれますが、サブディレクトリ配下のCLAUDE.mdはClaudeがそのサブディレクトリ内のファイルを読むタイミングでオンデマンドに読み込まれます。これによりセッション開始直後から全プロジェクトの指示を一度に読み込む必要がなくなります。"
+    },
+    {
+      "id": "harness-021",
+      "level": "intermediate",
+      "question": "CLAUDE.mdファイル内で`@path/to/file`という記法を使うとどうなりますか？",
+      "choices": [
+        "単なるコメントとして無視される",
+        "指定したファイルの内容が展開されて、起動時にCLAUDE.mdと一緒にコンテキストへ読み込まれる（最大4段階まで再帰可能）",
+        "Claudeがそのパスのファイルを自動的に削除する",
+        "そのパスをスキルとして登録する"
+      ],
+      "correctIndex": 1,
+      "explanation": "CLAUDE.mdは`@path/to/import`記法で他のファイルをインポートできます。インポートされたファイルは展開され、参照元のCLAUDE.mdと一緒に起動時にコンテキストへ読み込まれます。インポートは最大4段階まで再帰的にネストできます。バッククォートで囲むとインポートされず単なる文字列として扱われます。"
+    },
+    {
+      "id": "harness-022",
+      "level": "intermediate",
+      "question": "`.claude/rules/`ディレクトリに置くルールファイルのうち、YAMLフロントマターに`paths`フィールドを指定しなかった場合の読み込みタイミングはどれですか？",
+      "choices": [
+        "`paths`フィールドがないルールは常に無視され、読み込まれない",
+        "Claudeが明示的に`/skill-name`で呼び出したときだけ読み込まれる",
+        "リポジトリ内の全ファイルへの変更が検知されるたびに再読み込みされる",
+        "起動時に、`.claude/CLAUDE.md`と同じ優先度で読み込まれる"
+      ],
+      "correctIndex": 3,
+      "explanation": "公式ドキュメントは「Rules without `paths` frontmatter are loaded at launch with the same priority as `.claude/CLAUDE.md`」と説明しています。`paths`を指定した場合は、そのパターンに一致するファイルをClaudeが読み取ったときだけ条件付きで読み込まれます。"
+    },
+    {
+      "id": "harness-023",
+      "level": "intermediate",
+      "question": "`.claude/rules/api-design.md`のYAMLフロントマターに`paths: [\"src/api/**/*.ts\"]`と指定した場合の挙動として正しいものはどれですか？",
+      "choices": [
+        "Claudeが起動した瞬間に無条件で読み込まれる",
+        "Claudeが`src/api/`配下の`.ts`ファイルを読み取ったときにだけ、そのルールが条件付きでコンテキストに読み込まれる",
+        "`src/api/`ディレクトリ以外のファイルを編集しようとすると常にエラーになる",
+        "このルールはCLAUDE.mdの内容を完全に置き換える"
+      ],
+      "correctIndex": 1,
+      "explanation": "`paths`フロントマターを指定したルールは、そのグロブパターンに一致するファイルをClaudeが扱う（読み取る）ときだけ条件付きで読み込まれる「パス限定ルール」です。無関係な作業をしている間はコンテキストに含まれないため、常時読み込みのCLAUDE.mdに比べてコンテキストを節約できます。"
+    },
+    {
+      "id": "harness-024",
+      "level": "intermediate",
+      "question": "スキルを作成すべきタイミングとして公式ドキュメントが挙げているものはどれですか？",
+      "choices": [
+        "特定のBashコマンドの実行を禁止したいとき",
+        "同じ指示・チェックリスト・多段階の手順を繰り返しチャットに貼り付けている、またはCLAUDE.mdの一節が事実の記述ではなく手順（procedure）に育ってしまったとき",
+        "組織全体に一律で適用するセキュリティポリシーを配布したいとき",
+        "特定のツールへのアクセス権を完全に無効化したいとき"
+      ],
+      "correctIndex": 1,
+      "explanation": "公式ドキュメントは「Create a skill when you keep pasting the same instructions, checklist, or multi-step procedure into chat, or when a section of CLAUDE.md has grown into a procedure rather than a fact.」としています。スキル本文はCLAUDE.mdと異なり使われるときだけ読み込まれるため、長い参照資料を置いてもほぼコストがかかりません。"
+    },
+    {
+      "id": "harness-025",
+      "level": "intermediate",
+      "question": "SKILL.mdのYAMLフロントマターにおいて、Claudeが自動的にそのスキルを読み込むかどうかを判断する際に使われる、公式ドキュメントが「推奨される唯一の必須フィールド」としているものはどれですか？",
+      "choices": ["`description`", "`name`", "`allowed-tools`", "`disable-model-invocation`"],
+      "correctIndex": 0,
+      "explanation": "公式ドキュメントは「All fields are optional. Only `description` is recommended so Claude knows when to use the skill.」としています。`description`はClaudeがそのスキルをいつ使うべきかを判断するための手がかりになるため、実質的に最も重要なフィールドです。"
+    },
+    {
+      "id": "harness-026",
+      "level": "intermediate",
+      "question": "SKILL.mdのフロントマターに`disable-model-invocation: true`を設定すると、そのスキルの呼び出され方はどう変わりますか？",
+      "choices": [
+        "スキル自体が完全に無効化され、`/スキル名`でも呼び出せなくなる",
+        "Claudeが会話の流れから自動的にそのスキルを選んで実行することはできなくなり、ユーザーが明示的に`/スキル名`で呼び出したときのみ実行される",
+        "スキルの実行がサブエージェントとしてではなく必ずメインの会話スレッドで行われるようになる",
+        "スキルがすべてのツールへのアクセス権を失う"
+      ],
+      "correctIndex": 1,
+      "explanation": "`disable-model-invocation`はClaudeによるモデル主導の自動呼び出しを無効化するフロントマターフィールドです。これを`true`にすると、そのスキルはユーザーが明示的に`/スキル名`とタイプしたときだけ実行され、Claudeが会話の文脈から勝手に判断して起動することはなくなります。"
+    },
+    {
+      "id": "harness-027",
+      "level": "intermediate",
+      "question": "settings.jsonのパーミッション設定における`permissions.allow`と`permissions.deny`が複数の設定スコープ（Managed/User/Project/Local）にまたがって定義されている場合の一般的な扱いとして正しいものはどれですか？",
+      "choices": [
+        "後から読み込まれたスコープの値が、先に読み込まれた値を完全に上書きする",
+        "どのスコープも影響を持たず、常にProjectスコープの値だけが使われる",
+        "パーミッション設定はスコープの概念自体を持たず、常に単一のファイルにまとめる必要がある",
+        "スコープ間で上書きではなくマージされ、セキュリティに関わる設定では複数スコープの中でより制限的な値が優先される"
+      ],
+      "correctIndex": 3,
+      "explanation": "多くの設定項目はスコープの優先順位に従って上書きされますが、`permissions`のallow/denyルールは他の設定と異なり、スコープ間で単純に上書きされるのではなくマージされます。特にセキュリティに関わる制限は、複数スコープの中でより制限的な（安全側の）値が採用される設計になっています。"
+    },
+    {
+      "id": "harness-028",
+      "level": "intermediate",
+      "question": "サブエージェントに関する説明として、公式ドキュメントの内容と一致するものはどれですか？",
+      "choices": [
+        "サブエージェントは常にメインの会話と同じコンテキストウィンドウを共有し、権限もメインと完全に同一である",
+        "サブエージェントは自分専用のコンテキストウィンドウ・カスタムシステムプロンプト・ツールアクセス権・独立した権限を持ち、独立して作業した結果の要約だけをメインの会話に返す",
+        "サブエージェントはCLAUDE.mdやスキルを一切参照できない",
+        "サブエージェントは必ずユーザーが手動でコマンドラインから個別に起動しなければならない"
+      ],
+      "correctIndex": 1,
+      "explanation": "公式ドキュメントは「Each subagent runs in its own context window with a custom system prompt, specific tool access, and independent permissions.」としています。検索結果やログなど、メインの会話に残したくない大量の情報を扱うサブタスクを任せ、要約だけを受け取ることでメインのコンテキストを節約できます。"
+    },
+    {
+      "id": "harness-029",
+      "level": "intermediate",
+      "question": "「認証モジュール・データベースモジュール・APIモジュールをそれぞれ別々に調査したい」というタスクで、公式ドキュメントが示す効率的な進め方として最も適切なものはどれですか？",
+      "choices": [
+        "1つのサブエージェントに3つのモジュールを順番に調査させ、都度メインの会話に詳細な調査結果を全て貼り付ける",
+        "CLAUDE.mdに3つのモジュールの仕様を全て書き出しておき、毎回読み込ませる",
+        "独立した調査であれば、複数のサブエージェントを同時に立ち上げてそれぞれのモジュールを並行して調査させ、Claudeが結果を統合する",
+        "settings.jsonのpermissions.allowに3つのモジュールへのアクセスを個別に許可設定する"
+      ],
+      "correctIndex": 2,
+      "explanation": "公式ドキュメントは「For independent investigations, spawn multiple subagents to work simultaneously」とし、調査経路が互いに依存しない場合は複数のサブエージェントを並行して立ち上げ、各自が独立したコンテキストで調査した後にClaudeが結果を統合するアプローチを推奨しています。ただし各サブエージェントが詳細な結果を大量に返すと、統合時にメインの会話のコンテキストを消費する点には注意が必要だとも述べています。"
+    },
+    {
+      "id": "harness-030",
+      "level": "intermediate",
+      "question": "「特定のディレクトリ配下のファイルを編集するときだけ適用したいAPI設計ルール」と「プロジェクト全体に常時適用したいビルドコマンドや命名規則」を書き分ける場合、公式ドキュメントに沿った組み合わせとして正しいものはどれですか？",
+      "choices": [
+        "両方とも`~/.claude/CLAUDE.md`（ユーザースコープ）に書く",
+        "前者は`paths`フロントマター付きの`.claude/rules/`配下のファイル、後者はプロジェクトのCLAUDE.md（`./CLAUDE.md`または`./.claude/CLAUDE.md`）に書く",
+        "両方ともSKILL.mdの`allowed-tools`フィールドに書く",
+        "前者はsettings.jsonの`env`フィールド、後者はCLAUDE.local.mdに書く"
+      ],
+      "correctIndex": 1,
+      "explanation": "毎セッション保持すべき事実（ビルドコマンド・命名規則など）はプロジェクトのCLAUDE.mdに書き、コードベースの一部にしか関係しない条件付きの指示は`paths`フロントマターを付けた`.claude/rules/`配下のファイルに書くのが公式ドキュメントの推奨する使い分けです。これにより無関係な作業中は不要なルールがコンテキストに載らず、CLAUDE.mdも肥大化しません。"
     }
   ]
 }
