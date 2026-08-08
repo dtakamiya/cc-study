@@ -6,6 +6,7 @@ export const DOMAINS = [
   'prompt-design',
   'security-permissions',
   'token-efficiency',
+  'slash-commands',
 ];
 
 export const DOMAIN_LABELS = {
@@ -14,6 +15,7 @@ export const DOMAIN_LABELS = {
   'prompt-design': 'プロンプト設計・協働作法',
   'security-permissions': '安全性・権限管理',
   'token-efficiency': 'トークン効率・コスト管理',
+  'slash-commands': 'スラッシュコマンド',
 };
 
 export const QUESTIONS_PER_STAGE = 10;
