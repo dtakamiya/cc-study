@@ -29,6 +29,12 @@ const SUGGESTIONS = {
     advanced: 'キャッシュのTTLやMCPツールの遅延ロードの仕組みを理解し、hookやCLAUDE.mdの設計でcontextを削減する工夫をしてみましょう。',
     expert: '`/usage`のブレークダウンを活用して使用量の内訳を把握し、組織のスペンド管理やeffortレベルの調整によるコスト最適化に取り組みましょう。',
   },
+  'slash-commands': {
+    beginner: 'まずは`/help`でコマンド一覧を確認し、`/clear`や`/status`など基本コマンドを実際に打って挙動を確かめてみましょう。',
+    intermediate: '`/compact`と`/clear`の違い、`/resume`や`/context`など似た用途のコマンドの使い分けを整理してみましょう。',
+    advanced: '`/permissions`や`/agents`、`/mcp`など設定・サブシステム管理系のコマンドを実際に操作し、引数の指定方法まで確認してみましょう。',
+    expert: '非対話モードでのコマンドの扱いや、あまり使われないコマンドの仕様まで公式ドキュメントで確認し、運用の幅を広げましょう。',
+  },
 };
 
 const FALLBACK_SUGGESTION = '基礎から着実に復習し、公式ドキュメントで該当領域の機能を確認してみましょう。';
