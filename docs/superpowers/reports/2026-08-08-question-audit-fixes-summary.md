@@ -20,7 +20,7 @@
 
 | 領域 | 修正前 | 修正後 | 差分 |
 |---|---|---|---|
-| harness-design | 28件 | 15件 | advanced 13件が消滅（beginner 7 + intermediate 8 に整理） |
+| harness-design | 28件 | 15件 | advanced 13件が消滅。残る15件の内訳は beginner 7 + intermediate 8（いずれも本計画の対象外） |
 | token-efficiency | 11件 | 2件 | 対象9件が消滅。残るは `token-001`（比率0.60）と `token-025`（比率0.58）のみ |
 | prompt-design | 6件 | 5件 | `prompt-017` が消滅 |
 | basic-operations | 15件 | 15件 | 対象外・変化なし |
