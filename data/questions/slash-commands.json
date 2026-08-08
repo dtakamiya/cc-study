@@ -781,6 +781,22 @@
       ],
       "correctIndex": 2,
       "explanation": "`/doctor`はチェックイン済みの`CLAUDE.md`ファイルをトリムし、ディレクトリ構成・依存関係一覧・アーキテクチャ概要のようにコードベースから導出できる記述を削る一方、ツールの既定動作と異なる注意点・設計判断の理由・規約は残します。常時読み込まれる記述のうち残す価値のあるものは、オンデマンドで読み込まれるスキルやネストした`CLAUDE.md`に移行されます。このトリムチェックにはClaude Code v2.1.206以降が必要です。"
+    },
+    {
+      "id": "slash-061",
+      "level": "advanced",
+      "question": "カスタムスキル（`.claude/skills/`または`.claude/commands/`）のfrontmatterで、Claudeがそのスキルを自動的にロードしないようにし、`/name`で手動起動する運用にするために使うフィールドはどれですか？",
+      "choices": ["`user-invocable: false`", "`disable-model-invocation: true`", "`context: fork`", "`disallowed-tools: all`"],
+      "correctIndex": 1,
+      "explanation": "`disable-model-invocation: true`を設定すると、Claudeがそのスキルを自動的にロードしなくなり、`/name`で手動起動するワークフロー専用にできます。デフォルトは`false`です。また、サブエージェントへのプリロード対象からも除外されます。なお`user-invocable: false`は逆に「モデルからは呼べるが`/`メニューには表示しない」設定であり、`disable-model-invocation`とは意味が逆になる点に注意が必要です。"
+    },
+    {
+      "id": "slash-062",
+      "level": "expert",
+      "question": "カスタムスキルの本文で使える`$1`という文字列置換の実際の意味として正しいものはどれですか？",
+      "choices": ["`$ARGUMENTS[1]`のショートハンドであり、0始まりのインデックスなので渡された引数のうち2番目を指す", "渡された引数のうち1番目（先頭）を指しており、多くのプログラミング言語とは異なり1始まりのインデックス表記が採用されている", "`arguments`フロントマターで名前付きの宣言を明示的に行わない限り、常に空文字列として展開される仕様になっている", "現在実行中のセッションIDの下1桁を表す、Claude Code内部専用の特殊変数として扱われる"],
+      "correctIndex": 0,
+      "explanation": "公式ドキュメントによると`$N`は`$ARGUMENTS[N]`のショートハンドで、インデックスは0始まりです。そのため`$0`が1番目（最初）の引数、`$1`が2番目の引数を指します。名前付き引数を使いたい場合は、`arguments`フロントマター（例:`arguments: [issue, branch]`）で宣言すると`$issue`・`$branch`のような名前付きプレースホルダに置き換えられます。"
     }
   ]
 }
