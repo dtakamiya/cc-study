@@ -553,13 +553,13 @@
       "level": "advanced",
       "question": "自作のアプリケーションやスクリプトからプログラム的にClaude Codeを呼び出し、エージェント機能を組み込みたい場合に使う仕組みはどれですか？",
       "choices": [
-        "Claude Code SDK",
-        "スラッシュコマンドの直接編集",
-        "ステータスラインのカスタムスクリプト",
-        "settings.jsonのhooksフィールド"
+        "Claude Agent SDK（旧Claude Code SDK）",
+        "スラッシュコマンドの直接編集によるカスタマイズ",
+        "ステータスラインのカスタムスクリプト記述方法",
+        "settings.jsonのhooksフィールドの設定管理"
       ],
       "correctIndex": 0,
-      "explanation": "Claude Code SDKを使うと、対話的なCLIとしてだけでなく、独自のプログラムやパイプラインからClaude Codeのエージェント機能を呼び出して制御できます。"
+      "explanation": "Claude Agent SDK（かつてClaude Code SDKと呼ばれていたもの）を使うと、対話的なCLIとしてだけでなく、独自のプログラムやパイプラインからエージェント機能を呼び出して制御できます。名称はClaude Codeに限定されないエージェント基盤であることを示すためAgent SDKへ改称されました。"
     },
     {
       "id": "feature-044",
