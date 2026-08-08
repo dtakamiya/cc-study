@@ -1,6 +1,6 @@
 # 問題JSONのスキーマ
 
-`data/questions/*.json` の構造。5ファイル共通のフォーマット。
+`data/questions/*.json` の構造。全ファイル共通のフォーマット。
 
 ## ファイルトップレベル
 
@@ -13,7 +13,7 @@
 ```
 
 - `domain`: ファイル名から`.json`を除いた文字列と一致させる（例: `basic-operations.json` → `"basic-operations"`）
-- `domainLabel`: 日本語の領域名。既存5ファイルから変更しない
+- `domainLabel`: 日本語の領域名。既存ファイルから変更しない
 - `questions`: 問題オブジェクトの配列
 
 ## 問題オブジェクト
@@ -45,6 +45,16 @@
 
 ## idのドメインprefix規約
 
+prefixは各ドメインファイルの`questions`配列内で既存の`id`が使っている接頭辞
+（`-`区切りの最初のセグメント）をそのまま踏襲する。新規ドメインを追加する場合は
+`domain`名の最初の単語（例: `slash-commands` → `slash-`）を採用する。
+対象領域は`data/questions/`配下のファイル一覧から動的に確認すること
+（このスキル内にドメイン一覧をハードコードしない）。
+
+以下の表は非権威的な参考例であり、新規ドメイン追加時にこの表を更新する運用は
+前提としない。ドメインとprefixの正は常に`data/questions/*.json`のファイル一覧と
+各ファイル内の既存`id`である（2026-08-08時点の例）:
+
 | ドメイン | prefix | ファイル |
 |---|---|---|
 | 基本操作・CLI使用法 | `basic-` | `basic-operations.json` |
@@ -52,6 +62,7 @@
 | プロンプト設計・協働作法 | `prompt-` | `prompt-design.json` |
 | 安全性・権限管理 | `security-` | `security-permissions.json` |
 | トークン効率・コスト管理 | `token-` | `token-efficiency.json` |
+| スラッシュコマンド | `slash-` | `slash-commands.json` |
 
 新規問題の`id`は、対象ファイル内の既存最大連番の次の番号を3桁ゼロ埋めで採番する
 （例: `basic-047`が最大なら次は`basic-048`）。
