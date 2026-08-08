@@ -283,7 +283,7 @@ test('countUnreviewedByStage は全ステージのキーを持ち、該当なし
   const counts = countUnreviewedByStage(createEmptyReview());
   assert.equal(counts['security-permissions']['advanced'], 0);
   assert.equal(counts['basic-operations']['beginner'], 0);
-  assert.equal(Object.keys(counts).length, 6);
+  assert.equal(Object.keys(counts).length, 7);
   assert.equal(Object.keys(counts['basic-operations']).length, 4);
 });
 
