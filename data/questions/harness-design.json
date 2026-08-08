@@ -353,9 +353,9 @@
       "question": "組織が管理するmanaged-settings.jsonとプロジェクトのsettings.jsonの両方に`permissions.allow`ルールが定義されている場合、それらは実際の権限判定時にどう扱われますか？",
       "choices": [
         "スコープ間でオーバーライドされるのではなくマージされ、両方のallowルールが累積して有効になる（ただしdeny→ask→allowの評価順序は別に適用される）",
-        "managed側が常にproject側を完全に上書きし、project側のallowルールは一切評価されない",
-        "project側が常にmanaged側を上書きする",
-        "同じ`permissions`キーが複数スコープに存在するとClaude Codeは起動時にエラーで停止する"
+        "他の設定項目と同じくスコープ間でオーバーライドされ、優先度の高いmanaged側のallowルールだけが有効になる（project側のallowルールは評価対象から外れる）",
+        "スコープごとに独立した権限セットとして保持され、ツール実行時にはそのツールを起動したディレクトリが属するスコープのallowルールだけが参照される",
+        "マージはされるがdeny・ask・allowの区別は失われ、いずれかのスコープにルールが1件でもあれば該当ツールは無条件に許可される扱いになる"
       ],
       "correctIndex": 0,
       "explanation": "多くの設定項目はスコープ間でオーバーライド（優先度の高いスコープが勝つ）されますが、`permissions.allow`・`permissions.deny`などのパーミッションルールは例外で、複数スコープにまたがって定義された内容が累積的にマージされます。つまりmanagedとprojectの両方にallowルールがあれば両方とも有効になり、そのうえでルール自体はdeny→ask→allowの順で評価されます。"
