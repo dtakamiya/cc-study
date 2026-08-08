@@ -207,11 +207,11 @@
       "question": "プロジェクトの作業ディレクトリの上位階層にある複数のCLAUDE.mdファイルが存在する場合、それらがコンテキストに読み込まれる順序についての説明として正しいものはどれですか？",
       "choices": [
         "最も近い（作業ディレクトリに近い）ファイルのみが読み込まれ、他は無視される",
-        "全ファイルがファイルシステムのルートから作業ディレクトリに向かって連結され、作業ディレクトリに近いものほど後（最後）に読み込まれる",
         "ランダムな順序で連結される",
-        "アルファベット順にファイルパスでソートされて連結される"
+        "アルファベット順にファイルパスでソートされて連結される",
+        "全ファイルがファイルシステムのルートから作業ディレクトリに向かって連結され、作業ディレクトリに近いものほど後（最後）に読み込まれる"
       ],
-      "correctIndex": 1,
+      "correctIndex": 3,
       "explanation": "公式ドキュメントによれば、上位階層のCLAUDE.mdファイルは互いを上書きするのではなく全て連結され、ファイルシステムのルートから作業ディレクトリに向かう順で並びます。つまり起動したディレクトリに近い指示ほど後に（最後の方に）読み込まれます。各ディレクトリ内では`CLAUDE.local.md`が`CLAUDE.md`の後に追加されます。"
     },
     {
@@ -256,15 +256,15 @@
     {
       "id": "harness-023",
       "level": "intermediate",
-      "question": "`.claude/rules/api-design.md`のYAMLフロントマターに`paths: [\"src/api/**/*.ts\"]`と指定した場合の挙動として正しいものはどれですか？",
+      "question": "`~/.claude/rules/`（ユーザーレベルのルール）と`.claude/rules/`（プロジェクトレベルのルール）が同じトピックについて異なる内容を持つ場合、読み込み順序と優先度の関係について正しい説明はどれですか？",
       "choices": [
-        "Claudeが起動した瞬間に無条件で読み込まれる",
-        "Claudeが`src/api/`配下の`.ts`ファイルを読み取ったときにだけ、そのルールが条件付きでコンテキストに読み込まれる",
-        "`src/api/`ディレクトリ以外のファイルを編集しようとすると常にエラーになる",
-        "このルールはCLAUDE.mdの内容を完全に置き換える"
+        "ユーザーレベルのルールが先に読み込まれ、プロジェクトレベルのルールの方が優先度が高い",
+        "プロジェクトレベルのルールは無視され、常にユーザーレベルのルールだけが有効になる",
+        "ユーザーレベルのルールは`.claude/rules/`のシンボリックリンクとしてしか配置できない",
+        "両者は同時に1つのファイルとして統合されるため、読み込み順序という概念自体が存在しない"
       ],
-      "correctIndex": 1,
-      "explanation": "`paths`フロントマターを指定したルールは、そのグロブパターンに一致するファイルをClaudeが扱う（読み取る）ときだけ条件付きで読み込まれる「パス限定ルール」です。無関係な作業をしている間はコンテキストに含まれないため、常時読み込みのCLAUDE.mdに比べてコンテキストを節約できます。"
+      "correctIndex": 0,
+      "explanation": "公式ドキュメントは「User-level rules are loaded before project rules, giving project rules higher priority.」としています。プロジェクトごとに変わらない個人の好みは`~/.claude/rules/`に置き、プロジェクト固有の規約は`.claude/rules/`に置くことで、後者が優先されつつ両方を併用できます。"
     },
     {
       "id": "harness-024",
@@ -303,15 +303,15 @@
     {
       "id": "harness-027",
       "level": "intermediate",
-      "question": "settings.jsonのパーミッション設定における`permissions.allow`と`permissions.deny`が複数の設定スコープ（Managed/User/Project/Local）にまたがって定義されている場合の一般的な扱いとして正しいものはどれですか？",
+      "question": "`permissions.deny`に`Bash(aws *)`という広いルールがあり、同時に`permissions.allow`に`Bash(aws s3 ls)`というより限定的なルールもある場合、Claudeが`aws s3 ls`を実行しようとするとどうなりますか？",
       "choices": [
-        "後から読み込まれたスコープの値が、先に読み込まれた値を完全に上書きする",
-        "どのスコープも影響を持たず、常にProjectスコープの値だけが使われる",
-        "パーミッション設定はスコープの概念自体を持たず、常に単一のファイルにまとめる必要がある",
-        "スコープ間で上書きではなくマージされ、セキュリティに関わる設定では複数スコープの中でより制限的な値が優先される"
+        "ルールがより限定的（specific）な`allow`が優先され、確認なしで実行される",
+        "`allow`と`deny`の両方に一致するため、Claude Codeがエラーで停止しセッションが終了する",
+        "ルールはdeny・ask・allowの順で評価され、先に一致した広い`deny`ルールでブロックされる。ルールの限定度合いは評価順序に影響しない",
+        "後から`settings.json`に追記された方のルールが常に有効になる"
       ],
-      "correctIndex": 3,
-      "explanation": "多くの設定項目はスコープの優先順位に従って上書きされますが、`permissions`のallow/denyルールは他の設定と異なり、スコープ間で単純に上書きされるのではなくマージされます。特にセキュリティに関わる制限は、複数スコープの中でより制限的な（安全側の）値が採用される設計になっています。"
+      "correctIndex": 2,
+      "explanation": "公式ドキュメントは「Rules are evaluated in order: deny, then ask, then allow. The first match in that order determines the outcome, and rule specificity doesn't change the order.」と説明しており、続けて「A broad deny rule like `Bash(aws *)` blocks every matching call, including calls that also match a narrower allow rule like `Bash(aws s3 ls)`, so a deny rule can't carry allowlist exceptions.」と明記しています。つまりより限定的なallowルールがあっても、先に一致する広いdenyルールがあればブロックされます。"
     },
     {
       "id": "harness-028",
