@@ -1,0 +1,166 @@
+{
+  "domain": "harness-design",
+  "domainLabel": "ハーネス設計",
+  "questions": [
+    {
+      "id": "harness-001",
+      "level": "beginner",
+      "question": "Claude Codeがセッション開始時に自動的に読み込み、プロジェクト固有の指示や規約をClaudeに伝えるためのMarkdownファイルはどれですか？",
+      "choices": ["settings.json", "CLAUDE.md", "SKILL.md", ".claudeignore"],
+      "correctIndex": 1,
+      "explanation": "CLAUDE.mdはプロジェクト・個人・組織向けの永続的な指示を書くMarkdownファイルで、Claude Codeはこれをセッション開始時に読み込みます。ビルドコマンドやコーディング規約、プロジェクト構成など、毎回説明し直すことになる情報を書いておく場所です。"
+    },
+    {
+      "id": "harness-002",
+      "level": "beginner",
+      "question": "プロジェクトルートに置くCLAUDE.mdの配置場所として、公式ドキュメントで案内されている2つの正しいパスの組み合わせはどれですか？",
+      "choices": [
+        "`./CLAUDE.md` または `./.claude/CLAUDE.md`",
+        "`./claude.config` または `./.claude/config.md`",
+        "`./docs/CLAUDE.md` のみ",
+        "`./.github/CLAUDE.md` または `./CLAUDE.txt`"
+      ],
+      "correctIndex": 0,
+      "explanation": "プロジェクトインストラクションとしてのCLAUDE.mdは`./CLAUDE.md`または`./.claude/CLAUDE.md`のいずれかに置くことができ、チームメンバーとバージョン管理を通じて共有されます。"
+    },
+    {
+      "id": "harness-003",
+      "level": "beginner",
+      "question": "すべてのプロジェクトに共通する個人の好み（コーディングスタイルの好みや個人的なツール設定など）を書くために使うCLAUDE.mdの配置場所はどれですか？",
+      "choices": ["`./CLAUDE.md`", "`./CLAUDE.local.md`", "`/etc/claude-code/CLAUDE.md`", "`~/.claude/CLAUDE.md`"],
+      "correctIndex": 3,
+      "explanation": "`~/.claude/CLAUDE.md`はユーザーインストラクションのスコープで、そのユーザーが使うすべてのプロジェクトに適用される個人の設定を書く場所です。プロジェクト固有の共有指示は`./CLAUDE.md`、個人的なプロジェクト固有設定は`./CLAUDE.local.md`に書きます。"
+    },
+    {
+      "id": "harness-004",
+      "level": "beginner",
+      "question": "Claude Codeにおける「スキル（Skill）」の基本的な役割を最も適切に表しているものはどれですか？",
+      "choices": [
+        "繰り返し行う手順やチェックリストをまとめておき、必要なときだけ読み込まれる指示書",
+        "特定のBashコマンドの実行を許可または拒否するためのルール",
+        "同じ会話コンテキストとは別の独立したコンテキストで動作する分身のエージェント",
+        "APIキーやモデル名などの環境変数を設定するファイル"
+      ],
+      "correctIndex": 0,
+      "explanation": "スキルは`SKILL.md`ファイルに手順を書いておき、Claudeが関連すると判断したとき、または`/スキル名`で明示的に呼び出したときに読み込まれる指示書です。CLAUDE.mdの内容と異なり、スキル本文は使われるときだけ読み込まれるため、長い手順書でもコンテキストをほとんど消費しません。"
+    },
+    {
+      "id": "harness-005",
+      "level": "beginner",
+      "question": "Claude Codeのスキルを定義するファイルの名前として正しいものはどれですか？",
+      "choices": ["AGENT.md", "SKILL.md", "RULES.md", "commands.json"],
+      "correctIndex": 1,
+      "explanation": "スキルは`SKILL.md`という名前のファイルをエントリーポイントとして持つディレクトリで構成されます。YAMLフロントマターと本文の指示から成り、`.claude/skills/<skill-name>/SKILL.md`のような場所に配置します。"
+    },
+    {
+      "id": "harness-006",
+      "level": "beginner",
+      "question": "Claude Codeにおける「サブエージェント（subagent）」の基本的な役割を最も適切に表しているものはどれですか？",
+      "choices": [
+        "許可/拒否ルールを一元管理する設定ファイル",
+        "自分専用のコンテキストウィンドウ・システムプロンプト・ツールアクセス権を持ち、特定タスクを代わりに実行して結果だけを返す専門アシスタント",
+        "セッション開始時に自動的に読み込まれるプロジェクトメモリ",
+        "コマンドライン引数を解析するためのパーサー"
+      ],
+      "correctIndex": 1,
+      "explanation": "サブエージェントは独自のコンテキストウィンドウ・カスタムシステムプロンプト・特定のツールアクセス権・独立した権限を持って動作します。大量の検索結果やログなど、メイン会話に残したくない調査作業を任せ、要約だけを受け取るために使います。"
+    },
+    {
+      "id": "harness-007",
+      "level": "beginner",
+      "question": "「毎回同じ手順（例: デプロイ手順やコードレビューのチェックリスト）を踏む」タスクを効率化したい場合、まず検討すべき機構はどれですか？",
+      "choices": ["settings.jsonのpermissions.deny", "CLAUDE_CODE_DISABLE_AUTO_MEMORY環境変数", "スキル（Skill）", ".claude/rules/のpaths指定なしルール"],
+      "correctIndex": 2,
+      "explanation": "同じ指示や手順を繰り返しチャットに貼り付けている場合や、CLAUDE.mdの一節が事実の記述ではなく手順書に育ってしまった場合はスキルを作るタイミングです。スキル本文は必要なときだけ読み込まれるため、長い手順を書いてもコンテキストを圧迫しません。"
+    },
+    {
+      "id": "harness-008",
+      "level": "beginner",
+      "question": "「特定のBashコマンドやファイルパスへのアクセスを一律で禁止したい」という要求に最も適した設定はどれですか？",
+      "choices": ["CLAUDE.mdに「実行しないでください」と書く", "SKILL.mdのdescriptionフィールド", "settings.jsonの`permissions.deny`", "サブエージェントのsystem prompt"],
+      "correctIndex": 2,
+      "explanation": "settings.jsonのパーミッション設定（`permissions.deny`など）はクライアント側で強制されるルールであり、Claudeが何を判断しようと関係なく適用されます。一方CLAUDE.mdの指示はコンテキストとして渡されるだけで、厳密な遵守は保証されません。特定の操作を確実にブロックしたい場合はパーミッション設定を使います。"
+    },
+    {
+      "id": "harness-009",
+      "level": "beginner",
+      "question": "CLAUDE.mdの指示とsettings.jsonのパーミッション設定の違いに関する説明として正しいものはどれですか？",
+      "choices": [
+        "どちらもClaudeの判断に関わらず強制的に適用される",
+        "CLAUDE.mdはコンテキストとしてClaudeの挙動を導くものであり厳密な強制力はないが、パーミッション設定はClaudeの判断に関係なくクライアント側で強制される",
+        "CLAUDE.mdの方が強制力が強く、パーミッション設定は単なる提案にすぎない",
+        "両者は完全に同じ役割を持ち、どちらを使っても結果は変わらない"
+      ],
+      "correctIndex": 1,
+      "explanation": "公式ドキュメントは、CLAUDE.mdの指示はコンテキストとしてClaudeの挙動を形作るが強制設定ではないと明記しています。特定の行動をClaudeの判断に関わらず確実にブロックしたい場合はパーミッション設定（またはフック）を使うべきとされています。"
+    },
+    {
+      "id": "harness-010",
+      "level": "beginner",
+      "question": "settings.jsonが提供する4つの設定スコープのうち、リポジトリの全コラボレーターと共有する（gitにコミットする）ためのスコープはどれですか？",
+      "choices": ["User（`~/.claude/settings.json`）", "Local（`.claude/settings.local.json`）", "Project（`.claude/settings.json`）", "Managed（`managed-settings.json`）"],
+      "correctIndex": 2,
+      "explanation": "Projectスコープの設定ファイル`.claude/settings.json`はリポジトリのすべてのコラボレーターに向けたチーム共有設定で、バージョン管理にコミットします。個人的なローカル上書きはLocalスコープ（`.claude/settings.local.json`）を使い、これは通常gitignore対象です。"
+    },
+    {
+      "id": "harness-011",
+      "level": "beginner",
+      "question": "settings.jsonの複数スコープが競合する設定を持つ場合の優先順位について、正しい説明はどれですか？",
+      "choices": [
+        "常にUserスコープが最優先される",
+        "Managedが最優先で、次にコマンドライン引数、Local、Project、Userの順に優先度が下がる",
+        "後から読み込まれたファイルが常に上書きする単純な仕組みで、スコープという概念は存在しない",
+        "Projectスコープが常に最優先される"
+      ],
+      "correctIndex": 1,
+      "explanation": "設定が複数のスコープに存在する場合はManaged（組織管理）が最優先で、以降コマンドライン引数、Local、Project、Userの順に優先度が下がります。ただしパーミッションのallow/denyルールなど一部の項目はオーバーライドではなくスコープ間でマージされる点にも注意が必要です。"
+    },
+    {
+      "id": "harness-012",
+      "level": "beginner",
+      "question": "CLAUDE.md・スキル・パーミッション設定（ルール）・サブエージェントという4つの機構の一言での違いとして最も適切な組み合わせはどれですか？",
+      "choices": [
+        "CLAUDE.md=許可設定、スキル=分身エージェント、ルール=手順書、サブエージェント=プロジェクトメモリ",
+        "4つとも同じ機能を異なる名前で呼んでいるだけで実質的な違いはない",
+        "CLAUDE.md=プロジェクトメモリ、スキル=必要時に読み込む手順書、ルール（permissions）=許可/拒否の強制設定、サブエージェント=別コンテキストで動く分身",
+        "CLAUDE.md=分身エージェント、スキル=許可設定、ルール=プロジェクトメモリ、サブエージェント=手順書"
+      ],
+      "correctIndex": 2,
+      "explanation": "CLAUDE.mdはセッション開始時に自動読み込みされる永続的なプロジェクトメモリ、スキルは必要なときだけ読み込まれる手順書、settings.jsonのパーミッション（ルール）はクライアント側で強制される許可/拒否設定、サブエージェントは独自のコンテキストとツール権限を持って動く分身です。これらは役割が異なり、目的に応じて使い分けます。"
+    },
+    {
+      "id": "harness-013",
+      "level": "beginner",
+      "question": "「サブディレクトリ配下で作業しているときだけ特定の指示を読み込みたい（例: `src/api/**/*.ts`を編集するときだけAPI設計ルールを適用したい）」場合に使う機構はどれですか？",
+      "choices": ["常時読み込みのCLAUDE.md本文に全部書く", "settings.jsonのenvフィールド", "`paths`フロントマターを指定した`.claude/rules/`配下のルールファイル", "CLAUDE.local.md"],
+      "correctIndex": 2,
+      "explanation": "`.claude/rules/`ディレクトリにMarkdownファイルを置き、YAMLフロントマターの`paths`フィールドでファイルパターンを指定すると、Claudeがそのパターンに一致するファイルを扱うときだけそのルールが読み込まれます。`paths`を指定しないルールは`.claude/CLAUDE.md`と同じ優先度で起動時に読み込まれます。"
+    },
+    {
+      "id": "harness-014",
+      "level": "beginner",
+      "question": "CLAUDE.mdに書く内容として公式ドキュメントが推奨していないものはどれですか？",
+      "choices": [
+        "ビルドコマンドやテストコマンド",
+        "プロジェクトのアーキテクチャや命名規則",
+        "多段階の詳細な手順書やごく一部のコードにしか関係しない内容（スキルやパス限定ルールに移すべき内容）",
+        "「常にこうする」といった繰り返し使うプロジェクトの決め事"
+      ],
+      "correctIndex": 2,
+      "explanation": "公式ドキュメントは、CLAUDE.mdには毎セッション保持すべき事実（ビルドコマンド・規約・プロジェクト構成など）を書き、多段階の手順やコードベースの一部にしか関係しない内容はスキルやパス限定ルールに移すべきだとしています。CLAUDE.mdが肥大化するとコンテキストを消費し、指示への追従性が下がります。"
+    },
+    {
+      "id": "harness-015",
+      "level": "beginner",
+      "question": "「ある操作を絶対に実行させたくない（Claudeがどう判断しても関係なく止めたい）」場合と、「Claudeに一般的な振る舞いの方針を伝えたい」場合とで、使うべき機構の組み合わせとして正しいものはどれですか？",
+      "choices": [
+        "両方ともCLAUDE.mdに書けば十分",
+        "両方ともサブエージェントに任せれば自動的に解決する",
+        "前者はスキル、後者はパーミッション設定",
+        "前者はパーミッション設定（deny）やフックなどの強制設定、後者はCLAUDE.mdのような指示ベースの機構"
+      ],
+      "correctIndex": 3,
+      "explanation": "CLAUDE.mdの指示はコンテキストとしてClaudeの判断を導くものであり厳密な強制力はありません。特定の操作を確実にブロックしたい場合はパーミッション設定（`permissions.deny`）やフックのような、Claudeの判断に関わらずクライアント側で強制される仕組みを使う必要があります。"
+    }
+  ]
+}
