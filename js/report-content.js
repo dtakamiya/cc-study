@@ -35,6 +35,12 @@ const SUGGESTIONS = {
     advanced: '`/permissions`や`/agents`、`/mcp`など設定・サブシステム管理系のコマンドを実際に操作し、引数の指定方法まで確認してみましょう。',
     expert: '非対話モードでのコマンドの扱いや、あまり使われないコマンドの仕様まで公式ドキュメントで確認し、運用の幅を広げましょう。',
   },
+  'harness-design': {
+    beginner: 'CLAUDE.mdの役割や、スキル・ルール・エージェントそれぞれの基本的な違いを公式ドキュメントで確認してみましょう。',
+    intermediate: 'CLAUDE.mdに何を書くべきか、どんな手順をスキル化すべきかを意識しながら、実際のプロジェクトで整理してみましょう。',
+    advanced: 'permissions設定とスキル・エージェントを組み合わせた設計や、階層的なCLAUDE.md配置を実際に試してみましょう。',
+    expert: 'context engineeringやright altitudeなどAnthropic Engineering Blogが示す設計原則を読み、大規模なハーネス統治の設計に取り組みましょう。',
+  },
 };
 
 const FALLBACK_SUGGESTION = '基礎から着実に復習し、公式ドキュメントで該当領域の機能を確認してみましょう。';

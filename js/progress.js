@@ -7,6 +7,7 @@ export const DOMAINS = [
   'security-permissions',
   'token-efficiency',
   'slash-commands',
+  'harness-design',
 ];
 
 export const DOMAIN_LABELS = {
@@ -16,6 +17,7 @@ export const DOMAIN_LABELS = {
   'security-permissions': '安全性・権限管理',
   'token-efficiency': 'トークン効率・コスト管理',
   'slash-commands': 'スラッシュコマンド',
+  'harness-design': 'ハーネス設計',
 };
 
 export const QUESTIONS_PER_STAGE = 10;
