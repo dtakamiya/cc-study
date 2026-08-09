@@ -6,7 +6,12 @@
       "id": "harness-001",
       "level": "beginner",
       "question": "Claude Codeがセッション開始時に自動的に読み込み、プロジェクト固有の指示や規約をClaudeに伝えるためのMarkdownファイルはどれですか？",
-      "choices": ["CLAUDE.md", "settings.json", "SKILL.md", ".claudeignore"],
+      "choices": [
+        "CLAUDE.md",
+        "settings.json",
+        "SKILL.md",
+        ".claudeignore"
+      ],
       "correctIndex": 0,
       "explanation": "CLAUDE.mdはプロジェクト・個人・組織向けの永続的な指示を書くMarkdownファイルで、Claude Codeはこれをセッション開始時に読み込みます。ビルドコマンドやコーディング規約、プロジェクト構成など、毎回説明し直すことになる情報を書いておく場所です。"
     },
@@ -27,7 +32,12 @@
       "id": "harness-003",
       "level": "beginner",
       "question": "すべてのプロジェクトに共通する個人の好み（コーディングスタイルの好みや個人的なツール設定など）を書くために使うCLAUDE.mdの配置場所はどれですか？",
-      "choices": ["`./CLAUDE.md`", "`./CLAUDE.local.md`", "`/etc/claude-code/CLAUDE.md`", "`~/.claude/CLAUDE.md`"],
+      "choices": [
+        "`./CLAUDE.md`",
+        "`./CLAUDE.local.md`",
+        "`/etc/claude-code/CLAUDE.md`",
+        "`~/.claude/CLAUDE.md`"
+      ],
       "correctIndex": 3,
       "explanation": "`~/.claude/CLAUDE.md`はユーザーインストラクションのスコープで、そのユーザーが使うすべてのプロジェクトに適用される個人の設定を書く場所です。プロジェクト固有の共有指示は`./CLAUDE.md`、個人的なプロジェクト固有設定は`./CLAUDE.local.md`に書きます。"
     },
@@ -48,7 +58,12 @@
       "id": "harness-005",
       "level": "beginner",
       "question": "Claude Codeのスキルを定義するファイルの名前として正しいものはどれですか？",
-      "choices": ["AGENT.md", "SKILL.md", "RULES.md", "commands.json"],
+      "choices": [
+        "AGENT.md",
+        "SKILL.md",
+        "RULES.md",
+        "commands.json"
+      ],
       "correctIndex": 1,
       "explanation": "スキルは`SKILL.md`という名前のファイルをエントリーポイントとして持つディレクトリで構成されます。YAMLフロントマターと本文の指示から成り、`.claude/skills/<skill-name>/SKILL.md`のような場所に配置します。"
     },
@@ -69,7 +84,12 @@
       "id": "harness-007",
       "level": "beginner",
       "question": "「毎回同じ手順（例: デプロイ手順やコードレビューのチェックリスト）を踏む」タスクを効率化したい場合、まず検討すべき機構はどれですか？",
-      "choices": ["settings.jsonのpermissions.deny", "CLAUDE_CODE_DISABLE_AUTO_MEMORY環境変数", "スキル（Skill）", ".claude/rules/のpaths指定なしルール"],
+      "choices": [
+        "settings.jsonのpermissions.deny",
+        "CLAUDE_CODE_DISABLE_AUTO_MEMORY環境変数",
+        "スキル（Skill）",
+        ".claude/rules/のpaths指定なしルール"
+      ],
       "correctIndex": 2,
       "explanation": "同じ指示や手順を繰り返しチャットに貼り付けている場合や、CLAUDE.mdの一節が事実の記述ではなく手順書に育ってしまった場合はスキルを作るタイミングです。スキル本文は必要なときだけ読み込まれるため、長い手順を書いてもコンテキストを圧迫しません。"
     },
@@ -77,7 +97,12 @@
       "id": "harness-008",
       "level": "beginner",
       "question": "「特定のBashコマンドやファイルパスへのアクセスを一律で禁止したい」という要求に最も適した設定はどれですか？",
-      "choices": ["CLAUDE.mdに「実行しないでください」と書く", "SKILL.mdのdescriptionフィールド", "settings.jsonの`permissions.deny`", "サブエージェントのsystem prompt"],
+      "choices": [
+        "CLAUDE.mdに「実行しないでください」と書く",
+        "SKILL.mdのdescriptionフィールド",
+        "settings.jsonの`permissions.deny`",
+        "サブエージェントのsystem prompt"
+      ],
       "correctIndex": 2,
       "explanation": "settings.jsonのパーミッション設定（`permissions.deny`など）はクライアント側で強制されるルールであり、Claudeが何を判断しようと関係なく適用されます。一方CLAUDE.mdの指示はコンテキストとして渡されるだけで、厳密な遵守は保証されません。特定の操作を確実にブロックしたい場合はパーミッション設定を使います。"
     },
@@ -85,7 +110,12 @@
       "id": "harness-009",
       "level": "beginner",
       "question": "セッション中にCLAUDE.mdやCLAUDE.local.mdなどメモリファイルの一覧を確認したり、ファイルを開いて編集したりするために使うスラッシュコマンドはどれですか？",
-      "choices": ["`/context`", "`/memory`", "`/init`", "`/doctor`"],
+      "choices": [
+        "`/context`",
+        "`/memory`",
+        "`/init`",
+        "`/doctor`"
+      ],
       "correctIndex": 1,
       "explanation": "`/memory`コマンドは、ユーザー・プロジェクトスコープのCLAUDE.md、CLAUDE.local.mdなどメモリファイルの場所を一覧表示し、選択したファイルをエディタで開いて編集できます（まだ存在しないファイルは先に作成されます）。なお、実際に現在のセッションへ読み込まれたファイルを確認したい場合は`/context`を使います。"
     },
@@ -93,7 +123,12 @@
       "id": "harness-010",
       "level": "beginner",
       "question": "settings.jsonが提供する4つの設定スコープのうち、リポジトリの全コラボレーターと共有する（gitにコミットする）ためのスコープはどれですか？",
-      "choices": ["User（`~/.claude/settings.json`）", "Local（`.claude/settings.local.json`）", "Project（`.claude/settings.json`）", "Managed（`managed-settings.json`）"],
+      "choices": [
+        "User（`~/.claude/settings.json`）",
+        "Local（`.claude/settings.local.json`）",
+        "Project（`.claude/settings.json`）",
+        "Managed（`managed-settings.json`）"
+      ],
       "correctIndex": 2,
       "explanation": "Projectスコープの設定ファイル`.claude/settings.json`はリポジトリのすべてのコラボレーターに向けたチーム共有設定で、バージョン管理にコミットします。個人的なローカル上書きはLocalスコープ（`.claude/settings.local.json`）を使い、これは通常gitignore対象です。"
     },
@@ -127,7 +162,12 @@
       "id": "harness-013",
       "level": "beginner",
       "question": "「サブディレクトリ配下で作業しているときだけ特定の指示を読み込みたい（例: `src/api/**/*.ts`を編集するときだけAPI設計ルールを適用したい）」場合に使う機構はどれですか？",
-      "choices": ["常時読み込みのCLAUDE.md本文に全部書く", "settings.jsonのenvフィールド", "`paths`フロントマターを指定した`.claude/rules/`配下のルールファイル", "CLAUDE.local.md"],
+      "choices": [
+        "常時読み込みのCLAUDE.md本文に全部書く",
+        "settings.jsonのenvフィールド",
+        "`paths`フロントマターを指定した`.claude/rules/`配下のルールファイル",
+        "CLAUDE.local.md"
+      ],
       "correctIndex": 2,
       "explanation": "`.claude/rules/`ディレクトリにMarkdownファイルを置き、YAMLフロントマターの`paths`フィールドでファイルパターンを指定すると、Claudeがそのパターンに一致するファイルを扱うときだけそのルールが読み込まれます。`paths`を指定しないルールは`.claude/CLAUDE.md`と同じ優先度で起動時に読み込まれます。"
     },
@@ -278,7 +318,12 @@
       "id": "harness-025",
       "level": "intermediate",
       "question": "SKILL.mdのYAMLフロントマターにおいて、Claudeが自動的にそのスキルを読み込むかどうかを判断する際に使われる、公式ドキュメントが「推奨される唯一の必須フィールド」としているものはどれですか？",
-      "choices": ["`description`", "`name`", "`allowed-tools`", "`disable-model-invocation`"],
+      "choices": [
+        "`description`",
+        "`name`",
+        "`allowed-tools`",
+        "`disable-model-invocation`"
+      ],
       "correctIndex": 0,
       "explanation": "公式ドキュメントは「All fields are optional. Only `description` is recommended so Claude knows when to use the skill.」としています。`description`はClaudeがそのスキルをいつ使うべきかを判断するための手がかりになるため、実質的に最も重要なフィールドです。"
     },
@@ -736,6 +781,58 @@
       ],
       "correctIndex": 1,
       "explanation": "公式ドキュメントはCLAUDE.md 1ファイルあたり200行未満を目安とし、長くなるほどコンテキストを消費し追従性が下がるとしています。手順に育った節はスキルへ、コードベースの一部にしか関係しない条件付き指示は`paths`フロントマター付きの`.claude/rules/`へ移すのが推奨で、ユーザーレベルのルールはプロジェクトルールより先に読み込まれるためプロジェクト側が優先されます。これはcontext engineeringが説く「望ましい結果の確率を最大化する、最小限の高信号トークン集合」という原則と一致します。インポート記法は展開されて起動時に読み込まれるため、分割しただけでは消費トークンは減りません。またmanaged settingsの`claudeMd`は組織が強制する方針の置き場であり、プロジェクト固有の事実まで一元化すると全プロジェクトに無関係な指示が載って同じ肥大化を招きます。"
+    },
+    {
+      "id": "harness-061",
+      "level": "beginner",
+      "question": "Claude Codeの「auto memory（自動メモリ）」で、Claudeが自ら書き溜めた学習内容の保存先として正しい説明はどれですか？",
+      "choices": [
+        "`~/.claude/CLAUDE.md`（ユーザー向けCLAUDE.md）の末尾に、Claudeが自動的に追記していく",
+        "`~/.claude/projects/<project>/memory/` 配下に保存され、`MEMORY.md` が索引になる",
+        "プロジェクトルートの `CLAUDE.local.md` に追記され、gitを通じてチームに共有される",
+        "`.claude/settings.json` の `memory` フィールドにJSON形式で書き込まれ、次回起動時に読まれる"
+      ],
+      "correctIndex": 1,
+      "explanation": "auto memoryはプロジェクトごとに `~/.claude/projects/<project>/memory/` ディレクトリを持ちます。`<project>` はgitリポジトリから導出されるため、同一リポジトリのworktreeやサブディレクトリは1つのディレクトリを共有します。このディレクトリには索引となる `MEMORY.md` と任意のトピックファイルが置かれ、毎セッションの開始時に読み込まれるのは `MEMORY.md` の先頭200行または25KB（先に達したほう）までです。トピックファイルは起動時には読まれず、必要になったときにClaudeが通常のファイルツールで読み出します。auto memoryはマシンローカルで、あなたが書くCLAUDE.mdとは別系統の仕組みです。"
+    },
+    {
+      "id": "harness-062",
+      "level": "intermediate",
+      "question": "大規模モノレポで、上位ディレクトリにある他チームのCLAUDE.mdが自分の作業に無関係なまま読み込まれてしまいます。特定のパスやglobパターンに一致するCLAUDE.mdを読み込み対象から除外する設定キーはどれですか？",
+      "choices": [
+        "`claudeMdIgnore`",
+        "`memoryExcludes`",
+        "`claudeMdExcludes`",
+        "`excludeMemoryFiles`"
+      ],
+      "correctIndex": 2,
+      "explanation": "`claudeMdExcludes` に絶対パスへのglobパターンの配列を指定すると、一致するCLAUDE.mdやルールファイルが読み込み対象から外れます。ユーザー・プロジェクト・ローカル・managed policyのいずれの設定レイヤーにも書け、配列はレイヤー間でマージされます。自分のマシンだけに効かせたい場合は `.claude/settings.local.json` に置きます。ただしmanaged policyのCLAUDE.mdだけは除外できません。組織全体の指示が個人設定で無効化されないようにするためです。"
+    },
+    {
+      "id": "harness-063",
+      "level": "advanced",
+      "question": "コードレビュー用サブエージェントに、そのプロジェクト固有の知見（頻出の指摘パターンや規約）をセッションをまたいで蓄積させたい。さらにその知見はバージョン管理でチームに共有したい。サブエージェント定義のフロントマターに書くべき設定はどれですか？",
+      "choices": [
+        "`memory: project` を指定する（保存先は `.claude/agent-memory/<エージェント名>/`）",
+        "`memory: user` を指定する（保存先は `~/.claude/agent-memory/<エージェント名>/`）",
+        "`memory: local` を指定する（保存先は `.claude/agent-memory-local/<エージェント名>/`）",
+        "`memory: shared` を指定する（保存先はリポジトリルートの `agent-memory/`）"
+      ],
+      "correctIndex": 0,
+      "explanation": "サブエージェントの `memory` フィールドは `user` / `project` / `local` の3スコープを取ります。`project`（`.claude/agent-memory/<エージェント名>/`）はプロジェクト固有かつバージョン管理で共有できるため、公式ドキュメントも推奨される既定のスコープとしています。`user` は全プロジェクト横断、`local` はプロジェクト固有だがコミットしない用途で、`shared` というスコープは存在しません。なおサブエージェントメモリはauto memoryの一部であるため、`autoMemoryEnabled` を `false` にしたり `CLAUDE_CODE_DISABLE_AUTO_MEMORY` を設定したりすると `memory` フィールドは効果を持たなくなります。有効な場合はMEMORY.mdの先頭200行/25KBがシステムプロンプトに含まれ、Read・Write・Editツールが自動的に有効化されます。"
+    },
+    {
+      "id": "harness-064",
+      "level": "expert",
+      "question": "公式ドキュメントはサブエージェントとエージェントチーム（agent teams）を「並列化するが構造が異なる」ものとして対比しています。この構造上の違いの説明として正しいものはどれですか？",
+      "choices": [
+        "サブエージェントは独立したセッションとして互いに直接メッセージを送り合い、エージェントチームはメインエージェントに結果だけを返す点が違う",
+        "どちらもメインの会話コンテキストをそのまま共有するが、エージェントチームのほうがトークンコストは低く抑えられる",
+        "サブエージェントは共有タスクリストを見ながら自律的に調整し、エージェントチームはメインエージェントが全作業を集中管理する",
+        "サブエージェントはセッション内で動き結果をメインに返すが、エージェントチームは独立セッション同士が直接やり取りし自律調整する"
+      ],
+      "correctIndex": 3,
+      "explanation": "サブエージェントはあなたのセッション内で動き、独自のコンテキストウィンドウで作業した結果をメインの会話へ返します。通信経路はメインエージェントとの1対1のみで、調整はメインエージェントが担います。対してエージェントチームは完全に独立したClaude Codeセッションであり、チームメイト同士が直接メッセージをやり取りし、共有タスクリストで自律的に調整します。コストは逆方向で、サブエージェントは結果が要約されて返るため低く、エージェントチームは各チームメイトが別のClaudeインスタンスであるぶん高くなります。「並列サブエージェントを走らせているがコンテキスト上限に当たる」「サブエージェント同士が通信する必要が出てきた」が移行の目安です。なおエージェントチームは実験的機能で既定では無効です。"
     }
   ]
 }
