@@ -54,6 +54,7 @@ Claude Codeは更新が速く、数ヶ月前の知識がそのままでは通用
 - `domain`: `"recent-features"`
 - `domainLabel`: `"直近の新機能"`
 - `updatePolicy`: `"replace"`（後述「更新運用」を参照）
+- `nextIdSeq`: 次に採番する連番。入れ替え時のID再利用を防ぐ（後述「更新運用」を参照）
 - IDプレフィックス: `recent-`（既存の`basic-`/`feature-`/`prompt-`/`security-`/`token-`/`slash-`/`harness-`規約に合わせる）
 
 ## 出題の観点とレベル配分（各レベル10〜13問、計40〜50問）
@@ -109,7 +110,13 @@ export const DOMAIN_LABELS = {
 
 ### `tests/progress.test.js`
 
-22〜28行目の`DOMAINS`期待値配列に`'recent-features'`を追加する。ここを更新しないとテストが落ちる。
+領域数を7と決め打ちしている箇所が3つある。いずれも更新しないと`node --test`が落ちる。
+
+- 20行目 `assert.equal(DOMAINS.length, 7)` を `8` に変更する
+- 21〜29行目の`DOMAINS`期待値配列の末尾に`'recent-features'`を追加する
+- 143行目のテスト名`'buildDashboard は7領域それぞれに4ステージを返す'`を8領域に改め、
+  147行目の`assert.equal(dashboard.length, 7)`を`8`に変更する。`buildDashboard`の実装自体は
+  `DOMAINS`を走査するため変更不要だが、その期待値を持つテストは更新が必要である
 
 ### `js/report-content.js`
 
@@ -119,16 +126,19 @@ export const DOMAIN_LABELS = {
 
 ### `data/questions/recent-features.json`
 
-既存ファイルと同じ構造で新規作成する。本領域は`updatePolicy`フィールドを持つ点が既存領域と異なる。
+既存ファイルと同じ構造で新規作成する。本領域は`updatePolicy`と`nextIdSeq`を持つ点が既存領域と異なる。
 
 ```json
 {
   "domain": "recent-features",
   "domainLabel": "直近の新機能",
   "updatePolicy": "replace",
+  "nextIdSeq": 51,
   "questions": [ ... ]
 }
 ```
+
+`updatePolicy`と`nextIdSeq`は本領域固有のフィールドである。詳細は後述「更新運用」を参照。
 
 ### 変更不要な箇所
 
@@ -156,11 +166,27 @@ export const DOMAIN_LABELS = {
 
 ### `question-bank-update`スキルの改修
 
-`.claude/skills/question-bank-update/SKILL.md`に、対象領域のJSONから`updatePolicy`を読み取り、
-値に応じて挙動を分岐する手順を追記する。
+改修対象は2ファイルである。
+
+**`.claude/skills/question-bank-update/SKILL.md`**
+
+対象領域のJSONから`updatePolicy`を読み取り、値に応じて挙動を分岐する手順を追記する。
 
 - `"replace"`の場合: 「直近」でなくなった機能の問題を削除したうえで、新機能の問題を追加する
 - `"append"`または未指定の場合: 従来どおり既存問題に追記する
+
+あわせて、問題追記手順にあるID採番規則（現行は「対象ファイル内の既存最大連番を開始番号として」）を
+次のとおり分岐させる。
+
+- `nextIdSeq`を持つファイル: その値を開始番号とし、追加件数分を加算した値で`nextIdSeq`を更新する
+- `nextIdSeq`を持たないファイル: 従来どおりファイル内の既存最大連番を開始番号とする
+
+**`.claude/skills/question-bank-update/references/json-schema.md`**
+
+トップレベルのフィールド定義に`updatePolicy`と`nextIdSeq`を追記する。現状この参照ファイルは
+トップレベルを`domain`／`domainLabel`／`questions`の3キーのみと定義しており、書き込み用サブエージェント
+はこの定義に従うよう指示されている。追記しないと、ファイルの再生成・整形時に`updatePolicy`と
+`nextIdSeq`が黙って脱落し、入れ替え型の領域が追記型に戻ってしまう。
 
 ### 更新の手順
 
@@ -172,16 +198,55 @@ export const DOMAIN_LABELS = {
 
 ### ID採番
 
-入れ替え時も、削除したIDは再利用せず連番を進める。`tests/question-data.test.js`の全ファイル横断
-ID一意チェックとの衝突を避け、保存済み進捗データとの混同も防ぐためである。
+入れ替え時も、削除したIDは再利用せず連番を進める。保存済みの進捗・復習データは問題IDをキーとして
+持つため、削除した番号を別の問題に振り直すと、古いデータが無関係な新問題に黙って結びついてしまう。
+
+現行の`question-bank-update`スキルは「対象ファイル内の既存最大連番」を開始番号とする（`SKILL.md`の
+問題追記手順）。この規則は入れ替え型の領域では成立しない。`recent-041`〜`recent-050`を削除して
+残る最大が`recent-040`になれば、次に追加される問題は`recent-041`となり、削除済みIDが再利用される。
+`tests/question-data.test.js`の全ファイル横断ID一意チェックは、古い行が既に消えているためこれを
+検出できない。
+
+そこで、`updatePolicy`が`"replace"`の領域では、JSONトップレベルに採番の高水位マーク`nextIdSeq`を
+持たせ、これを開始番号とする。
+
+```json
+{
+  "domain": "recent-features",
+  "domainLabel": "直近の新機能",
+  "updatePolicy": "replace",
+  "nextIdSeq": 51,
+  "questions": [ ... ]
+}
+```
+
+- `nextIdSeq`: 次に採番する連番（整数）。問題を追加するたびに追加件数分だけ加算する。
+  問題を削除しても減らさない
+- `updatePolicy`が`"append"`または未指定の領域では`nextIdSeq`を持たない。既存どおり
+  ファイル内の最大連番から採番する（既存7領域の挙動は変わらない）
+
+初版作成時は、採番した最後の連番の次の値を`nextIdSeq`に設定する。
 
 ## ドキュメント更新
 
-`README.md`を以下のとおり更新する。
+### `index.html`
 
-- 冒頭の説明文「7領域（...）×4レベル」を「8領域（...）×4レベル」に変更し、直近の新機能を追記
-- 対象領域を列挙する節を8つに更新し、`recent-features`のプレフィクス規約（`recent-`）を追記
-- `recent-features`が入れ替え型の領域であり、更新時に古い問題が差し替えられることを運用方針として明記
+14行目の「6領域 × 4レベルの全24ステージ」を「8領域 × 4レベルの全32ステージ」に更新する。
+この文言は現時点で既に古く（実際は7領域28ステージ）、本変更を入れると画面上部が「6領域」、
+その直下のダッシュボードが8領域という食い違いになる。利用者に見える文字列のため、あわせて修正する。
+
+### `README.md`
+
+領域数を7と書いている箇所が4つあり、いずれも更新する。
+
+- 5〜6行目: 冒頭の説明文「7領域（...）×4レベル」を「8領域（...）×4レベル」に変更し、
+  全28ステージを全32ステージに改め、直近の新機能を領域一覧に追記
+- 16行目: 「7領域 × 4レベルの進捗」を「8領域 × 4レベルの進捗」に変更
+- 80〜83行目: 「対象領域は7つです」を8つに更新し、`recent-features`のプレフィクス規約（`recent-`）を追記
+- 129行目: 「既存7領域（...）」の列挙に直近の新機能を追加
+
+加えて、`recent-features`が入れ替え型の領域であり、更新時に古い問題が差し替えられることを
+運用方針として明記する。
 
 ## エラーハンドリング
 
@@ -190,11 +255,20 @@ ID一意チェックとの衝突を避け、保存済み進捗データとの混
 
 ## テスト方針
 
-### `updatePolicy`の値検証（新規テスト）
+### `updatePolicy`・`nextIdSeq`の検証（新規テスト）
 
-`tests/question-data.test.js`に、`updatePolicy`が`"replace"`・`"append"`・未指定のいずれかであることを
-検証するテストを追加する。`updatePolicy`は挙動を分岐させる制御値であるのに、誤った値は黙って既定
-（追記）に落ちる。入れ替えるつもりが追記され続けても気づけないため、値の検証を行う。
+`tests/question-data.test.js`に次の2種のテストを追加する。`updatePolicy`は挙動を分岐させる制御値
+であるのに、誤った値もフィールドの脱落も黙って既定（追記）に落ちる。入れ替えるつもりが追記され
+続けても気づけないため、両方を検出できる検証が必要である。
+
+1. **全ファイル共通**: `updatePolicy`が存在する場合、その値は`"replace"`または`"append"`であること。
+   タイポによる無効化を防ぐ
+2. **`recent-features.json`個別**: `updatePolicy`が`"replace"`であり、`nextIdSeq`が整数として存在し、
+   かつファイル内の全問題の連番の最大値より大きいこと
+
+2番目を個別検証とするのは、1番目だけではフィールドごと消えた場合を検出できないためである。
+テストは`data/questions/`を動的に走査する既存構造を保ち、`recent-features.json`についてのみ
+追加の断言を行う。この領域が将来もし追記型へ方針変更される場合は、このテストの更新が必要になる。
 
 ### 既存テストによる自動検証
 
