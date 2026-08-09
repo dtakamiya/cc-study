@@ -94,3 +94,43 @@ test('choice length balance report (warning only, never fails)', () => {
   lines.push(`合計 ${biased.length}件 / 全${totalQuestions}問 (${(biased.length / totalQuestions * 100).toFixed(1)}%)`);
   console.warn(lines.join('\n'));
 });
+
+const VALID_UPDATE_POLICIES = ['replace', 'append'];
+
+test('updatePolicy is either "replace" or "append" when present', () => {
+  const files = readdirSync(QUESTIONS_DIR).filter(name => name.endsWith('.json'));
+
+  for (const name of files) {
+    const data = JSON.parse(readFileSync(path.join(QUESTIONS_DIR, name), 'utf8'));
+    if (data.updatePolicy === undefined) continue;
+    assert.ok(
+      VALID_UPDATE_POLICIES.includes(data.updatePolicy),
+      `${name}: updatePolicy "${data.updatePolicy}" は "replace" または "append" である必要があります`
+    );
+  }
+});
+
+test('recent-features.json declares replace policy with a valid nextIdSeq high-water mark', () => {
+  const filePath = path.join(QUESTIONS_DIR, 'recent-features.json');
+  const data = JSON.parse(readFileSync(filePath, 'utf8'));
+
+  assert.equal(
+    data.updatePolicy,
+    'replace',
+    'recent-features は入れ替え型の領域のため updatePolicy は "replace" である必要があります'
+  );
+  assert.ok(
+    Number.isInteger(data.nextIdSeq),
+    `nextIdSeq は整数である必要があります（実際: ${data.nextIdSeq}）`
+  );
+
+  const maxSeq = data.questions.reduce((max, question) => {
+    const seq = Number(question.id.split('-').pop());
+    return seq > max ? seq : max;
+  }, 0);
+
+  assert.ok(
+    data.nextIdSeq > maxSeq,
+    `nextIdSeq (${data.nextIdSeq}) はファイル内の最大連番 (${maxSeq}) より大きい必要があります`
+  );
+});
