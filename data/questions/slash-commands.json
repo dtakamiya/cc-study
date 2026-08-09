@@ -786,7 +786,12 @@
       "id": "slash-061",
       "level": "advanced",
       "question": "カスタムスキル（`.claude/skills/`または`.claude/commands/`）のfrontmatterで、Claudeがそのスキルを自動的にロードしないようにし、`/name`で手動起動する運用にするために使うフィールドはどれですか？",
-      "choices": ["`user-invocable: false`", "`disable-model-invocation: true`", "`context: fork`", "`disallowed-tools: all`"],
+      "choices": [
+        "`user-invocable: false`",
+        "`disable-model-invocation: true`",
+        "`context: fork`",
+        "`disallowed-tools: all`"
+      ],
       "correctIndex": 1,
       "explanation": "`disable-model-invocation: true`を設定すると、Claudeがそのスキルを自動的にロードしなくなり、`/name`で手動起動するワークフロー専用にできます。デフォルトは`false`です。また、サブエージェントへのプリロード対象からも除外されます。なお`user-invocable: false`は逆に「モデルからは呼べるが`/`メニューには表示しない」設定であり、`disable-model-invocation`とは意味が逆になる点に注意が必要です。"
     },
@@ -794,9 +799,66 @@
       "id": "slash-062",
       "level": "expert",
       "question": "カスタムスキルの本文で使える`$1`という文字列置換の実際の意味として正しいものはどれですか？",
-      "choices": ["`$ARGUMENTS[1]`のショートハンドであり、0始まりのインデックスなので渡された引数のうち2番目を指す", "渡された引数のうち1番目（先頭）を指しており、多くのプログラミング言語とは異なり1始まりのインデックス表記が採用されている", "`arguments`フロントマターで名前付きの宣言を明示的に行わない限り、常に空文字列として展開される仕様になっている", "現在実行中のセッションIDの下1桁を表す、Claude Code内部専用の特殊変数として扱われる"],
+      "choices": [
+        "`$ARGUMENTS[1]`のショートハンドであり、0始まりのインデックスなので渡された引数のうち2番目を指す",
+        "渡された引数のうち1番目（先頭）を指しており、多くのプログラミング言語とは異なり1始まりのインデックス表記が採用されている",
+        "`arguments`フロントマターで名前付きの宣言を明示的に行わない限り、常に空文字列として展開される仕様になっている",
+        "現在実行中のセッションIDの下1桁を表す、Claude Code内部専用の特殊変数として扱われる"
+      ],
       "correctIndex": 0,
       "explanation": "公式ドキュメントによると`$N`は`$ARGUMENTS[N]`のショートハンドで、インデックスは0始まりです。そのため`$0`が1番目（最初）の引数、`$1`が2番目の引数を指します。名前付き引数を使いたい場合は、`arguments`フロントマター（例:`arguments: [issue, branch]`）で宣言すると`$issue`・`$branch`のような名前付きプレースホルダに置き換えられます。"
+    },
+    {
+      "id": "slash-063",
+      "level": "beginner",
+      "question": "セッションの作業ディレクトリを追加して、そのディレクトリのファイルにアクセスできるようにする組み込みコマンドはどれですか？",
+      "choices": [
+        "`/mount <path>`",
+        "`/workdir <path>`",
+        "`/add-dir <path>`",
+        "`/include <path>`"
+      ],
+      "correctIndex": 2,
+      "explanation": "`/add-dir <path>` は「現在のセッション中にファイルアクセスできる作業ディレクトリを追加する」組み込みコマンドです。CLI起動時の `--add-dir` フラグに対応します。`/mount`・`/workdir`・`/include` というコマンドは存在しません。なお、セッションの作業ディレクトリそのものを移動するのは `/cd <path>` で、別のコマンドです。"
+    },
+    {
+      "id": "slash-064",
+      "level": "intermediate",
+      "question": "カスタムスキル（またはカスタムコマンド）のfrontmatterで `argument-hint: [issue-number]` を指定すると何が起こりますか？",
+      "choices": [
+        "引数が省略された場合に `[issue-number]` が既定値として本文に埋め込まれる",
+        "`/` メニューのオートコンプリート時に、期待される引数の形式がヒントとして表示される",
+        "指定した形式に合わない引数が渡されたとき、コマンドの実行がエラーで中断される",
+        "本文中の `$ARGUMENTS` が `issue-number` という名前付き変数に置き換わる"
+      ],
+      "correctIndex": 1,
+      "explanation": "`argument-hint` は「オートコンプリート中に表示される、期待される引数を示すヒント」です。表示のみを担い、検証も既定値の供給も行いません。引数に名前を付けて `$name` で参照したい場合は、別フィールドの `arguments`（例: `arguments: [issue, branch]`）を使います。"
+    },
+    {
+      "id": "slash-065",
+      "level": "advanced",
+      "question": "スキル本文に `- 変更ファイル: !`git diff --name-only`` と書いた場合の処理として正しいものはどれですか？",
+      "choices": [
+        "スキル内容がClaudeに渡される前にコマンドが実行され、その出力が placeholder を置き換える",
+        "Claudeがスキルを読んだ後、Bashツールを呼び出してこのコマンドを実行する",
+        "スキル本文はコマンド文字列のまま渡され、Claudeが必要と判断したときだけ実行される",
+        "`allowed-tools` に `Bash` を列挙している場合に限り、Claudeが自動でこのコマンドを実行する"
+      ],
+      "correctIndex": 0,
+      "explanation": "バッククォートを伴う `!` 構文は動的コンテキスト注入で、スキル内容がClaudeに送られる前にシェルコマンドが実行され、その出力がplaceholderを置き換えます。公式ドキュメントは「これはpreprocessingであってClaudeが実行するものではなく、Claudeは最終結果しか見ない」と明記しています。なお `!` は行頭または空白直後にある場合のみ認識され、他の文字の直後だとリテラル扱いになります。"
+    },
+    {
+      "id": "slash-066",
+      "level": "expert",
+      "question": "設定で `\"disableSkillShellExecution\": true` を指定した場合の挙動として正しいものはどれですか？",
+      "choices": [
+        "すべてのスキルでBashツールの呼び出しが拒否され、`allowed-tools` の Bash ルールも無効になる",
+        "ユーザー・プロジェクト・プラグイン由来のスキルのみ影響を受け、各コマンドが `[shell command execution disabled by policy]` に置き換わる",
+        "bundled skillsを含む全スキルで、シェルコマンド実行の placeholder が空文字列に置き換わる",
+        "シェルコマンドは実行されるが、その出力がClaudeに渡らずログにのみ記録される"
+      ],
+      "correctIndex": 1,
+      "explanation": "`disableSkillShellExecution` は、user・project・plugin・additional-directory由来のスキルとカスタムコマンドにおける動的シェル実行構文を無効化します。各コマンドは実行される代わりに `[shell command execution disabled by policy]` という文字列に置き換わります。bundled skills と managed skills は影響を受けません。またこれは前処理のみを止める設定で、Bashツール自体の権限制御（allow/denyルール）とは別の仕組みです。ユーザーが上書きできない managed settings で使うのが最も有効とされています。"
     }
   ]
 }

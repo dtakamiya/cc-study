@@ -2,7 +2,7 @@
   "domain": "recent-features",
   "domainLabel": "直近の新機能",
   "updatePolicy": "replace",
-  "nextIdSeq": 44,
+  "nextIdSeq": 54,
   "questions": [
     {
       "id": "recent-001",
@@ -57,19 +57,6 @@
       "explanation": "現行のセルフサーブ向けモデルIDは`claude-opus-5`・`claude-sonnet-5`・`claude-fable-5`（および`claude-haiku-4-5`系）です。`-max`や`-latest`、旧世代の`-3-`付きIDは現行のモデルIDではありません。"
     },
     {
-      "id": "recent-005",
-      "level": "beginner",
-      "question": "Claude Codeで利用できるモデルのうち、「複雑なエージェント的コーディングや長時間にわたるエンタープライズ向け作業」に位置づけられているモデルはどれですか？",
-      "choices": [
-        "Claude Haiku 4.5",
-        "Claude Sonnet 3.5",
-        "Claude Fable 5",
-        "Claude Opus 5"
-      ],
-      "correctIndex": 3,
-      "explanation": "Claude Opus 5は複雑なエージェント的コーディングやエンタープライズ向けの作業を対象としたモデルで、深い推論・長時間のエージェント作業・テスト時計算のスケーリングに強みを持つとされています。なおClaude Fable 5はAnthropicが広く公開している中で最も高性能なモデルと位置づけられており、本設問の「エンタープライズ向け作業」の位置づけとは異なります（recent-020参照）。"
-    },
-    {
       "id": "recent-006",
       "level": "beginner",
       "question": "Claude Codeの`/fork`コマンドの基本的な動作を最も適切に表しているものはどれですか？",
@@ -107,32 +94,6 @@
       ],
       "correctIndex": 0,
       "explanation": "VS Code拡張機能のFocus Viewはツール呼び出し・ツール結果・thinkingを1ターンにつき1行の展開可能な行の背後に隠し、プロンプトと応答だけを見やすく残す表示モードです。CLI向けの`/focus`（静かな表示、recent-022参照）とは別の機能です。"
-    },
-    {
-      "id": "recent-009",
-      "level": "beginner",
-      "question": "Claude in Chromeでブラウザ操作を行う際、Claudeは既存のタブと新しいタブのどちらでその作業を行いますか？",
-      "choices": [
-        "既存のウィンドウとは別に、常にシークレットウィンドウを新規に開いて作業する",
-        "既存のブラウザのログイン状態を共有したまま、新しいタブを開いて作業する",
-        "現在アクティブなタブの内容を上書きして直接操作する",
-        "タブは一切開かず、バックグラウンドプロセスとしてのみ動作する"
-      ],
-      "correctIndex": 1,
-      "explanation": "Claudeがブラウザ操作を行う際は新しいタブを開いて作業します。既存のブラウザのログイン状態を共有するため、既にサインイン済みのサイトにもアクセスできます。"
-    },
-    {
-      "id": "recent-010",
-      "level": "beginner",
-      "question": "Claude in Chromeを特定のサイトで使うために必要な許可の仕組みはどれですか？",
-      "choices": [
-        "APIキーをそのサイトのドメインに紐づけて発行する",
-        "特別な許可は不要で、インストールした時点で全サイトに自動許可される",
-        "毎回コマンドライン引数でドメインを指定する必要がある",
-        "サイトごとの権限（サイトレベルの許可）をChrome拡張機能側で設定する"
-      ],
-      "correctIndex": 3,
-      "explanation": "Claude in Chromeはサイトレベルの権限をChrome拡張機能側で管理しており、Claudeがどのサイトを閲覧・クリック・入力できるかを制御します。`/chrome`コマンドで接続状況や権限を確認・管理できます。"
     },
     {
       "id": "recent-011",
@@ -211,19 +172,6 @@
       ],
       "correctIndex": 3,
       "explanation": "表示名は「Manual」に変わりましたが、フックやSDK連携が参照する設定値は引き続き`default`です。CLIでは`manual`をエイリアスとして受け付けており、`--permission-mode manual`や`\"defaultMode\": \"manual\"`のように指定できます。"
-    },
-    {
-      "id": "recent-017",
-      "level": "intermediate",
-      "question": "Fast Modeの説明として、公式ドキュメントの内容に最も合致するものはどれですか？",
-      "choices": [
-        "コンテキストウィンドウを縮小することでトークン処理を高速化する仕組み",
-        "ツール呼び出しの並列実行数を増やすことで体感速度を上げる仕組み",
-        "対応するOpusモデルを速度優先のAPI設定で動かすことで応答速度を高める仕組みで、品質は変わらない",
-        "応答の最大トークン数を制限することで生成時間を短縮する仕組み"
-      ],
-      "correctIndex": 2,
-      "explanation": "Fast Modeは別モデルへの切り替えではなく、Claude Opusを速度優先のAPI設定で動かす仕組みです。品質や能力は変わらないまま応答が速くなります。ただし対応するのはOpus 5とOpus 4.8のみで、別のモデルを使っている状態で有効にするとOpusへ自動的に切り替わります。"
     },
     {
       "id": "recent-018",
@@ -317,19 +265,6 @@
       "explanation": "Page constraintsの表では、公開できるソースファイルの型は`.html`・`.htm`・`.md`に限られると明記されています。Markdownファイルはスタイル付きHTMLとしてレンダリングされます。"
     },
     {
-      "id": "recent-025",
-      "level": "advanced",
-      "question": "Claude Codeでセッションが同時に起動しているサブエージェント数の既定の上限と、それを変更する環境変数の組み合わせとして正しいものはどれですか？",
-      "choices": [
-        "既定10、`CLAUDE_CODE_SUBAGENT_LIMIT`",
-        "既定5、`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`",
-        "既定無制限、`CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`",
-        "既定20、`CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`"
-      ],
-      "correctIndex": 3,
-      "explanation": "既定では20個のサブエージェントが同時に稼働している状態でAgentツールによる追加起動を試みると`Concurrent subagent limit reached`エラーになります。上限は`CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`に任意の正の整数を設定して変更できます。なおultracode有効時のセッションはこの上限が適用されません。"
-    },
-    {
       "id": "recent-026",
       "level": "advanced",
       "question": "セッションが受け取った他セッションからのクロスセッションメッセージを、承認するまで保留にしたい場合、`crossSessionInbound`にどの値を設定すればよいですか？",
@@ -354,19 +289,6 @@
       ],
       "correctIndex": 1,
       "explanation": "保留されたメッセージは送信元と内容のプレビューを示す承認ダイアログを表示します。`dialogExpiry`（既定5分）の期限を過ぎて未応答のままだとダイアログは閉じ、メッセージは破棄されます。"
-    },
-    {
-      "id": "recent-028",
-      "level": "advanced",
-      "question": "`sandbox.filesystem.disabled`を`true`に設定した場合の効果として正しいものはどれですか？",
-      "choices": [
-        "ファイルシステムの分離を維持したまま、ネットワーク分離だけを無効化する",
-        "サンドボックス自体を無効化し、すべてのBashコマンドが確認なしで実行される",
-        "ファイルシステムの分離を無効化する一方、ネットワークの分離（許可リスト）は維持される",
-        "ファイルシステムとネットワークの両方の分離を同時に無効化する"
-      ],
-      "correctIndex": 2,
-      "explanation": "`sandbox.filesystem.disabled`を`true`にすると、ファイルシステムの分離だけがスキップされ、ネットワークの分離（ドメイン許可リストなど）は維持されます。ファイルシステム分離を無効化した状態で自動許可を組み合わせると、シェル起動ファイルや`~/.claude/settings.json`などを書き換えて次回実行時にアクセス範囲を広げるリスクがある点にも注意が必要です。"
     },
     {
       "id": "recent-029",
@@ -421,19 +343,6 @@
       "explanation": "Artifactを無効化する方法として公式ドキュメントが挙げているのは、設定ファイルの`disableArtifact`、環境変数`CLAUDE_CODE_DISABLE_ARTIFACT`、`permissions.deny`への`Artifact`追加の3通りです。`--no-artifact`というCLIフラグは記載されていません。"
     },
     {
-      "id": "recent-033",
-      "level": "advanced",
-      "question": "非対話モード（`-p`フラグ）のセッションでFast Modeを使いたい場合、公式ドキュメントが示す方法はどれですか？",
-      "choices": [
-        "起動時の`--settings`で`{\"fastMode\": true}`を指定してセッションを開始する",
-        "セッション開始後に`/fast`を実行して対話モードと同様に有効化する",
-        "環境変数`CLAUDE_CODE_FAST_MODE=1`を設定してからセッションを開始する",
-        "非対話モードではFast Modeを利用する手段は用意されていない"
-      ],
-      "correctIndex": 0,
-      "explanation": "非対話モードでは、`claude -p --settings '{\"fastMode\": true}'`のように起動時の`--settings`でFast Modeを指定したセッションでのみ`/fast`が機能します。この場合の切り替えはそのセッション限りで、既定値としては保存されません。`--settings`で指定せずに起動した非対話セッションでは、`/fast`はFast Modeが利用できない旨を報告します。"
-    },
-    {
       "id": "recent-034",
       "level": "expert",
       "question": "`claude -p --output-format stream-json`によるヘッドレス実行で、サブエージェントのテキスト・thinkingブロックをストリームに含めたい場合に付与するフラグはどれですか？",
@@ -471,19 +380,6 @@
       ],
       "correctIndex": 0,
       "explanation": "ネスト自体は有効なままにしつつ、特定のサブエージェントだけをAgentツールなしに保ちたい場合は、そのサブエージェント定義の`tools`から`Agent`を外すか、`disallowedTools`に`Agent`を加えます。深さ制限をセッション全体で操作する方法は、他のサブエージェントのネストも一律に止めてしまいます。"
-    },
-    {
-      "id": "recent-037",
-      "level": "expert",
-      "question": "Claude Sonnet 4（`claude-sonnet-4-20250514`）とClaude Opus 4（`claude-opus-4-20250514`）の廃止スケジュールについて、Anthropic公式のモデル廃止ページの記載に合致するものはどれですか？",
-      "choices": [
-        "2026年4月14日に廃止予告（deprecated）され、2026年6月15日付けで retired（利用不可）となった",
-        "2025年内に予告なく即座にretiredとなった",
-        "現在もActiveのままで、廃止予定日は未定である",
-        "2026年8月5日にdeprecatedとなり、同日中にretiredとなった"
-      ],
-      "correctIndex": 0,
-      "explanation": "Model deprecationsページによれば、Claude Sonnet 4とClaude Opus 4は2026年4月14日に開発者へ廃止予告が通知され、2026年6月15日付けでretired（リクエストが失敗する状態）となりました。推奨移行先はそれぞれClaude Sonnet 4.6・Claude Opus 4.8です。"
     },
     {
       "id": "recent-038",
@@ -562,6 +458,136 @@
       ],
       "correctIndex": 3,
       "explanation": "2026年8月14日以降、auto modeはPro・Max・Teamプランの新規セッションの既定の権限モードになりますが、自分で設定した既定モードがあれば一度きりの切り替え案内を承諾しない限りそれが維持され、組織が管理する既定モードも変更されません。auto mode自体はAnthropic APIだけでなくAmazon Bedrock等のプロバイダでも利用可能ですが、この既定化のアナウンスはPro・Max・Teamプラン向けです。"
+    },
+    {
+      "id": "recent-044",
+      "level": "beginner",
+      "question": "プラグインをgitやnpmを使わずに配布したい場合、`marketplace.json` のプラグインエントリで指定できる、v2.1.224で追加されたソース種別はどれですか？",
+      "choices": [
+        "`\"source\": \"npm\"`",
+        "`\"source\": \"docker\"`",
+        "`\"source\": \"tarball\"`",
+        "`\"source\": \"archive\"`"
+      ],
+      "correctIndex": 3,
+      "explanation": "v2.1.224で `archive` ソースが追加されました。`url` にHTTPSのzipアーカイブURLを指定すると、利用者のマシンにgitやnpmがなくてもプラグインをインストールできます。S3・Artifactory・nginxなど任意の静的ファイルサーバーでホストできます。"
+    },
+    {
+      "id": "recent-045",
+      "level": "beginner",
+      "question": "クラウドで実行中のClaude Codeセッションの中で `/teleport` と入力すると、何が返ってきますか？",
+      "choices": [
+        "セッションがその場でローカル端末に移動し、クラウド側のセッションが削除される",
+        "そのセッションをローカルで続けるための `claude --teleport <session-id>` コマンドがそのまま提示される",
+        "ローカルの作業ツリーがクラウドのVMへアップロードされる",
+        "クラウドセッションのURLがクリップボードにコピーされる"
+      ],
+      "correctIndex": 1,
+      "explanation": "v2.1.223で追加された挙動です。クラウドセッション内で `/teleport` と入力すると、Claude Codeがそのセッション専用の `claude --teleport <session-id>` コマンドを返します。実際の移動は、そのリポジトリのチェックアウトでそのコマンドをローカル端末から実行して行います。"
+    },
+    {
+      "id": "recent-046",
+      "level": "beginner",
+      "question": "v2.1.224で追加されたクロスセッションメッセージング機能で、Claudeがメッセージを送れる相手のセッションを探すために使うツールはどれですか？",
+      "choices": [
+        "`ListAgents`",
+        "`FindSessions`",
+        "`Monitor`",
+        "`DiscoverPeers`"
+      ],
+      "correctIndex": 0,
+      "explanation": "Claudeは `ListAgents` で到達可能なエージェント（サブエージェント・同一マシンの他セッション・Remote Control経由のセッション）を列挙し、`SendMessage` で名前を指定して送信します。ユーザー自身が確認する場合は `/list-agents`（別名 `/peers`）コマンドを使います。"
+    },
+    {
+      "id": "recent-047",
+      "level": "intermediate",
+      "question": "`archive` ソースのプラグインエントリで、ダウンロードするzipファイルを厳密に固定したい場合の記述として正しいものはどれですか？",
+      "choices": [
+        "`\"sha\": \"<40桁のコミットハッシュ>\"` を指定する",
+        "`\"integrity\": \"sha512-...\"` を指定する",
+        "`\"sha256\": \"<64桁の16進数>\"` を指定し、不一致ならインストールが拒否される",
+        "`\"version\"` を指定すればダウンロード内容が自動的に検証される"
+      ],
+      "correctIndex": 2,
+      "explanation": "`archive` ソースは `url`（必須・HTTPSのみ）と `sha256`（任意）を受け付けます。`sha256` はアーカイブのSHA-256ダイジェストを64桁の16進数（大文字小文字どちらでも可）で書き、ダウンロードのたびに検証されます。不一致の場合は `Plugin archive integrity check failed` としてインストールが拒否されます。`sha` はgit系ソースのコミットピン用フィールドです。"
+    },
+    {
+      "id": "recent-048",
+      "level": "intermediate",
+      "question": "サブスクリプションプラン（Pro/Max/Team/Enterprise）でFast Modeを使ったときの課金について、公式ドキュメントの記載に合致するものはどれですか？",
+      "choices": [
+        "プランに含まれる利用枠を先に消費し、使い切ってからusage creditsに切り替わる",
+        "プランの利用枠とは別に、最初のトークンからusage creditsで課金される",
+        "Fast Modeの利用分はプランの利用枠から2倍のレートで差し引かれる",
+        "Fast Modeはサブスクリプションプランでは利用できず、Console APIのみで使える"
+      ],
+      "correctIndex": 1,
+      "explanation": "公式ドキュメントは「Fast mode usage draws directly from usage credits, even if you have remaining usage on your plan」と明記しています。Fast Modeのトークンはプランの利用枠にカウントされず、最初のトークンからFast Modeのレート（Opus 5 / Opus 4.8 で入力$10・出力$50 per MTok）で課金されます。そのためアカウントでusage creditsが有効になっている必要があります。"
+    },
+    {
+      "id": "recent-049",
+      "level": "advanced",
+      "question": "sandboxのcredential-maskingで、環境変数に入ったJWTを扱うために `decode: \"jwt\"` を指定しました。トークン全体を差し替えるのではなく、ペイロード内の特定のトップレベルclaimだけをマスクしたい場合に併用するフィールドはどれですか？",
+      "choices": [
+        "`extract`",
+        "`awsPairs`",
+        "`maskClaims`",
+        "`onExtractNoMatch`"
+      ],
+      "correctIndex": 2,
+      "explanation": "`decode: \"jwt\"` は既定ではJWT全体を「構造的に妥当な偽トークン」に置き換えます。`maskClaims` を追加すると、列挙したトップレベルのペイロードclaimだけが個別にマスクされ、他のclaimは読める状態が保たれます。なお `decode` は `extract` と組み合わせられません（ファイルマスキングでは併用可）。これらの設定には `network.tlsTerminate` が必要で、user設定・managed設定・`--settings` からのみ有効です。"
+    },
+    {
+      "id": "recent-050",
+      "level": "advanced",
+      "question": "sandboxのcredential-maskingでAWS認証情報をマスクする場合、公式ドキュメントが説明する注意点として正しいものはどれですか？",
+      "choices": [
+        "`AWS_SECRET_ACCESS_KEY` だけをマスクすれば、プロキシがSigV4署名を再計算できる",
+        "アクセスキーIDとシークレットアクセスキーをまとめてマスクする必要があり、プロキシはアクセスキーのsentinelでSigV4リクエストを検知して再署名する",
+        "AWS認証情報はマスク対象外で、`deny` モードしか使えない",
+        "SigV4の再署名は `credentials.sigv4` を `passthrough` に設定したときだけ行われる"
+      ],
+      "correctIndex": 1,
+      "explanation": "AWSリクエストはリクエスト内容全体にSigV4署名がかかるため、`AWS_ACCESS_KEY_ID` と `AWS_SECRET_ACCESS_KEY` は一緒にマスクします。プロキシはアクセスキーのsentinelでSigV4リクエストだと判別し、実際の値に差し替えてから再署名します。シークレットだけをマスクするとプレースホルダで署名されたままプロキシが検知できず、AWS側で失敗します。変数名が慣例と異なる場合は `credentials.awsPairs` で明示的にグループ化します（v2.1.224以降）。`credentials.sigv4` は再署名できない署名形式について、プロキシエラーの代わりに転送させる緩和設定です。"
+    },
+    {
+      "id": "recent-051",
+      "level": "expert",
+      "question": "v2.1.224で追加された `claude self-hosted-runner` のrunnerのライフサイクルについて、公式ドキュメントの記載に合致するものはどれですか？",
+      "choices": [
+        "1つのrunnerは複数ユーザーのセッションを同時に処理し、ユーザーごとに作業ディレクトリを分離する",
+        "runnerは起動時に組織全体のセッションキューを受け持ち、ユーザー単位のロックは行わない",
+        "runnerは最初に受け取ったセッションのユーザーアカウントにロックされ、以後はそのアカウントのセッションだけを実行する",
+        "runnerはセッションが終わるたびにディスク上の状態を削除してから次のユーザーのセッションを受け取る"
+      ],
+      "correctIndex": 2,
+      "explanation": "runnerは最初に取得したセッションで、そのセッションを開始したユーザーのアカウントにロックされます。以後は `--capacity` で指定した並列数までそのアカウントのセッションのみを実行するため、チェックアウトしたコードがユーザー間で混ざりません。`--drain-grace-sec` の既定値 `0` では稼働中のセッションが終わり次第runnerが終了し、オーケストレータが新しいディスクで再起動します。この設計により、runner側でユーザー間のディスク状態を消去する必要がなくなります。"
+    },
+    {
+      "id": "recent-052",
+      "level": "expert",
+      "question": "1セッション中にClaudeが起動できるサブエージェントの「総数」の上限について、現行の公式ドキュメントの記載に合致するものはどれですか？",
+      "choices": [
+        "総数の上限は撤廃されており、同時実行数と入れ子の深さの制限だけが残っている",
+        "1セッションあたり200個が上限で、`/clear` でリセットされる",
+        "1セッションあたり20個が上限で、環境変数で変更できる",
+        "総数・同時実行数・深さの3つがいずれも既定で無制限になっている"
+      ],
+      "correctIndex": 0,
+      "explanation": "v2.1.212で導入された「1セッションあたり200個」のspawn上限は、v2.1.224で撤廃されました。公式ドキュメントも「There's no limit on the total number of subagents Claude can spawn over a session」と明記しています。残っているのは同時実行数の上限（既定20、`CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`）と入れ子の深さの上限（既定3層、`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`）の2つです。"
+    },
+    {
+      "id": "recent-053",
+      "level": "expert",
+      "question": "`crossSessionInbound` を明示的に設定していないセッションに、他セッションからメッセージが届いたときの既定の判定について、公式ドキュメントの記載に合致するものはどれですか？",
+      "choices": [
+        "送信側・受信側の権限モードにかかわらず、常にそのまま配送される",
+        "受信側が権限プロンプトを出すモードなら基本的に配送され、送信側が権限プロンプトをバイパスしていると申告した場合のみ承認待ちで保留される",
+        "受信側が権限プロンプトを出すモードのときは常に保留され、承認しない限り配送されない",
+        "送信側と受信側が同一プロジェクトディレクトリにある場合のみ配送される"
+      ],
+      "correctIndex": 1,
+      "explanation": "値が適用されないとき、Claude Codeは両セッションの権限モードを「権限プロンプトをバイパスするクラス」と「プロンプトするクラス」の2つに分けて判定します。受信側がプロンプトするクラスなら基本的に配送し、送信側がバイパス側だと申告した場合のみ承認待ちで保留します。逆に受信側がバイパス側なら既定で保留し、送信側も同じくバイパス側だと申告した場合のみ配送します。保留時のダイアログを放置すると `dialogExpiry`（既定5分）でメッセージは破棄されます。"
     }
   ]
 }
