@@ -7,15 +7,15 @@
     {
       "id": "recent-001",
       "level": "beginner",
-      "question": "Claude Codeの`/fast`コマンドを有効にしたとき、応答を生成するモデルはどうなりますか？",
+      "question": "Sonnetを使っているセッションでClaude Codeの`/fast`コマンドを有効にすると、モデルはどうなりますか？",
       "choices": [
         "より小型で安価なモデルに自動的に切り替わる",
-        "Haiku 4.5に固定される",
-        "Claude Opusのまま、出力が高速になる",
+        "Sonnetのまま、出力だけが高速になる",
+        "Opusに自動的に切り替わり、その上で高速化される",
         "モデルは変わらず、ツール呼び出しだけが並列化される"
       ],
       "correctIndex": 2,
-      "explanation": "Fast ModeはClaude Opusを使ったまま出力を高速化するモードで、小型モデルへの降格ではありません。Opus 5および4.8で利用でき、`/fast`でオン・オフを切り替えます。"
+      "explanation": "Fast ModeはClaude Opus向けの高速な構成であり、Opus 5とOpus 4.8でのみ利用できます。別のモデルを使っている状態で有効にすると、Claude Codeは自動的にOpusへ切り替えます。小型モデルへの降格ではなく、むしろ上位モデルへ移ったうえで高速化される点に注意してください。なお`/fast`で無効に戻してもOpusのままで、元のモデルには戻りません。"
     },
     {
       "id": "recent-002",
@@ -219,11 +219,11 @@
       "choices": [
         "コンテキストウィンドウを縮小することでトークン処理を高速化する仕組み",
         "ツール呼び出しの並列実行数を増やすことで体感速度を上げる仕組み",
-        "Claude Opusを使い続けたまま、速度を優先するAPI設定に切り替えることで応答速度を高める仕組みで、品質は変わらない",
+        "対応するOpusモデルを速度優先のAPI設定で動かすことで応答速度を高める仕組みで、品質は変わらない",
         "応答の最大トークン数を制限することで生成時間を短縮する仕組み"
       ],
       "correctIndex": 2,
-      "explanation": "Fast Modeは別モデルへの切り替えではなく、Claude Opusを速度優先のAPI設定で動かす仕組みです。品質や能力は変わらないまま応答が速くなります。"
+      "explanation": "Fast Modeは別モデルへの切り替えではなく、Claude Opusを速度優先のAPI設定で動かす仕組みです。品質や能力は変わらないまま応答が速くなります。ただし対応するのはOpus 5とOpus 4.8のみで、別のモデルを使っている状態で有効にするとOpusへ自動的に切り替わります。"
     },
     {
       "id": "recent-018",
@@ -423,15 +423,15 @@
     {
       "id": "recent-033",
       "level": "advanced",
-      "question": "組織の管理者が、あるロールにだけArtifactsの利用を許可したい場合（Enterpriseプランでロールベースアクセス制御を使う場合）、どこで設定しますか？",
+      "question": "非対話モード（`-p`フラグ）のセッションでFast Modeを使いたい場合、公式ドキュメントが示す方法はどれですか？",
       "choices": [
-        "claude.aiの管理設定の「Settings > Roles」で対象ロールを編集し、Claude Codeグループの「Artifacts」権限を設定する",
-        "各開発者のユーザー設定ファイルに`enableArtifact`を個別に追加してもらう",
-        "リポジトリの`.claude/settings.json`にロール名を列挙する",
-        "Artifactは組織単位でしか制御できず、ロール単位の制御はサポートされていない"
+        "起動時の`--settings`で`{\"fastMode\": true}`を指定してセッションを開始する",
+        "セッション開始後に`/fast`を実行して対話モードと同様に有効化する",
+        "環境変数`CLAUDE_CODE_FAST_MODE=1`を設定してからセッションを開始する",
+        "非対話モードではFast Modeを利用する手段は用意されていない"
       ],
       "correctIndex": 0,
-      "explanation": "Enterpriseプランでロールベースアクセス制御を使っている場合、「Settings > Roles」で対象のロールを編集し、「Claude Codeグループ」の下にある「Artifacts」権限を設定することで、特定のロールにだけArtifactsをスコープできます。"
+      "explanation": "非対話モードでは、`claude -p --settings '{\"fastMode\": true}'`のように起動時の`--settings`でFast Modeを指定したセッションでのみ`/fast`が機能します。この場合の切り替えはそのセッション限りで、既定値としては保存されません。`--settings`で指定せずに起動した非対話セッションでは、`/fast`はFast Modeが利用できない旨を報告します。"
     },
     {
       "id": "recent-034",
