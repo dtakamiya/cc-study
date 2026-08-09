@@ -29,7 +29,7 @@
 | slash-commands | 13件 | 13件 | 対象外・変化なし |
 | **合計** | **92件** | **69件** | 全448問中 15.4% |
 
-各問題の修正前後の詳細な比率は Task 1〜4 の各レポート（`.superpowers/sdd/2026-08-08-question-audit-fixes/task-{1,2,3,4}-report.md`）を参照。
+各問題の修正前後の詳細な比率は本文書「B. 文字数偏り是正」節の表を参照。個別の比率計算は Subagent-Driven Development の各タスクレビューで実装者と独立に再計算・検証済み（作業ワークスペースはマージ時に削除済みのため、レビューの生記録はこのブランチの履歴には残らない）。
 
 ### C. id 欠番の規則明文化
 
@@ -68,7 +68,7 @@
 - 造語 `goals over steps` / `partition without overlap` の残存: **0件**（`data/questions/` 全体）
 - 追加行に含まれる極端な断定（「一切」「絶対に」「存在しない」「必ず」）: **0件**
 - `Claude Code SDK` の単独表記: `feature-usage.json` に2件だが、いずれも「旧Claude Code SDK」「かつてClaude Code SDKと呼ばれていたもの」という意図した旧称への言及であり問題なし
-- 全体差分: `.claude/skills/question-bank-update/references/json-schema.md`（+16）/ `data/questions/feature-usage.json`（±10）/ `data/questions/harness-design.json`（±78）/ `data/questions/prompt-design.json`（±16）/ `data/questions/token-efficiency.json`（±34）の5ファイル、計 +85/-69
+- 問題データ・スキーマの差分: `.claude/skills/question-bank-update/references/json-schema.md`（+16）/ `data/questions/feature-usage.json`（±10）/ `data/questions/harness-design.json`（±78）/ `data/questions/prompt-design.json`（±16）/ `data/questions/token-efficiency.json`（±34）の5ファイル、計 +85/-69。このサマリ文書自体を含むPR全体の差分は `git diff main...worktree-question-audit-fixes --stat` を参照
 
 ## 残した課題
 
