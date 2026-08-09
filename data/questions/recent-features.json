@@ -1,0 +1,567 @@
+{
+  "domain": "recent-features",
+  "domainLabel": "直近の新機能",
+  "updatePolicy": "replace",
+  "nextIdSeq": 44,
+  "questions": [
+    {
+      "id": "recent-001",
+      "level": "beginner",
+      "question": "Sonnetを使っているセッションでClaude Codeの`/fast`コマンドを有効にすると、モデルはどうなりますか？",
+      "choices": [
+        "より小型で安価なモデルに自動的に切り替わる",
+        "Sonnetのまま、出力だけが高速になる",
+        "Opusに自動的に切り替わり、その上で高速化される",
+        "モデルは変わらず、ツール呼び出しだけが並列化される"
+      ],
+      "correctIndex": 2,
+      "explanation": "Fast ModeはClaude Opus向けの高速な構成であり、Opus 5とOpus 4.8でのみ利用できます。別のモデルを使っている状態で有効にすると、Claude Codeは自動的にOpusへ切り替えます。小型モデルへの降格ではなく、むしろ上位モデルへ移ったうえで高速化される点に注意してください。なお`/fast`で無効に戻してもOpusのままで、元のモデルには戻りません。"
+    },
+    {
+      "id": "recent-002",
+      "level": "beginner",
+      "question": "Claude CodeのArtifacts機能で、新しく公開したページの公開範囲は既定でどうなりますか？",
+      "choices": [
+        "インターネット上の誰でも見られる公開ページになる",
+        "所属組織の全員に自動的に共有される",
+        "自分だけが見られる非公開ページになる",
+        "公開前に必ず外部レビュー担当者の承認が必要になる"
+      ],
+      "correctIndex": 2,
+      "explanation": "新しく作成したArtifactは自分だけに見える非公開ページとして公開されます。他の人に見せたい場合はページ上部の共有コントロールから明示的に共有範囲を選ぶ必要があります。"
+    },
+    {
+      "id": "recent-003",
+      "level": "beginner",
+      "question": "Claude Codeが公開するArtifactは、どこにホストされますか？",
+      "choices": [
+        "利用者自身のサーバー",
+        "claude.ai上のページ",
+        "GitHub Pages",
+        "ローカルマシンのみで、外部には公開されない"
+      ],
+      "correctIndex": 1,
+      "explanation": "Artifactはセッションの作業内容からclaude.ai上の専用URLに公開される、ライブで対話的なWebページです。ブラウザで開くとセッションの進行に合わせてその場で更新されます。"
+    },
+    {
+      "id": "recent-004",
+      "level": "beginner",
+      "question": "Claude CodeのCLIで利用できる現行モデルのモデルIDの組み合わせとして正しいものはどれですか？",
+      "choices": [
+        "claude-opus-5 / claude-sonnet-5 / claude-fable-5",
+        "claude-opus-max / claude-sonnet-max / claude-haiku-max",
+        "claude-3-opus / claude-3-sonnet / claude-3-haiku",
+        "opus-latest / sonnet-latest / fable-latest"
+      ],
+      "correctIndex": 0,
+      "explanation": "現行のセルフサーブ向けモデルIDは`claude-opus-5`・`claude-sonnet-5`・`claude-fable-5`（および`claude-haiku-4-5`系）です。`-max`や`-latest`、旧世代の`-3-`付きIDは現行のモデルIDではありません。"
+    },
+    {
+      "id": "recent-005",
+      "level": "beginner",
+      "question": "Claude Codeで利用できるモデルのうち、「複雑なエージェント的コーディングや長時間にわたるエンタープライズ向け作業」に位置づけられているモデルはどれですか？",
+      "choices": [
+        "Claude Haiku 4.5",
+        "Claude Sonnet 3.5",
+        "Claude Fable 5",
+        "Claude Opus 5"
+      ],
+      "correctIndex": 3,
+      "explanation": "Claude Opus 5は複雑なエージェント的コーディングやエンタープライズ向けの作業を対象としたモデルで、深い推論・長時間のエージェント作業・テスト時計算のスケーリングに強みを持つとされています。なおClaude Fable 5はAnthropicが広く公開している中で最も高性能なモデルと位置づけられており、本設問の「エンタープライズ向け作業」の位置づけとは異なります（recent-020参照）。"
+    },
+    {
+      "id": "recent-006",
+      "level": "beginner",
+      "question": "Claude Codeの`/fork`コマンドの基本的な動作を最も適切に表しているものはどれですか？",
+      "choices": [
+        "現在の会話を破棄し、まったく新しい空のセッションを開始する",
+        "現在のファイルをディスク上で複製するだけで、会話には影響しない",
+        "現在のセッションを一時停止し、別のユーザーに引き継ぐ",
+        "現在の会話をバックグラウンドの新しいセッションにコピーし、元のセッションは継続したまま、コピー先は独立して進行する"
+      ],
+      "correctIndex": 3,
+      "explanation": "`/fork`はその時点までの会話をバックグラウンドの新しいセッションにコピーします。コピー後は元の会話と独立して進行し、Agent View上では別の行として表示されます。"
+    },
+    {
+      "id": "recent-007",
+      "level": "beginner",
+      "question": "Claude Codeの権限モードにおいて、あらゆる操作を毎回確認する既定のモードは、CLIやヘルプ上で何という名前に改称されましたか？",
+      "choices": [
+        "Strict",
+        "Review",
+        "Manual",
+        "Safe"
+      ],
+      "correctIndex": 2,
+      "explanation": "すべての操作を確認する既定のモードは、CLIや`--help`、VS Code拡張などの表示名が「Manual」に改称されました。設定値としての内部名は引き続き`default`で、`--permission-mode manual`のようにエイリアスとしても指定できます。"
+    },
+    {
+      "id": "recent-008",
+      "level": "beginner",
+      "question": "VS Code拡張機能におけるClaude CodeのFocus Viewの役割を最も適切に表しているものはどれですか？",
+      "choices": [
+        "ツール呼び出しや結果、thinkingを1ターンにつき1行の展開可能な行に畳んで、プロンプトと応答を見やすくする表示モード",
+        "危険なBashコマンドの実行を自動的にブロックするセキュリティ機能",
+        "複数のサブエージェントを1つのウィンドウに並べて表示する機能",
+        "コードエディタ上でカーソル周辺のみをハイライト表示する機能"
+      ],
+      "correctIndex": 0,
+      "explanation": "VS Code拡張機能のFocus Viewはツール呼び出し・ツール結果・thinkingを1ターンにつき1行の展開可能な行の背後に隠し、プロンプトと応答だけを見やすく残す表示モードです。CLI向けの`/focus`（静かな表示、recent-022参照）とは別の機能です。"
+    },
+    {
+      "id": "recent-009",
+      "level": "beginner",
+      "question": "Claude in Chromeでブラウザ操作を行う際、Claudeは既存のタブと新しいタブのどちらでその作業を行いますか？",
+      "choices": [
+        "既存のウィンドウとは別に、常にシークレットウィンドウを新規に開いて作業する",
+        "既存のブラウザのログイン状態を共有したまま、新しいタブを開いて作業する",
+        "現在アクティブなタブの内容を上書きして直接操作する",
+        "タブは一切開かず、バックグラウンドプロセスとしてのみ動作する"
+      ],
+      "correctIndex": 1,
+      "explanation": "Claudeがブラウザ操作を行う際は新しいタブを開いて作業します。既存のブラウザのログイン状態を共有するため、既にサインイン済みのサイトにもアクセスできます。"
+    },
+    {
+      "id": "recent-010",
+      "level": "beginner",
+      "question": "Claude in Chromeを特定のサイトで使うために必要な許可の仕組みはどれですか？",
+      "choices": [
+        "APIキーをそのサイトのドメインに紐づけて発行する",
+        "特別な許可は不要で、インストールした時点で全サイトに自動許可される",
+        "毎回コマンドライン引数でドメインを指定する必要がある",
+        "サイトごとの権限（サイトレベルの許可）をChrome拡張機能側で設定する"
+      ],
+      "correctIndex": 3,
+      "explanation": "Claude in Chromeはサイトレベルの権限をChrome拡張機能側で管理しており、Claudeがどのサイトを閲覧・クリック・入力できるかを制御します。`/chrome`コマンドで接続状況や権限を確認・管理できます。"
+    },
+    {
+      "id": "recent-011",
+      "level": "beginner",
+      "question": "Claude Codeが公開するArtifactについて、公式ドキュメントが明記している制約はどれですか？",
+      "choices": [
+        "外部ホストへのスクリプト・スタイルシート・画像の読み込みやfetch/XHR/WebSocket通信はCSPによってブロックされる",
+        "Artifactは常にバックエンドサーバーを自動的に用意し、フォーム送信データを保存できる",
+        "複数のHTMLファイルを1つのArtifactとしてまとめてデプロイできる",
+        "Artifactのサイズには上限がなく、どれだけ大きな画像も埋め込める"
+      ],
+      "correctIndex": 0,
+      "explanation": "Artifactは1つの自己完結したページとして厳格なCSPの下で配信され、他ホストへのスクリプト・スタイルシート・画像の読み込みやfetch・XHR・WebSocket通信はブロックされます。CSSやJavaScriptはインライン化し、画像はdata URIとして埋め込む必要があります。"
+    },
+    {
+      "id": "recent-012",
+      "level": "intermediate",
+      "question": "セッション内で一時的に「デプロイの完了を5分おきに確認したい」という場合、`/loop`と`/schedule`（クラウドのRoutines）のどちらを使うのがより適切ですか？",
+      "choices": [
+        "`/loop`。現在のセッションが開いている間だけ繰り返せればよく、マシンやセッションを閉じても動き続ける必要がないため",
+        "`/schedule`。`/loop`は1回しか実行できないコマンドであるため",
+        "どちらでも同じ仕組みで動作するため、どちらを使っても差はない",
+        "`/schedule`。`/loop`はクラウド上でのみ動作し、ローカルマシンでは使えないため"
+      ],
+      "correctIndex": 0,
+      "explanation": "`/loop`はセッションが開いている間だけ動く、セッション内でのクイックなポーリング向けの仕組みです。マシンが起動していなくても、セッションを開いていなくても動き続けてほしい場合はクラウドのRoutines（`/schedule`）を使います。"
+    },
+    {
+      "id": "recent-013",
+      "level": "intermediate",
+      "question": "`/loop`とクラウドのRoutines（`/schedule`）を比較したとき、ローカルファイルへのアクセスと最小実行間隔について正しい説明はどれですか？",
+      "choices": [
+        "`/loop`はローカルファイルにアクセスできないが、クラウドのRoutinesはローカルファイルに直接アクセスできる",
+        "どちらもローカルファイルにアクセスでき、最小実行間隔も1分で同一である",
+        "クラウドのRoutinesの方が`/loop`より最小実行間隔が短く設定できる",
+        "`/loop`はローカルファイルにアクセスでき最小間隔は1分だが、クラウドのRoutinesはfresh cloneで動くためローカルファイルにアクセスできず最小間隔は1時間である"
+      ],
+      "correctIndex": 3,
+      "explanation": "`/loop`はローカルマシン上のセッションで動くためローカルファイルにアクセスでき、最小実行間隔は1分です。クラウドのRoutinesは毎回リポジトリをfresh cloneして実行するためローカルファイルにはアクセスできず、最小実行間隔は1時間です。"
+    },
+    {
+      "id": "recent-014",
+      "level": "intermediate",
+      "question": "副次的な作業の結果だけを現在の会話に返してほしい（ツール呼び出しの詳細で親の文脈を汚したくない）場合、`/fork`と`/subtask`のどちらを使うべきですか？",
+      "choices": [
+        "`/fork`。別のバックグラウンドセッションで独立に動き、親には結果を報告しないため",
+        "`/subtask`。新規の空文脈から始まるため親の会話には一切影響しないため",
+        "どちらを使っても親の会話への戻り方に違いはない",
+        "`/subtask`。ツール呼び出しは親の文脈に載らず、最終結果だけがメッセージとして現在の会話に返るため"
+      ],
+      "correctIndex": 3,
+      "explanation": "`/subtask`はフォークされたサブエージェントを起動する仕組みで、`/fork`と同様に親の全会話文脈を引き継ぎますが、そのツール呼び出しの詳細は親の会話に載らず、最終結果だけがメッセージとして現在の会話に返ります。一方`/fork`はセッション全体を別のバックグラウンドセッションにコピーし、独立に進行して親セッションには結果を報告しません。"
+    },
+    {
+      "id": "recent-015",
+      "level": "intermediate",
+      "question": "これまでの会話の文脈を一切引き継がない、本当にまっさらな状態のワーカーに調査や実装を任せたい場合、何を使うべきですか？",
+      "choices": [
+        "通常の名前付きサブエージェント（Task/Agentツール、例: Explore）。新規かつ独立した文脈で起動するため",
+        "`/subtask`。親の全会話文脈を引き継がずに起動するため",
+        "`/fork`。親の全会話文脈を引き継がずに起動するため",
+        "`/loop`。セッションを開いたまま繰り返し実行するため文脈を持ち込まないため"
+      ],
+      "correctIndex": 0,
+      "explanation": "`/fork`と`/subtask`はどちらも親の全会話文脈を引き継ぐ点で共通しており、まっさらな文脈のワーカーにはなりません。新規かつ独立した文脈から始めたい場合は、通常の名前付きサブエージェント（Task/Agentツール）を使います。各サブエージェントは新規の独立した文脈ウィンドウから始まり、その例外が親の会話を引き継ぐforkです。"
+    },
+    {
+      "id": "recent-016",
+      "level": "intermediate",
+      "question": "権限モードが「Manual」に改称されたことに伴い、設定ファイルで`defaultMode`に指定できる値について正しい説明はどれですか？",
+      "choices": [
+        "内部の設定値も`manual`に完全移行し、`default`は指定するとエラーになる",
+        "設定ファイルからは`defaultMode`を指定できなくなり、CLI引数でのみ指定可能になった",
+        "`Manual`は表示名ではなく、フック・SDK連携で使う設定値そのものである",
+        "内部の設定値は引き続き`default`であり、`manual`はそのエイリアスとして受け付けられる"
+      ],
+      "correctIndex": 3,
+      "explanation": "表示名は「Manual」に変わりましたが、フックやSDK連携が参照する設定値は引き続き`default`です。CLIでは`manual`をエイリアスとして受け付けており、`--permission-mode manual`や`\"defaultMode\": \"manual\"`のように指定できます。"
+    },
+    {
+      "id": "recent-017",
+      "level": "intermediate",
+      "question": "Fast Modeの説明として、公式ドキュメントの内容に最も合致するものはどれですか？",
+      "choices": [
+        "コンテキストウィンドウを縮小することでトークン処理を高速化する仕組み",
+        "ツール呼び出しの並列実行数を増やすことで体感速度を上げる仕組み",
+        "対応するOpusモデルを速度優先のAPI設定で動かすことで応答速度を高める仕組みで、品質は変わらない",
+        "応答の最大トークン数を制限することで生成時間を短縮する仕組み"
+      ],
+      "correctIndex": 2,
+      "explanation": "Fast Modeは別モデルへの切り替えではなく、Claude Opusを速度優先のAPI設定で動かす仕組みです。品質や能力は変わらないまま応答が速くなります。ただし対応するのはOpus 5とOpus 4.8のみで、別のモデルを使っている状態で有効にするとOpusへ自動的に切り替わります。"
+    },
+    {
+      "id": "recent-018",
+      "level": "intermediate",
+      "question": "Claude Codeで公開したArtifactを、公開後に「同じURLのまま」内容を更新したい場合、どうすればよいですか？",
+      "choices": [
+        "毎回新しいURLで公開し直し、古いリンクは手動で削除する",
+        "Artifactは一度公開すると内容を更新できない仕様である",
+        "claude.ai側の管理画面でHTMLソースを直接書き換える",
+        "Claudeにページの修正を依頼し、同じセッション（またはURLを伝えた別セッション）から再度公開してもらう"
+      ],
+      "correctIndex": 3,
+      "explanation": "Artifactはページを編集して再度publishすると同じURLに新しいバージョンとして反映されます。別セッションから更新する場合はArtifactのURLをClaudeに伝えることで、そのセッションが既存のArtifactを更新できます。URLを伝えなければ新しいセッションは常に新規のArtifactを作成します。"
+    },
+    {
+      "id": "recent-019",
+      "level": "intermediate",
+      "question": "Claude CodeのArtifactが「アプリケーションではなく作業の一時的な記録である」とされる理由として、公式ドキュメントの説明に合致するものはどれですか？",
+      "choices": [
+        "バックエンドを持たない自己完結した1ページであり、フォーム入力の保存や複数ルートの提供ができないため",
+        "公開後24時間で自動的に削除されるため",
+        "JavaScriptを一切実行できない静的な画像としてのみ扱われるため",
+        "1つのアカウントにつき1つしかArtifactを作成できない制限があるため"
+      ],
+      "correctIndex": 0,
+      "explanation": "Artifactはバックエンドを持たない1つの自己完結したページであり、フォーム送信データを保存したり複数のルートを提供したりすることができません。そのため公式ドキュメントは「アプリケーションではなく作業の記録（capture of work）」と位置づけています。"
+    },
+    {
+      "id": "recent-020",
+      "level": "intermediate",
+      "question": "Claude Codeのモデル構成における、Claude Opus 5とClaude Fable 5の位置づけの違いとして適切なものはどれですか？",
+      "choices": [
+        "Opus 5とFable 5はまったく同一の性能を持ち、名称のみが異なる",
+        "Opus 5はエージェント的コーディング向け、Fable 5は最も高性能で長時間の推論作業向け",
+        "Fable 5は軽量・低コスト用途専用であり、複雑な推論作業には使用できない",
+        "Opus 5は画像生成専用モデル、Fable 5はテキスト専用モデルという役割分担がある"
+      ],
+      "correctIndex": 1,
+      "explanation": "Claude Opus 5は複雑なエージェント的コーディングやエンタープライズ向け作業向けのモデルです。Claude Fable 5はAnthropicが広く公開している中で最も高性能なモデルとされ、最も要求の厳しい推論や長時間にわたるエージェント作業向けに位置づけられています。両者は名称のみが異なる同一モデルではなく、また役割分担も画像/テキストのような単純な分割ではありません。"
+    },
+    {
+      "id": "recent-021",
+      "level": "intermediate",
+      "question": "クラウド上で進めていたClaude Codeのセッションを、途中からローカルの端末に引き継いで作業を続けたい場合に使うコマンドはどれですか？",
+      "choices": [
+        "`/fork`",
+        "`/teleport`",
+        "`/loop`",
+        "`/focus`"
+      ],
+      "correctIndex": 1,
+      "explanation": "`/teleport`はクラウド上のClaude Codeセッションをローカルの端末に引き継ぐコマンドです。対象ブランチを取得し会話履歴を読み込んで、Web側セッションの最後の状態から作業を再開します。"
+    },
+    {
+      "id": "recent-022",
+      "level": "intermediate",
+      "question": "Claude Codeで、あるチーム共有のPRレビューをFocus Viewの`/focus`で表示したとき、通常のFocus Viewと比べて画面に表示される情報の粒度はどうなりますか？",
+      "choices": [
+        "自分の直前のプロンプト、ツール呼び出しの1行要約（編集の差分統計付き）、最終応答だけが表示される、より静かな表示になる",
+        "すべてのツール呼び出しとthinkingの詳細ログが逆に展開表示されるようになる",
+        "会話履歴がすべて消去され、最終応答のみが残る",
+        "画面表示は通常モードとまったく同じで、ショートカットキーの割り当てのみが変わる"
+      ],
+      "correctIndex": 0,
+      "explanation": "`/focus`を実行すると、直前のプロンプト・ツール呼び出しの1行要約（編集の差分統計つき）・最終応答だけを表示する、より静かな表示になります。通常のFocus Viewはツール呼び出しなどをターンごとに1行へ畳みますが、`/focus`はさらに要約された表示です。"
+    },
+    {
+      "id": "recent-023",
+      "level": "advanced",
+      "question": "Claude CodeのArtifactとして公開したページが、閲覧時にMCPコネクタを呼び出して最新データを取得する場合、その通信はどのように行われますか？",
+      "choices": [
+        "ページ自身が閲覧者のブラウザから直接コネクタへ通信し、claude.aiは経由しない",
+        "ページはclaude.aiに呼び出しを委ね、claude.aiがネットワーク通信を代行する",
+        "公開したセッション側のローカルMCPサーバーに直接接続して取得する",
+        "ページ内のfetch呼び出しがCSPの例外として許可され、外部ホストに直接アクセスする"
+      ],
+      "correctIndex": 1,
+      "explanation": "Artifactの厳格なCSPは外部ホストへのfetch/XHR/WebSocketを原則ブロックしますが、MCPコネクタ呼び出しはその例外で、ページはclaude.aiに呼び出しを委ね、claude.aiがネットワーク通信を代行します。閲覧者ごとに自分のアカウントの接続を通じて呼び出しが実行されます。"
+    },
+    {
+      "id": "recent-024",
+      "level": "advanced",
+      "question": "Claude Codeが公開するArtifactとして公開できるファイルの拡張子として、公式ドキュメントに明記されているものはどれですか？",
+      "choices": [
+        "`.html`・`.jsx`・`.md`",
+        "`.html`・`.pdf`・`.txt`",
+        "`.html`・`.htm`・`.md`",
+        "`.html`・`.svg`・`.json`"
+      ],
+      "correctIndex": 2,
+      "explanation": "Page constraintsの表では、公開できるソースファイルの型は`.html`・`.htm`・`.md`に限られると明記されています。Markdownファイルはスタイル付きHTMLとしてレンダリングされます。"
+    },
+    {
+      "id": "recent-025",
+      "level": "advanced",
+      "question": "Claude Codeでセッションが同時に起動しているサブエージェント数の既定の上限と、それを変更する環境変数の組み合わせとして正しいものはどれですか？",
+      "choices": [
+        "既定10、`CLAUDE_CODE_SUBAGENT_LIMIT`",
+        "既定5、`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`",
+        "既定無制限、`CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`",
+        "既定20、`CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`"
+      ],
+      "correctIndex": 3,
+      "explanation": "既定では20個のサブエージェントが同時に稼働している状態でAgentツールによる追加起動を試みると`Concurrent subagent limit reached`エラーになります。上限は`CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`に任意の正の整数を設定して変更できます。なおultracode有効時のセッションはこの上限が適用されません。"
+    },
+    {
+      "id": "recent-026",
+      "level": "advanced",
+      "question": "セッションが受け取った他セッションからのクロスセッションメッセージを、承認するまで保留にしたい場合、`crossSessionInbound`にどの値を設定すればよいですか？",
+      "choices": [
+        "`pending`",
+        "`review`",
+        "`hold`",
+        "`ask`"
+      ],
+      "correctIndex": 2,
+      "explanation": "`crossSessionInbound`は`accept`（即時配信）・`hold`（通知を出し配信せず承認待ちにする）・`refuse`（配信せず破棄する）の3値を取ります。保留にしたい場合は`hold`を指定します。"
+    },
+    {
+      "id": "recent-027",
+      "level": "advanced",
+      "question": "クロスセッションメッセージが保留（hold）状態になったとき、承認ダイアログを放置した場合に何が起きますか？",
+      "choices": [
+        "無期限に保留され続け、いつでも承認できる",
+        "既定で5分の`dialogExpiry`を過ぎるとダイアログが閉じ、メッセージは破棄される",
+        "既定で1時間後に自動的に承認扱いになる",
+        "セッションを再起動するまでダイアログが表示され続ける"
+      ],
+      "correctIndex": 1,
+      "explanation": "保留されたメッセージは送信元と内容のプレビューを示す承認ダイアログを表示します。`dialogExpiry`（既定5分）の期限を過ぎて未応答のままだとダイアログは閉じ、メッセージは破棄されます。"
+    },
+    {
+      "id": "recent-028",
+      "level": "advanced",
+      "question": "`sandbox.filesystem.disabled`を`true`に設定した場合の効果として正しいものはどれですか？",
+      "choices": [
+        "ファイルシステムの分離を維持したまま、ネットワーク分離だけを無効化する",
+        "サンドボックス自体を無効化し、すべてのBashコマンドが確認なしで実行される",
+        "ファイルシステムの分離を無効化する一方、ネットワークの分離（許可リスト）は維持される",
+        "ファイルシステムとネットワークの両方の分離を同時に無効化する"
+      ],
+      "correctIndex": 2,
+      "explanation": "`sandbox.filesystem.disabled`を`true`にすると、ファイルシステムの分離だけがスキップされ、ネットワークの分離（ドメイン許可リストなど）は維持されます。ファイルシステム分離を無効化した状態で自動許可を組み合わせると、シェル起動ファイルや`~/.claude/settings.json`などを書き換えて次回実行時にアクセス範囲を広げるリスクがある点にも注意が必要です。"
+    },
+    {
+      "id": "recent-029",
+      "level": "advanced",
+      "question": "`sandbox.network.strictAllowlist`を`true`に設定すると、サンドボックス化されたコマンドが許可リスト外のホストにアクセスしようとした際の挙動はどう変わりますか？",
+      "choices": [
+        "許可を求める確認ダイアログの代わりに、即座にアクセスを拒否するようになる",
+        "常に確認ダイアログを表示していたのが、常に自動許可されるようになる",
+        "アクセス試行のログだけが記録され、動作自体は変わらない",
+        "許可リストという概念自体が撤廃され、すべてのホストへのアクセスが許可される"
+      ],
+      "correctIndex": 0,
+      "explanation": "`strictAllowlist`をユーザー設定・管理設定・CLIの`--settings`のいずれかで`true`にすると、許可リスト外のホストへのアクセスについて確認を求める代わりに拒否するようになります。プロジェクトの`.claude/settings.json`や`.claude/settings.local.json`で設定しても効果はありません。"
+    },
+    {
+      "id": "recent-030",
+      "level": "advanced",
+      "question": "Claude Codeのフックイベント`DirectoryAdded`が発火する条件として、公式ドキュメントに明記されているものはどれですか？",
+      "choices": [
+        "セッション開始時に最初の作業ディレクトリが確定したとき",
+        "`/add-dir`またはSDKの`register_repo_root`でディレクトリが追加されたとき",
+        "`cd`コマンドでカレントディレクトリが変更されたとき",
+        "新しいgit worktreeが作成されたとき"
+      ],
+      "correctIndex": 1,
+      "explanation": "`DirectoryAdded`は、セッションの途中で`/add-dir`コマンドまたはSDKの`register_repo_root`コントロールリクエストによって作業ディレクトリが追加されたときに発火します。マッチャーの値としてそれぞれ`slash_command`・`register_repo_root`が使われ、決定制御はサポートされていません。"
+    },
+    {
+      "id": "recent-031",
+      "level": "advanced",
+      "question": "公開済みのArtifactの「レンダリング後のページサイズ」に関する制約として、公式ドキュメントの記述に合致するものはどれですか？",
+      "choices": [
+        "レンダリング後のページは16MiB以下でなければならず、埋め込んだ大きな画像が原因で公開に失敗することが多い",
+        "サイズ上限はなく、代わりにDOM要素数に上限が設けられている",
+        "上限は100MBで、画像を除くテキストとスクリプトのみがカウントされる",
+        "上限はセッションのプランによって異なり、Enterpriseプランでは無制限になる"
+      ],
+      "correctIndex": 0,
+      "explanation": "Page constraintsの表では、レンダリング後のページは16MiB以下でなければならないと明記されており、埋め込み画像のサイズが大きいことが公開失敗の典型的な原因だと説明されています。"
+    },
+    {
+      "id": "recent-032",
+      "level": "advanced",
+      "question": "Artifactを自分のセッションだけで無効化したい場合の設定方法として、公式ドキュメントが挙げていないものはどれですか？",
+      "choices": [
+        "設定ファイルで`\"disableArtifact\": true`を指定する",
+        "コマンドラインで`--no-artifact`フラグを付けて起動する",
+        "環境変数`CLAUDE_CODE_DISABLE_ARTIFACT=1`を設定する",
+        "`permissions.deny`に`Artifact`を追加する"
+      ],
+      "correctIndex": 1,
+      "explanation": "Artifactを無効化する方法として公式ドキュメントが挙げているのは、設定ファイルの`disableArtifact`、環境変数`CLAUDE_CODE_DISABLE_ARTIFACT`、`permissions.deny`への`Artifact`追加の3通りです。`--no-artifact`というCLIフラグは記載されていません。"
+    },
+    {
+      "id": "recent-033",
+      "level": "advanced",
+      "question": "非対話モード（`-p`フラグ）のセッションでFast Modeを使いたい場合、公式ドキュメントが示す方法はどれですか？",
+      "choices": [
+        "起動時の`--settings`で`{\"fastMode\": true}`を指定してセッションを開始する",
+        "セッション開始後に`/fast`を実行して対話モードと同様に有効化する",
+        "環境変数`CLAUDE_CODE_FAST_MODE=1`を設定してからセッションを開始する",
+        "非対話モードではFast Modeを利用する手段は用意されていない"
+      ],
+      "correctIndex": 0,
+      "explanation": "非対話モードでは、`claude -p --settings '{\"fastMode\": true}'`のように起動時の`--settings`でFast Modeを指定したセッションでのみ`/fast`が機能します。この場合の切り替えはそのセッション限りで、既定値としては保存されません。`--settings`で指定せずに起動した非対話セッションでは、`/fast`はFast Modeが利用できない旨を報告します。"
+    },
+    {
+      "id": "recent-034",
+      "level": "expert",
+      "question": "`claude -p --output-format stream-json`によるヘッドレス実行で、サブエージェントのテキスト・thinkingブロックをストリームに含めたい場合に付与するフラグはどれですか？",
+      "choices": [
+        "`--forward-subagent-text`",
+        "`--verbose-subagents`",
+        "`--include-subagent-output`",
+        "`--stream-subagent-text`"
+      ],
+      "correctIndex": 0,
+      "explanation": "`--forward-subagent-text`を付けると、サブエージェントのテキスト・thinkingブロックが`parent_tool_use_id`付きの`assistant`・`user`メッセージとしてストリームに出力され、各サブエージェントのトランスクリプトを再構成できます。付けない場合はサブエージェントの`tool_use`・`tool_result`ブロックのみが出力されます。`--print`と`--output-format stream-json`の指定が前提で、同名の環境変数でも同じ挙動を有効化できます。"
+    },
+    {
+      "id": "recent-035",
+      "level": "expert",
+      "question": "サブエージェントが自分自身のサブエージェントをさらに起動する「ネスト」について、現行の既定の深さ制限として正しいものはどれですか？",
+      "choices": [
+        "既定でネストは無効（深さ1）で、明示的に引き上げるまでサブエージェントは自分のサブエージェントを起動できない",
+        "既定で main conversation の下に最大3層までネストでき、`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`で変更できる",
+        "既定でネストの深さに制限はなく、無制限にサブエージェントを連鎖できる",
+        "既定で最大5層までネストでき、変更は一切できない固定値である"
+      ],
+      "correctIndex": 1,
+      "explanation": "現行の既定では、mainの会話の下にサブエージェントが最大3層までネストでき、`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`で層数を変更できます（`1`に設定するとネストを無効化）。深さの上限に達すると、forkを除くすべてのサブエージェントからAgentツールが取り上げられます。なおこの既定値はバージョンにより変遷しており、v2.1.172〜v2.1.216では既定5層かつ変更不可、v2.1.217〜v2.1.218では既定1層、v2.1.219以降で既定3層に引き上げられました。"
+    },
+    {
+      "id": "recent-036",
+      "level": "expert",
+      "question": "サブエージェントのネストが有効な環境で、あるレビュー専用のサブエージェントだけを「自分ではサブエージェントを起動しないread-onlyな存在」に保ちたい場合、公式ドキュメントが推奨する方法はどれですか？",
+      "choices": [
+        "そのサブエージェント定義の`tools`から`Agent`を外す、または`disallowedTools`に`Agent`を加える",
+        "`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`をセッション全体で`0`に設定する",
+        "そのサブエージェントを常にforkとして起動するよう強制する",
+        "そのサブエージェントの`model`をHaikuに固定する"
+      ],
+      "correctIndex": 0,
+      "explanation": "ネスト自体は有効なままにしつつ、特定のサブエージェントだけをAgentツールなしに保ちたい場合は、そのサブエージェント定義の`tools`から`Agent`を外すか、`disallowedTools`に`Agent`を加えます。深さ制限をセッション全体で操作する方法は、他のサブエージェントのネストも一律に止めてしまいます。"
+    },
+    {
+      "id": "recent-037",
+      "level": "expert",
+      "question": "Claude Sonnet 4（`claude-sonnet-4-20250514`）とClaude Opus 4（`claude-opus-4-20250514`）の廃止スケジュールについて、Anthropic公式のモデル廃止ページの記載に合致するものはどれですか？",
+      "choices": [
+        "2026年4月14日に廃止予告（deprecated）され、2026年6月15日付けで retired（利用不可）となった",
+        "2025年内に予告なく即座にretiredとなった",
+        "現在もActiveのままで、廃止予定日は未定である",
+        "2026年8月5日にdeprecatedとなり、同日中にretiredとなった"
+      ],
+      "correctIndex": 0,
+      "explanation": "Model deprecationsページによれば、Claude Sonnet 4とClaude Opus 4は2026年4月14日に開発者へ廃止予告が通知され、2026年6月15日付けでretired（リクエストが失敗する状態）となりました。推奨移行先はそれぞれClaude Sonnet 4.6・Claude Opus 4.8です。"
+    },
+    {
+      "id": "recent-038",
+      "level": "expert",
+      "question": "Claude Opus 4.1（`claude-opus-4-1-20250805`）の廃止に関して、公式のモデル廃止ページに記載されている退役日はいつですか？",
+      "choices": [
+        "2026年6月15日",
+        "2026年8月5日",
+        "2026年10月15日",
+        "2027年7月24日"
+      ],
+      "correctIndex": 1,
+      "explanation": "Claude Opus 4.1は2026年6月5日に廃止予告が通知され、2026年8月5日付けで退役（retired）しました。推奨される移行先はClaude Opus 4.8です。"
+    },
+    {
+      "id": "recent-039",
+      "level": "expert",
+      "question": "スクリーンリーダー利用者向けにターミナルUIを平文の線形表示に切り替える機能を、1回のセッションだけ有効にするコマンドはどれですか？",
+      "choices": [
+        "`claude --screen-reader-mode`",
+        "`claude --ax-screen-reader`",
+        "`claude --a11y`",
+        "`claude --plain-text-ui`"
+      ],
+      "correctIndex": 1,
+      "explanation": "`claude --ax-screen-reader`を付けて起動すると、そのセッションに限りボックス表示やその場での再描画を避けた平文の線形出力に切り替わり、VoiceOverやNVDAなどのスクリーンリーダーが順番に読み上げられるようになります。複数セッションにわたって有効にしたい場合は環境変数`CLAUDE_AX_SCREEN_READER`を使います。"
+    },
+    {
+      "id": "recent-040",
+      "level": "expert",
+      "question": "`EndConversation`ツールについて、公式ドキュメントの記載に合致するものはどれですか？",
+      "choices": [
+        "`permissions.deny`や`permissions.ask`でこのツールを名指ししても、それらのルールは効果を持たない",
+        "他のツールと同様に、実行前に必ず確認プロンプトが表示される",
+        "`PreToolUse`フックが必ず実行され、フック側で拒否することができる",
+        "`--disallowedTools`で名前を指定すれば確実に無効化できる"
+      ],
+      "correctIndex": 0,
+      "explanation": "`EndConversation`は会話を終了させるだけでファイルやデータを読み書きしない特別なツールとして扱われ、実行前に確認を求めることはなく、`PreToolUse`フックも発火しません。他のツールが残っている限り、`EndConversation`を名指しした`deny`・`ask`ルールも、`--disallowedTools`や`--tools`によるツールリストからの除外も効果を持ちません。"
+    },
+    {
+      "id": "recent-041",
+      "level": "expert",
+      "question": "プラグインの`plugin.json`や関連ファイルの構文・スキーマエラーを検査するために、公式ドキュメントがトラブルシューティングとして案内しているコマンドはどれですか？",
+      "choices": [
+        "`claude plugin lint ./my-plugin`",
+        "`claude plugin check ./my-plugin`",
+        "`claude plugin test ./my-plugin`",
+        "`claude plugin validate ./my-plugin`（または`/plugin validate ./my-plugin`）"
+      ],
+      "correctIndex": 3,
+      "explanation": "プラグインが読み込まれない場合のトラブルシューティングとして、`claude plugin validate ./my-plugin`または`/plugin validate ./my-plugin`を実行し、`plugin.json`・skill/agent/commandのフロントマター・`hooks/hooks.json`の構文やスキーマのエラーを確認する方法が案内されています。"
+    },
+    {
+      "id": "recent-042",
+      "level": "expert",
+      "question": "`claude auto-mode reset`コマンドの効果として、公式ドキュメントの記載に合致するものはどれですか？",
+      "choices": [
+        "ユーザー設定ファイル（`~/.claude/settings.json`）の`autoMode`セクションを削除し、管理設定や`--settings`由来の`autoMode`ルールには影響しない",
+        "管理設定（managed settings）に定義された`autoMode`ルールも含め、すべてのスコープの設定を一括で削除する",
+        "auto modeの機能自体を無効化し、以後どのセッションでも有効にできなくする",
+        "直前に`claude auto-mode critique`で指摘された項目だけを選択的に削除する"
+      ],
+      "correctIndex": 0,
+      "explanation": "`claude auto-mode reset`はユーザー設定ファイル（`~/.claude/settings.json`）から`autoMode`セクションを削除して既定値に戻すコマンドで、確認プロンプトを表示し`--yes`でスキップできます。管理設定や`--settings`フラグ由来の`autoMode`ルールはリセットの対象外で、そのまま適用され続けます。"
+    },
+    {
+      "id": "recent-043",
+      "level": "expert",
+      "question": "Claude Codeのauto modeが2026年8月14日以降にProプラン・Maxプラン・Teamプランの新規セッションでどう扱われるようになるか、公式ドキュメントの記載に合致するものはどれですか？",
+      "choices": [
+        "強制的に全セッションでauto modeのみが使用可能になり、他のモードへの切り替えはできなくなる",
+        "Enterpriseプランを含むすべてのプランで一律に既定化される",
+        "Amazon BedrockやGoogle Cloudのプロバイダでは対象外のまま変更されない",
+        "新規セッションの既定の権限モードになるが、自分で設定した既定モードや組織管理の既定モードがあればそちらが優先される"
+      ],
+      "correctIndex": 3,
+      "explanation": "2026年8月14日以降、auto modeはPro・Max・Teamプランの新規セッションの既定の権限モードになりますが、自分で設定した既定モードがあれば一度きりの切り替え案内を承諾しない限りそれが維持され、組織が管理する既定モードも変更されません。auto mode自体はAnthropic APIだけでなくAmazon Bedrock等のプロバイダでも利用可能ですが、この既定化のアナウンスはPro・Max・Teamプラン向けです。"
+    }
+  ]
+}

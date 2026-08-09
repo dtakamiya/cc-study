@@ -94,3 +94,55 @@ test('choice length balance report (warning only, never fails)', () => {
   lines.push(`合計 ${biased.length}件 / 全${totalQuestions}問 (${(biased.length / totalQuestions * 100).toFixed(1)}%)`);
   console.warn(lines.join('\n'));
 });
+
+const VALID_UPDATE_POLICIES = ['replace', 'append'];
+
+test('updatePolicy is either "replace" or "append" when present', () => {
+  const files = readdirSync(QUESTIONS_DIR).filter(name => name.endsWith('.json'));
+
+  for (const name of files) {
+    const data = JSON.parse(readFileSync(path.join(QUESTIONS_DIR, name), 'utf8'));
+    if (data.updatePolicy === undefined) continue;
+    assert.ok(
+      VALID_UPDATE_POLICIES.includes(data.updatePolicy),
+      `${name}: updatePolicy "${data.updatePolicy}" は "replace" または "append" である必要があります`
+    );
+  }
+});
+
+function maxIdSequence(questions) {
+  return questions.reduce((max, question) => {
+    const seq = Number(question.id.split('-').pop());
+    return Number.isInteger(seq) && seq > max ? seq : max;
+  }, 0);
+}
+
+test('every replace-policy domain has a nextIdSeq high-water mark above its max id', () => {
+  const files = readdirSync(QUESTIONS_DIR).filter(name => name.endsWith('.json'));
+
+  for (const name of files) {
+    const data = JSON.parse(readFileSync(path.join(QUESTIONS_DIR, name), 'utf8'));
+    if (data.updatePolicy !== 'replace') continue;
+
+    assert.ok(
+      Number.isInteger(data.nextIdSeq),
+      `${name}: 入れ替え型の領域は nextIdSeq を整数で持つ必要があります（実際: ${data.nextIdSeq}）`
+    );
+
+    const maxSeq = maxIdSequence(data.questions);
+    assert.ok(
+      data.nextIdSeq > maxSeq,
+      `${name}: nextIdSeq (${data.nextIdSeq}) はファイル内の最大連番 (${maxSeq}) より大きい必要があります`
+    );
+  }
+});
+
+test('recent-features.json declares the replace update policy', () => {
+  const data = JSON.parse(readFileSync(path.join(QUESTIONS_DIR, 'recent-features.json'), 'utf8'));
+
+  assert.equal(
+    data.updatePolicy,
+    'replace',
+    'recent-features は入れ替え型の領域のため updatePolicy は "replace" である必要があります'
+  );
+});

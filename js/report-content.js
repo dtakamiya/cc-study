@@ -41,6 +41,12 @@ const SUGGESTIONS = {
     advanced: 'permissions設定とスキル・エージェントを組み合わせた設計や、階層的なCLAUDE.md配置を実際に試してみましょう。',
     expert: 'context engineeringやright altitudeなどAnthropic Engineering Blogが示す設計原則を読み、大規模なハーネス統治の設計に取り組みましょう。',
   },
+  'recent-features': {
+    beginner: 'Artifacts、Claude 5モデル群、Fast Modeなど直近に追加された機能について、公式ドキュメントで名前と役割を一通り確認してみましょう。',
+    intermediate: '`/fast`と標準モード、`/loop`と`/schedule`、`/fork`と`/subtask`のように、似た機能をどう使い分けるかを整理してみましょう。',
+    advanced: 'Artifactsの制約やサブエージェント上限の環境変数、`sandbox.*`などの新しい設定キーを、実際に自分の環境で試して挙動を確認しましょう。',
+    expert: '公式ドキュメントとAnthropicのリリース情報を定期的に追い、モデルの廃止スケジュールや非対話実行向けのフラグなど、見落としやすい仕様変更を把握し続けましょう。',
+  },
 };
 
 const FALLBACK_SUGGESTION = '基礎から着実に復習し、公式ドキュメントで該当領域の機能を確認してみましょう。';
