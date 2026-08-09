@@ -859,6 +859,84 @@
       ],
       "correctIndex": 1,
       "explanation": "`disableSkillShellExecution` は、user・project・plugin・additional-directory由来のスキルとカスタムコマンドにおける動的シェル実行構文を無効化します。各コマンドは実行される代わりに `[shell command execution disabled by policy]` という文字列に置き換わります。bundled skills と managed skills は影響を受けません。またこれは前処理のみを止める設定で、Bashツール自体の権限制御（allow/denyルール）とは別の仕組みです。ユーザーが上書きできない managed settings で使うのが最も有効とされています。"
+    },
+    {
+      "id": "slash-067",
+      "level": "beginner",
+      "question": "`.claude/commands/deploy.md` というファイルと `.claude/skills/deploy/SKILL.md` というスキルの関係について、現在の公式ドキュメントの説明として正しいものはどれですか？",
+      "choices": [
+        "どちらも `/deploy` というコマンドを作り、同じように動作する",
+        "`.claude/commands/` 形式は廃止済みで、SKILL.md に書き換えないと読み込まれない",
+        "`.claude/commands/` のファイルはコマンドを作るが、frontmatter は解釈されない",
+        "両者が同名で存在すると、Claude Code は起動時にエラーを出して停止する"
+      ],
+      "correctIndex": 0,
+      "explanation": "公式ドキュメントは「カスタムコマンドはスキルに統合された」と明記しており、`.claude/commands/deploy.md` と `.claude/skills/deploy/SKILL.md` はどちらも `/deploy` を作り、同じように動作します。既存の `.claude/commands/` のファイルはそのまま動き続け、frontmatter も同じものが使えます。スキル側は付随ファイルを置けるディレクトリ構成や自動ロードの制御といった追加機能を持つため推奨されていますが、旧形式が読めなくなったわけではありません。なお同名が両方に存在する場合はスキル側が優先されます。"
+    },
+    {
+      "id": "slash-068",
+      "level": "intermediate",
+      "question": "同じ名前のスキルが enterprise・personal（`~/.claude/skills/`）・project（`.claude/skills/`）の複数階層に存在する場合、どれが使われますか？",
+      "choices": [
+        "project が最優先で、次に personal、enterprise が最後になる",
+        "enterprise が最優先で、次に personal、project が最後になる",
+        "最後に更新されたファイルのタイムスタンプが新しいものが使われる",
+        "すべてが読み込まれ、内容が連結されて1つのスキルになる"
+      ],
+      "correctIndex": 1,
+      "explanation": "公式ドキュメントは「enterprise が personal を上書きし、personal が project を上書きする」と説明しています。組織の管理設定を個人やプロジェクトの定義で上書きできないようにするためです。さらに、これら3階層のいずれかに置かれた同名スキルは bundled skill も上書きするため、プロジェクトに `code-review` スキルを置けば標準の `/code-review` を差し替えられます。なおプラグインのスキルは `plugin-name:skill-name` という名前空間を持つため、この優先順位の争いには加わりません。"
+    },
+    {
+      "id": "slash-069",
+      "level": "intermediate",
+      "question": "モノレポで、プロジェクトルートに `deploy` スキルがあり、さらに `apps/web/.claude/skills/deploy/SKILL.md` にも同名スキルがある場合、ネストされた側を明示的に実行するにはどう入力しますか？",
+      "choices": [
+        "`/deploy --dir apps/web`",
+        "`/apps/web:deploy`",
+        "`/deploy@apps/web`",
+        "`cd apps/web` してから `/deploy`"
+      ],
+      "correctIndex": 1,
+      "explanation": "ネストされた `.claude/skills/` のスキルが上位のスキルと名前衝突した場合、作業ディレクトリからの相対パスで修飾された `/apps/web:deploy` という名前が付与され、これを入力すると明示的に実行できます。単に `/deploy` と入力した場合はプロジェクトルート側のスキルが実行されますが、その際 Claude Code はディレクトリ修飾された変種の一覧を内容に追記し、作業対象のファイルがそのディレクトリにあるなら変種も呼ぶよう指示するため、ネスト側が無視されるわけではありません。この修飾名の挙動には Claude Code v2.1.203 以降が必要です。"
+    },
+    {
+      "id": "slash-070",
+      "level": "advanced",
+      "question": "スキルの frontmatter に `allowed-tools: Bash(git add *)` を指定した場合、その許可が有効な範囲として正しいものはどれですか？",
+      "choices": [
+        "スキルを起動したそのターンの間だけ有効で、次のメッセージを送ると解除される",
+        "セッションを終了するまで有効で、以後 `git add` は確認なしで実行できる",
+        "`settings.json` の permissions に allow ルールとして永続的に書き込まれる",
+        "スキルの内容がコンテキストに残っている間はずっと有効であり続ける"
+      ],
+      "correctIndex": 0,
+      "explanation": "`allowed-tools` は「スキルを起動したターンの間だけ」対象ツールを承認なしで使える許可を与え、ユーザーが次のメッセージを送った時点で解除されます。スキル本文自体はセッション中コンテキストに残り続けますが、権限は残らないという非対称な設計であり、公式ドキュメントもこの違いを明記しています。セッション全体で許可したい場合は permission 設定側に allow ルールを追加します。なお `allowed-tools` は利用可能なツールを制限するものではなく、列挙されていないツールも通常の権限設定に従って呼び出せます。"
+    },
+    {
+      "id": "slash-071",
+      "level": "advanced",
+      "question": "1つのメッセージの先頭で `/write-tests /fix-issue 123` のように複数のスキルを並べた場合の挙動として正しいものはどれですか？",
+      "choices": [
+        "両方のスキルがロードされ、末尾の `123` が両方の `$ARGUMENTS` として渡される",
+        "最初の `/write-tests` だけがロードされ、残りは引数テキストとして扱われる",
+        "後から書いた `/fix-issue` が優先され、`/write-tests` は無視される",
+        "スキルの並べ書きは構文エラーとなり、メッセージ全体が実行されない"
+      ],
+      "correctIndex": 0,
+      "explanation": "v2.1.199 以降、メッセージ冒頭に複数のスキルを並べると、いずれもロードされ、末尾のテキスト（この例では `123`）が各スキルの `$ARGUMENTS` として渡されます。展開されるのは最初の1つと後続5つまでの計6つで、インラインで実行されるユーザー起動可能なスキル以外のトークンに到達した時点で展開が止まり、そのトークン以降はすべて引数テキストになります。サブエージェントとして分岐する `/code-review` や、引数自体がスラッシュコマンドになりうる `/loop` はここで打ち切りとなります。v2.1.199 より前は最初の1つしかロードされませんでした。"
+    },
+    {
+      "id": "slash-072",
+      "level": "expert",
+      "question": "設定の `skillOverrides` で、あるスキルに `\"user-invocable-only\"` を指定した場合の状態として正しいものはどれですか？",
+      "choices": [
+        "Claudeへの一覧には名前も説明も載らないが、`/` メニューには表示され続ける",
+        "Claudeへの一覧には名前のみが載り、`/` メニューからは隠される",
+        "Claudeへの一覧にも `/` メニューにも表示されなくなる",
+        "Claudeへの一覧に名前と説明が載り、`/` メニューにも表示される"
+      ],
+      "correctIndex": 0,
+      "explanation": "`skillOverrides` は4つの状態を取り、`\"user-invocable-only\"` は Claude への一覧からは隠しつつ `/` メニューには残す設定です（`/skills` メニュー上の表示ラベルは `user-only`）。残る3つは、名前と説明の両方を載せて `/` にも出す `\"on\"`、名前のみを載せる `\"name-only\"`、両方から隠す `\"off\"` です。この設定は共有リポジトリにコミットされたスキルなど SKILL.md 自体を編集したくない場合に使い、`/skills` メニューで Space で状態を切り替え Enter で `.claude/settings.local.json` に保存できます。なおプラグインのスキルは `skillOverrides` の対象外で、`/plugin` から管理します。"
     }
   ]
 }

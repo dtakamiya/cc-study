@@ -2,7 +2,7 @@
   "domain": "recent-features",
   "domainLabel": "直近の新機能",
   "updatePolicy": "replace",
-  "nextIdSeq": 54,
+  "nextIdSeq": 62,
   "questions": [
     {
       "id": "recent-001",
@@ -67,7 +67,7 @@
         "現在の会話をバックグラウンドの新しいセッションにコピーし、元のセッションは継続したまま、コピー先は独立して進行する"
       ],
       "correctIndex": 3,
-      "explanation": "`/fork`はその時点までの会話をバックグラウンドの新しいセッションにコピーします。コピー後は元の会話と独立して進行し、Agent View上では別の行として表示されます。"
+      "explanation": "`/fork`はその時点までの会話をバックグラウンドの新しいセッションにコピーします。コピー後は元の会話と独立して進行し、Agent View上では別の行として表示されます。なお`/fork`が会話をコピーする挙動は Claude Code v2.1.212 以降かつ agent view が有効な場合のもので、v2.1.161〜v2.1.211 や agent view を無効にしている場合は forked subagent として動作します（この旧挙動は現在 `/subtask` に分離されています）。"
     },
     {
       "id": "recent-007",
@@ -93,7 +93,7 @@
         "コードエディタ上でカーソル周辺のみをハイライト表示する機能"
       ],
       "correctIndex": 0,
-      "explanation": "VS Code拡張機能のFocus Viewはツール呼び出し・ツール結果・thinkingを1ターンにつき1行の展開可能な行の背後に隠し、プロンプトと応答だけを見やすく残す表示モードです。CLI向けの`/focus`（静かな表示、recent-022参照）とは別の機能です。"
+      "explanation": "VS Code拡張機能のFocus Viewはツール呼び出し・ツール結果・thinkingを1ターンにつき1行の展開可能な行の背後に隠し、プロンプトと応答だけを見やすく残す表示モードです。CLI向けの`/focus`とは別の機能です。"
     },
     {
       "id": "recent-011",
@@ -211,32 +211,6 @@
       ],
       "correctIndex": 1,
       "explanation": "Claude Opus 5は複雑なエージェント的コーディングやエンタープライズ向け作業向けのモデルです。Claude Fable 5はAnthropicが広く公開している中で最も高性能なモデルとされ、最も要求の厳しい推論や長時間にわたるエージェント作業向けに位置づけられています。両者は名称のみが異なる同一モデルではなく、また役割分担も画像/テキストのような単純な分割ではありません。"
-    },
-    {
-      "id": "recent-021",
-      "level": "intermediate",
-      "question": "クラウド上で進めていたClaude Codeのセッションを、途中からローカルの端末に引き継いで作業を続けたい場合に使うコマンドはどれですか？",
-      "choices": [
-        "`/fork`",
-        "`/teleport`",
-        "`/loop`",
-        "`/focus`"
-      ],
-      "correctIndex": 1,
-      "explanation": "`/teleport`はクラウド上のClaude Codeセッションをローカルの端末に引き継ぐコマンドです。対象ブランチを取得し会話履歴を読み込んで、Web側セッションの最後の状態から作業を再開します。"
-    },
-    {
-      "id": "recent-022",
-      "level": "intermediate",
-      "question": "Claude Codeで、あるチーム共有のPRレビューをFocus Viewの`/focus`で表示したとき、通常のFocus Viewと比べて画面に表示される情報の粒度はどうなりますか？",
-      "choices": [
-        "自分の直前のプロンプト、ツール呼び出しの1行要約（編集の差分統計付き）、最終応答だけが表示される、より静かな表示になる",
-        "すべてのツール呼び出しとthinkingの詳細ログが逆に展開表示されるようになる",
-        "会話履歴がすべて消去され、最終応答のみが残る",
-        "画面表示は通常モードとまったく同じで、ショートカットキーの割り当てのみが変わる"
-      ],
-      "correctIndex": 0,
-      "explanation": "`/focus`を実行すると、直前のプロンプト・ツール呼び出しの1行要約（編集の差分統計つき）・最終応答だけを表示する、より静かな表示になります。通常のFocus Viewはツール呼び出しなどをターンごとに1行へ畳みますが、`/focus`はさらに要約された表示です。"
     },
     {
       "id": "recent-023",
@@ -380,19 +354,6 @@
       ],
       "correctIndex": 0,
       "explanation": "ネスト自体は有効なままにしつつ、特定のサブエージェントだけをAgentツールなしに保ちたい場合は、そのサブエージェント定義の`tools`から`Agent`を外すか、`disallowedTools`に`Agent`を加えます。深さ制限をセッション全体で操作する方法は、他のサブエージェントのネストも一律に止めてしまいます。"
-    },
-    {
-      "id": "recent-038",
-      "level": "expert",
-      "question": "Claude Opus 4.1（`claude-opus-4-1-20250805`）の廃止に関して、公式のモデル廃止ページに記載されている退役日はいつですか？",
-      "choices": [
-        "2026年6月15日",
-        "2026年8月5日",
-        "2026年10月15日",
-        "2027年7月24日"
-      ],
-      "correctIndex": 1,
-      "explanation": "Claude Opus 4.1は2026年6月5日に廃止予告が通知され、2026年8月5日付けで退役（retired）しました。推奨される移行先はClaude Opus 4.8です。"
     },
     {
       "id": "recent-039",
@@ -588,6 +549,110 @@
       ],
       "correctIndex": 1,
       "explanation": "値が適用されないとき、Claude Codeは両セッションの権限モードを「権限プロンプトをバイパスするクラス」と「プロンプトするクラス」の2つに分けて判定します。受信側がプロンプトするクラスなら基本的に配送し、送信側がバイパス側だと申告した場合のみ承認待ちで保留します。逆に受信側がバイパス側なら既定で保留し、送信側も同じくバイパス側だと申告した場合のみ配送します。保留時のダイアログを放置すると `dialogExpiry`（既定5分）でメッセージは破棄されます。"
+    },
+    {
+      "id": "recent-054",
+      "level": "beginner",
+      "question": "研究プレビュー機能のchannelsを使い、Telegramのメッセージを実行中のClaude Codeセッションに届けたい。プラグインをインストールした後、そのセッションでchannelを有効にするために必要な操作はどれですか？",
+      "choices": [
+        "セッション内で`/channels enable telegram`を実行して有効にする。起動オプションでは指定できず、切り替えは実行中のセッションからのみ行う",
+        "`.mcp.json`にサーバーを登録すれば自動的に有効になる。channelはMCPサーバーの一機能として扱われ、接続と同時に受信も始まる",
+        "`claude --channels plugin:telegram@claude-plugins-official` のように `--channels` を付けて起動し直す",
+        "設定ファイルの`channelsEnabled`を`true`にすれば、利用者側の追加操作なしでセッションを再起動せずに有効になる"
+      ],
+      "correctIndex": 2,
+      "explanation": "channelは起動時の `--channels` フラグでセッションごとにオプトインします。公式ドキュメントは「Being in `.mcp.json` isn't enough to push messages: a server also has to be named in `--channels`」と明記しており、MCP設定への登録だけでは足りません。`channelsEnabled` は組織の管理設定側のマスタースイッチで、これが `true` でも利用者が `--channels` で有効にするまでchannelは動きません。"
+    },
+    {
+      "id": "recent-055",
+      "level": "beginner",
+      "question": "`claude self-hosted-runner` による自己ホスト環境（self-hosted environments）について、公式ドキュメントの記載に合致するものはどれですか？",
+      "choices": [
+        "Team・Enterpriseプラン向けのパブリックベータで、既定では無効。OwnerまたはadminがCloud environments管理ページで有効化する",
+        "すべてのプランで既定から有効になっており、管理者による事前の許可も個別の設定も要らずそのまま使い始められる",
+        "Proプラン以上であれば個人利用者でも管理設定を経ずに利用でき、Team・Enterpriseでのみ管理者の許可が要る",
+        "ターミナルやIDEで動く通常のセッションも、有効にすると自己ホスト環境側で実行されるようになり手元のマシンは使わなくなる"
+      ],
+      "correctIndex": 0,
+      "explanation": "自己ホスト環境はTeam・Enterprise向けのパブリックベータで、既定では off です。Ownerまたはadminが管理設定の Cloud environments ページで「Allow self-hosted environments」を有効にする必要があります。対象はcloud session（claude.ai・モバイル/デスクトップアプリ・routines・`claude --cloud`から始まるセッション）に限られ、ターミナルやIDEのセッションは従来どおり利用者自身のマシンで動きます。"
+    },
+    {
+      "id": "recent-056",
+      "level": "intermediate",
+      "question": "クロスセッションメッセージングで、マシンをまたぐ送信にだけ自分の承認を必須にしたい場合に使う設定と、その適用のされ方について正しいものはどれですか？",
+      "choices": [
+        "`crossSessionInbound` を `hold` にする。同一マシン内の送信にも承認が必要になる",
+        "`dialogExpiry` を `never` にする。期限切れによる破棄を止めることでマシンまたぎの送信が保留される",
+        "`isolatePeerMachines` を `true` にする。ただしmanaged settings以外のスコープで指定しても効果はない",
+        "`isolatePeerMachines` を `true` にする。どのスコープの `true` も適用され、同一マシン内の送信では確認は出ない"
+      ],
+      "correctIndex": 3,
+      "explanation": "`isolatePeerMachines` を `true` にすると、`SendMessage` がこのマシンの外のセッションに届く前に明示的な承認を求めるようになり、通常の権限プロンプトを飛ばすモードでも確認が出ます。どのスコープの `true` も適用されるため、リポジトリにコミットされたプロジェクト設定から要求を「有効化」はできても「無効化」はできません。同一マシン内のセッション間メッセージでは確認は出ません。"
+    },
+    {
+      "id": "recent-057",
+      "level": "intermediate",
+      "question": "`crossSessionInbound` の値がどのスコープから適用されるかについて、公式ドキュメントの記載に合致するものはどれですか？",
+      "choices": [
+        "プロジェクト設定が常に最優先され、managed settingsの値を上書きできる。リポジトリごとに受信ポリシーを固定したい要求が強いため、より作業対象に近いスコープが優先される",
+        "managed settings・`--settings`・ユーザー設定の順に最初に見つかった値が適用され、プロジェクトやローカル設定の値は`accept` < `hold` < `refuse`の順で「より厳しい」場合にのみ適用される",
+        "ユーザー設定でしか指定できず、他のスコープに書いても読み込まれない。受信の可否は利用者本人だけが決めるべき項目とされ、共有される設定ファイルからは扱えないようになっている",
+        "すべてのスコープの値が論理和で合成され、いずれかが`accept`なら配送される。どこか一箇所で許可しておけばメッセージが届かなくなる事故を防げるという考え方に基づく"
+      ],
+      "correctIndex": 1,
+      "explanation": "Claude Codeはmanaged settings→`--settings`フラグ→ユーザー設定の順に読み、最初に見つかった値を適用します。プロジェクト設定・ローカル設定の値は、それら信頼されたソースが与える値より`accept` < `hold` < `refuse`のはしごの上で厳しい場合にのみ適用されます。信頼されたソースがどれも値を設定していない場合は、プロジェクトやローカルの`hold`・`refuse`が権限モード由来の既定を置き換えます。つまりチェックイン済みの設定ファイルからは受信を厳しくすることはできても緩めることはできません。"
+    },
+    {
+      "id": "recent-058",
+      "level": "advanced",
+      "question": "`claude self-hosted-runner` の `--drain-grace-sec` を既定値の `0` から正の値に変更すると、何と引き換えに何が得られますか？",
+      "choices": [
+        "runnerの起動が速くなる代わりに、セッションの実行順序が保証されなくなる",
+        "アカウントごとのロックが解除されて任意のユーザーのセッションを受けられる代わりに、チェックアウトしたコードが混ざる",
+        "稼働中のセッションが終わってもロック中アカウントのキューをその秒数だけポーリングし続ける代わりに、セッションごとのコンテナ分離が失われる",
+        "SIGTERM受信時にターンの完了を待てるようになる代わりに、runnerの終了が最大7日遅れる"
+      ],
+      "correctIndex": 2,
+      "explanation": "既定の `0` では、稼働中のセッションが終わり次第runnerが追加のポーリングをせず終了するため、Kubernetesなどのオーケストレータが新しいディスクでrunnerを再起動でき、どのアカウントでも受けられる状態に戻せます。正の値にするとロックされたアカウントのキューをその秒数だけポーリングし続けますが、公式ドキュメントはこれをハードニング節で説明されるセッションごとのコンテナ分離を犠牲にするものだと明記しています。なおSIGTERM時にターンの完了を待つのは別フラグの `--drain-wait-sec` です。"
+    },
+    {
+      "id": "recent-059",
+      "level": "advanced",
+      "question": "自作のchannelで、ツール承認プロンプトをリモートに転送するpermission relayを実装します。公式ドキュメントが「この機能を宣言してよいのはどういうchannelか」として示している条件はどれですか？",
+      "choices": [
+        "送信者の認証（sender gating）を行っているchannelに限る。channel越しに返信できる者は誰でもセッションのツール実行を承認・拒否できてしまうため",
+        "一方向（one-way）のchannelに限る。返信ツールを持つchannelでは承認が二重に適用されるため",
+        "ローカルのターミナルダイアログを閉じてから転送するchannelに限る。両方が同時に開いていると競合するため",
+        "組織のmanaged settingsで`channelsEnabled`を`false`にしているchannelに限る"
+      ],
+      "correctIndex": 0,
+      "explanation": "permission relayは `claude/channel/permission` capabilityを宣言することで有効になりますが、公式ドキュメントは「Only declare the capability if your channel authenticates the sender」と明記しています。channel越しに返信できる者は誰でもセッションのツール実行を承認・拒否できるためです。実際の挙動としてローカルのターミナルダイアログはリレー中も開いたままで、ターミナルとリモートのどちらか先に届いた回答が適用され、もう一方は破棄されます。"
+    },
+    {
+      "id": "recent-060",
+      "level": "expert",
+      "question": "channelのpermission relayで使われる `request_id` について、公式ドキュメントの記載に合致するものはどれですか？",
+      "choices": [
+        "ローカルのターミナルダイアログに表示されるので、そこから読み取って手動で入力できる",
+        "UUID形式で、channelサーバー側が生成してClaude Codeに通知する",
+        "セッションIDと同一の値が使われるため、同じセッション内では常に同じIDになる",
+        "`l`を除いた小文字のa〜zから5文字で生成され、Claude Codeは自分が発行したIDを伴う判定しか受け付けない"
+      ],
+      "correctIndex": 3,
+      "explanation": "`request_id` は `a`〜`z` から `l` を除いた小文字5文字です。スマートフォンで入力したときに `1` や `I` と読み違えられないようにするための設計です。生成するのはClaude Code側で、`notifications/claude/channel/permission_request` の params に載せて送られます。Claude Codeは自分が発行したIDを伴う判定しか受け付けず、ローカルのターミナルダイアログにはこのIDが表示されないため、サーバーの送信ハンドラだけがIDを知る経路になります。"
+    },
+    {
+      "id": "recent-061",
+      "level": "expert",
+      "question": "`dialogExpiry` 設定について、公式ドキュメントの記載に合致するものはどれですか？",
+      "choices": [
+        "既定は`\"5m\"`で、`\"never\"`を指定すると期限が無効になる。読み込まれるのはユーザー設定・managed settings・`--settings`のみで、権限プロンプトや`AskUserQuestion`はこの期限の対象外である",
+        "既定は`\"5m\"`で、権限プロンプトを含むすべてのダイアログに一律で適用される。利用者の応答待ちで止まる箇所を一つの設定でまとめて制御できるよう、種類ごとの例外は設けられていない",
+        "既定は`\"never\"`で、明示的に指定したときだけ期限が有効になる。転送したダイアログが利用者の意図しないタイミングで消えるのを避けるため、期限を設けないところから始める設計になっている",
+        "プロジェクトの`.claude/settings.json`から指定するのが推奨で、ユーザー設定より優先される。チームで同じ待ち時間を共有できるよう、リポジトリに置いた値が個人の設定に勝つようになっている"
+      ],
+      "correctIndex": 0,
+      "explanation": "`dialogExpiry` の既定は `\"5m\"` で、`\"60s\"`・`\"5m\"`・`\"10m\"`・`\"never\"` を受け付けます。対象はClaude Codeがリモートクライアント（Remote ControlやSDKホスト）に転送するダイアログと、保留されたクロスセッションメッセージの承認ダイアログです。権限プロンプトと `AskUserQuestion` はそれぞれ独自のフローを持ちこの期限に支配されません。読み込まれるスコープはユーザー設定・managed settings・`--settings` のみで、環境変数 `CLAUDE_CODE_USER_DIALOG_TIMEOUT_MS` がこの設定を上書きします。"
     }
   ]
 }

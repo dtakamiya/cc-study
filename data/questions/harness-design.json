@@ -833,6 +833,84 @@
       ],
       "correctIndex": 3,
       "explanation": "サブエージェントはあなたのセッション内で動き、独自のコンテキストウィンドウで作業した結果をメインの会話へ返します。通信経路はメインエージェントとの1対1のみで、調整はメインエージェントが担います。対してエージェントチームは完全に独立したClaude Codeセッションであり、チームメイト同士が直接メッセージをやり取りし、共有タスクリストで自律的に調整します。コストは逆方向で、サブエージェントは結果が要約されて返るため低く、エージェントチームは各チームメイトが別のClaudeインスタンスであるぶん高くなります。「並列サブエージェントを走らせているがコンテキスト上限に当たる」「サブエージェント同士が通信する必要が出てきた」が移行の目安です。なおエージェントチームは実験的機能で既定では無効です。"
+    },
+    {
+      "id": "harness-065",
+      "level": "beginner",
+      "question": "カスタム出力スタイル（output style）を定義するとき、公式ドキュメントが案内している配置方法として正しいものはどれですか？",
+      "choices": [
+        "`~/.claude/output-styles/`または`.claude/output-styles/`に置くMarkdownファイル",
+        "`~/.claude/output-styles.json`または`.claude/output-styles.json`に書くJSONオブジェクト",
+        "`~/.claude/CLAUDE.md`または`.claude/CLAUDE.md`の中の`## Output Style`見出し",
+        "`~/.claude/agents/`または`.claude/agents/`に置くサブエージェント定義ファイル"
+      ],
+      "correctIndex": 0,
+      "explanation": "カスタム出力スタイルは、YAMLフロントマターに続けて指示を書いたMarkdownファイルとして作成します。配置先はユーザーレベルの`~/.claude/output-styles`、プロジェクトレベルの`.claude/output-styles`、および managed settings ディレクトリ内の`.claude/output-styles`の3レベルです。ファイル名がそのままスタイル名になり、フロントマターに`name`を書けば上書きできます。JSONで定義するのは適用するスタイルを選ぶ`outputStyle`設定のほうであり、スタイル本体の定義形式ではありません。CLAUDE.mdの見出しやサブエージェント定義は、それぞれ別の機構です。"
+    },
+    {
+      "id": "harness-066",
+      "level": "beginner",
+      "question": "出力スタイル（output style）とCLAUDE.mdの役割の違いとして、公式ドキュメントの説明に最も合うものはどれですか？",
+      "choices": [
+        "出力スタイルはシステムプロンプトを変えて役割・口調・応答形式を決め、CLAUDE.mdはプロジェクトの規約や文脈を伝える",
+        "出力スタイルはプロジェクトの規約や文脈を伝え、CLAUDE.mdは役割・口調・応答形式を決める",
+        "出力スタイルもCLAUDE.mdもシステムプロンプトを書き換える機構で、実質の違いは置き場所だけである",
+        "出力スタイルはサブエージェントの応答だけを制御し、CLAUDE.mdはメイン会話の応答だけを制御する"
+      ],
+      "correctIndex": 0,
+      "explanation": "公式ドキュメントは出力スタイルを「Claudeが何を知っているかではなく、どう応答するかを変えるもの」と位置づけ、システムプロンプトを直接書き換えて役割・トーン・出力フォーマットを設定すると説明しています。一方でプロジェクトの規約・コードベースの文脈についてはCLAUDE.mdを使うよう明記されています。両者は仕組みも異なり、出力スタイルがシステムプロンプトを変更するのに対し、CLAUDE.mdはシステムプロンプトの後ろにユーザーメッセージとして追加されます。したがって置き場所だけの違いではありません。"
+    },
+    {
+      "id": "harness-067",
+      "level": "intermediate",
+      "question": "「説明のたびに必ず図を添える」ようにしたいが、コーディング作業自体はこれまでどおり続けたい。カスタム出力スタイルでClaude Code組み込みのソフトウェアエンジニアリング用の指示を残すには、どうしますか？",
+      "choices": [
+        "フロントマターに`extends: default`を書いて既定のスタイルを継承する",
+        "フロントマターに`keep-coding-instructions: true`を書いて明示的に残す",
+        "カスタムスタイルでも既定で残るため、フロントマターでの指定は不要である",
+        "フロントマターの`description`にコーディング用途である旨を書いて示す"
+      ],
+      "correctIndex": 1,
+      "explanation": "カスタム出力スタイルは既定でClaude Code組み込みのソフトウェアエンジニアリング指示（変更範囲の絞り方、コメントの書き方、検証のしかたなど）を除外します。`keep-coding-instructions`の既定値は`false`であるため、コーディングの振る舞いを保ったまま伝え方だけ変えたい場合は`true`を明示する必要があります。公式ドキュメントも、まさにこの「図を先に出す」例で`keep-coding-instructions: true`を使っています。`extends`や`description`にこの働きはありません。"
+    },
+    {
+      "id": "harness-068",
+      "level": "intermediate",
+      "question": "メイン会話で出力スタイルを選択している状態でサブエージェントに作業を委譲した場合、そのサブエージェントの応答に出力スタイルはどう作用しますか？",
+      "choices": [
+        "サブエージェントもメイン会話と同じ出力スタイルを自動的に引き継いで応答する",
+        "サブエージェントは自前のシステムプロンプトで動くため適用されず、forkだけが例外となる",
+        "サブエージェント定義の`tools`フィールドに指定したときにかぎり適用される",
+        "出力スタイルはサブエージェントにだけ適用され、メイン会話の応答には影響しない"
+      ],
+      "correctIndex": 1,
+      "explanation": "出力スタイルはシステムプロンプトを書き換える機構ですが、サブエージェントは自分自身のシステムプロンプトで起動するため、メイン会話の出力スタイルはサブエージェントの応答を形づくりません。公式ドキュメントは「出力スタイルはメイン会話にのみ適用される」と明記し、例外としてfork（会話をまるごと引き継ぐサブエージェント）を挙げています。forkは親の完全なシステムプロンプトを継承するためです。`tools`はサブエージェントに与えるツールを指定するフィールドで、スタイルの適用可否とは無関係です。"
+    },
+    {
+      "id": "harness-069",
+      "level": "advanced",
+      "question": "フックを使って、ツールが実行される前にその引数（ツール入力）を書き換えたい。公式ドキュメントが示す方法はどれですか？",
+      "choices": [
+        "`PostToolUse`フックで`hookSpecificOutput.updatedToolOutput`に文字列を返す",
+        "`PermissionDenied`フックで`hookSpecificOutput.retry`に`true`を返す",
+        "`PreToolUse`フックで`hookSpecificOutput.updatedInput`に修正後の入力を返す",
+        "`UserPromptSubmit`フックで`decision`に`\"block\"`と`reason`を返す"
+      ],
+      "correctIndex": 2,
+      "explanation": "ツール入力の書き換えは`PreToolUse`で`hookSpecificOutput.updatedInput`に修正後の入力オブジェクトを返して行います。なお`PermissionRequest`フックでも、許可する際に`hookSpecificOutput.decision.updatedInput`を指定すれば入力を差し替えられます（フィールドの位置が異なる点に注意）。`PostToolUse`の`updatedToolOutput`はツールが実行された後の結果を差し替えるものなので、入力には作用しません。`PermissionDenied`の`retry: true`は、auto modeの分類器に拒否されたツール呼び出しを再試行してよいとモデルに伝えるものです。`UserPromptSubmit`の`decision: \"block\"`はプロンプト自体をブロックするもので、いずれもツール引数の書き換えとは目的が異なります。"
+    },
+    {
+      "id": "harness-070",
+      "level": "advanced",
+      "question": "プラグインが`agents/`ディレクトリで配布するサブエージェント定義について、セキュリティ上の理由でサポートされないフロントマターフィールドの組み合わせはどれですか？",
+      "choices": [
+        "`model`・`effort`・`maxTurns`",
+        "`tools`・`disallowedTools`・`skills`",
+        "`memory`・`background`・`isolation`",
+        "`hooks`・`mcpServers`・`permissionMode`"
+      ],
+      "correctIndex": 3,
+      "explanation": "プラグイン同梱のエージェントは`name`・`description`・`model`・`effort`・`maxTurns`・`tools`・`disallowedTools`・`skills`・`memory`・`background`・`isolation`をサポートしますが、`hooks`・`mcpServers`・`permissionMode`はセキュリティ上の理由でサポート対象外です。これらはインストールしただけのプラグインが任意コマンドの自動実行や外部サーバー接続、権限モードの引き上げを持ち込めてしまうためで、プラグインの信頼境界を保つ設計になっています。なお`isolation`に指定できる値は`\"worktree\"`のみです。"
     }
   ]
 }
