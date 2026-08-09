@@ -897,7 +897,7 @@
         "`UserPromptSubmit`フックで`decision`に`\"block\"`と`reason`を返す"
       ],
       "correctIndex": 2,
-      "explanation": "ツール入力の書き換えは`PreToolUse`でのみ可能で、`hookSpecificOutput.updatedInput`に修正後の入力オブジェクトを返します。`updatedInput`は`PreToolUse`専用のフィールドです。`PostToolUse`の`updatedToolOutput`はツールが実行された後の結果を差し替えるものなので、入力には作用しません。`PermissionDenied`の`retry: true`は、auto modeの分類器に拒否されたツール呼び出しを再試行してよいとモデルに伝えるものです。`UserPromptSubmit`の`decision: \"block\"`はプロンプト自体をブロックするもので、いずれもツール引数の書き換えとは目的が異なります。"
+      "explanation": "ツール入力の書き換えは`PreToolUse`で`hookSpecificOutput.updatedInput`に修正後の入力オブジェクトを返して行います。なお`PermissionRequest`フックでも、許可する際に`hookSpecificOutput.decision.updatedInput`を指定すれば入力を差し替えられます（フィールドの位置が異なる点に注意）。`PostToolUse`の`updatedToolOutput`はツールが実行された後の結果を差し替えるものなので、入力には作用しません。`PermissionDenied`の`retry: true`は、auto modeの分類器に拒否されたツール呼び出しを再試行してよいとモデルに伝えるものです。`UserPromptSubmit`の`decision: \"block\"`はプロンプト自体をブロックするもので、いずれもツール引数の書き換えとは目的が異なります。"
     },
     {
       "id": "harness-070",
