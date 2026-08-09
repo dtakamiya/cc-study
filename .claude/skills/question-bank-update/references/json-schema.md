@@ -12,9 +12,30 @@
 }
 ```
 
+入れ替え型の領域は、さらに`updatePolicy`と`nextIdSeq`を持つ。
+
+```json
+{
+  "domain": "recent-features",
+  "domainLabel": "直近の新機能",
+  "updatePolicy": "replace",
+  "nextIdSeq": 51,
+  "questions": [ ... ]
+}
+```
+
 - `domain`: ファイル名から`.json`を除いた文字列と一致させる（例: `basic-operations.json` → `"basic-operations"`）
 - `domainLabel`: 日本語の領域名。既存ファイルから変更しない
+- `updatePolicy`（任意）: `"replace"`（入れ替え型）または`"append"`（追記型）。未指定時は`"append"`
+  として扱う。**既に存在する場合は必ず保持すること。** 脱落すると入れ替え型の領域が黙って追記型に
+  戻る
+- `nextIdSeq`（任意）: 次に採番する連番（整数）。`updatePolicy`が`"replace"`の領域が持つ。
+  **既に存在する場合は必ず保持し、問題を追加したら追加件数分を加算すること。**
+  問題を削除しても減らさない
 - `questions`: 問題オブジェクトの配列
+
+ファイルを書き出すときは、読み込んだトップレベルのキーを1つも落とさないこと。ここに挙げていない
+キーが存在する場合も、そのまま保持する。
 
 ## 問題オブジェクト
 
@@ -63,9 +84,16 @@ prefixは各ドメインファイルの`questions`配列内で既存の`id`が�
 | 安全性・権限管理 | `security-` | `security-permissions.json` |
 | トークン効率・コスト管理 | `token-` | `token-efficiency.json` |
 | スラッシュコマンド | `slash-` | `slash-commands.json` |
+| ハーネス設計思想 | `harness-` | `harness-design.json` |
+| 直近の新機能 | `recent-` | `recent-features.json` |
 
-新規問題の`id`は、対象ファイル内の既存最大連番の次の番号を3桁ゼロ埋めで採番する
-（例: `basic-047`が最大なら次は`basic-048`）。
+採番は対象ファイルの`nextIdSeq`の有無で分岐する。
+
+- `nextIdSeq`を持つファイル: その値を開始番号とし、3桁ゼロ埋めで採番する。追加が終わったら
+  `nextIdSeq`を「追加件数分を加算した値」に更新する。削除済みIDの再利用を防ぐための高水位マークで
+  あり、ファイル内の最大連番より小さくしてはならない
+- `nextIdSeq`を持たないファイル: 対象ファイル内の既存最大連番の次の番号を開始番号とし、3桁
+  ゼロ埋めで採番する
 
 ## 最低問題数の制約
 
