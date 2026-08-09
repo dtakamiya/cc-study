@@ -8,6 +8,7 @@ export const DOMAINS = [
   'token-efficiency',
   'slash-commands',
   'harness-design',
+  'recent-features',
 ];
 
 export const DOMAIN_LABELS = {
@@ -18,6 +19,7 @@ export const DOMAIN_LABELS = {
   'token-efficiency': 'トークン効率・コスト管理',
   'slash-commands': 'スラッシュコマンド',
   'harness-design': 'ハーネス設計',
+  'recent-features': '直近の新機能',
 };
 
 export const QUESTIONS_PER_STAGE = 10;
