@@ -1,0 +1,294 @@
+{
+  "domain": "recent-features",
+  "domainLabel": "直近の新機能",
+  "updatePolicy": "replace",
+  "nextIdSeq": 23,
+  "questions": [
+    {
+      "id": "recent-001",
+      "level": "beginner",
+      "question": "Claude Codeの`/fast`コマンドを有効にしたとき、応答を生成するモデルはどうなりますか？",
+      "choices": [
+        "Claude Opusのまま、出力が高速になる",
+        "より小型で安価なモデルに自動的に切り替わる",
+        "Haiku 4.5に固定される",
+        "モデルは変わらず、ツール呼び出しだけが並列化される"
+      ],
+      "correctIndex": 0,
+      "explanation": "Fast ModeはClaude Opusを使ったまま出力を高速化するモードで、小型モデルへの降格ではありません。Opus 5および4.8で利用でき、`/fast`でオン・オフを切り替えます。"
+    },
+    {
+      "id": "recent-002",
+      "level": "beginner",
+      "question": "Claude CodeのArtifacts機能で、新しく公開したページの公開範囲は既定でどうなりますか？",
+      "choices": [
+        "自分だけが見られる非公開ページになる",
+        "インターネット上の誰でも見られる公開ページになる",
+        "所属組織の全員に自動的に共有される",
+        "公開前に必ず外部レビュー担当者の承認が必要になる"
+      ],
+      "correctIndex": 0,
+      "explanation": "新しく作成したArtifactは自分だけに見える非公開ページとして公開されます。他の人に見せたい場合はページ上部の共有コントロールから明示的に共有範囲を選ぶ必要があります。"
+    },
+    {
+      "id": "recent-003",
+      "level": "beginner",
+      "question": "Claude Codeが公開するArtifactは、どこにホストされますか？",
+      "choices": [
+        "利用者自身のサーバー",
+        "claude.ai上のページ",
+        "GitHub Pages",
+        "ローカルマシンのみで、外部には公開されない"
+      ],
+      "correctIndex": 1,
+      "explanation": "Artifactはセッションの作業内容からclaude.ai上の専用URLに公開される、ライブで対話的なWebページです。ブラウザで開くとセッションの進行に合わせてその場で更新されます。"
+    },
+    {
+      "id": "recent-004",
+      "level": "beginner",
+      "question": "Claude CodeのCLIで利用できる現行モデルのモデルIDの組み合わせとして正しいものはどれですか？",
+      "choices": [
+        "claude-opus-5 / claude-sonnet-5 / claude-fable-5",
+        "claude-opus-max / claude-sonnet-max / claude-haiku-max",
+        "claude-3-opus / claude-3-sonnet / claude-3-haiku",
+        "opus-latest / sonnet-latest / fable-latest のみで、バージョン付きIDは存在しない"
+      ],
+      "correctIndex": 0,
+      "explanation": "現行のセルフサーブ向けモデルIDは`claude-opus-5`・`claude-sonnet-5`・`claude-fable-5`（および`claude-haiku-4-5`系）です。"
+    },
+    {
+      "id": "recent-005",
+      "level": "beginner",
+      "question": "Claude 5モデル群のうち、「複雑なエージェント的コーディングや長時間にわたるエンタープライズ向け作業」に位置づけられているモデルはどれですか？",
+      "choices": [
+        "Claude Opus 5",
+        "Claude Haiku 4.5",
+        "Claude Sonnet 3.5",
+        "Claude Fable 5は速度優先の軽量モデルであり該当しない"
+      ],
+      "correctIndex": 0,
+      "explanation": "Claude Opus 5は複雑なエージェント的コーディングやエンタープライズ向けの作業を対象としたモデルで、深い推論・長時間のエージェント作業・テスト時計算のスケーリングに強みを持つとされています。"
+    },
+    {
+      "id": "recent-006",
+      "level": "beginner",
+      "question": "Claude Codeの`/fork`コマンドの基本的な動作を最も適切に表しているものはどれですか？",
+      "choices": [
+        "現在の会話をバックグラウンドの新しいセッションにコピーし、元のセッションは継続したまま、コピー先は独立して進行する",
+        "現在の会話を破棄し、まったく新しい空のセッションを開始する",
+        "現在のファイルをディスク上で複製するだけで、会話には影響しない",
+        "現在のセッションを一時停止し、別のユーザーに引き継ぐ"
+      ],
+      "correctIndex": 0,
+      "explanation": "`/fork`はその時点までの会話をバックグラウンドの新しいセッションにコピーします。コピー後は元の会話と独立して進行し、Agent View上では別の行として表示されます。"
+    },
+    {
+      "id": "recent-007",
+      "level": "beginner",
+      "question": "Claude Codeの権限モードにおいて、あらゆる操作を毎回確認する既定のモードは、CLIやヘルプ上で何という名前に改称されましたか？",
+      "choices": [
+        "Manual",
+        "Strict",
+        "Review",
+        "Safe"
+      ],
+      "correctIndex": 0,
+      "explanation": "すべての操作を確認する既定のモードは、CLIや`--help`、VS Code拡張などの表示名が「Manual」に改称されました。設定値としての内部名は引き続き`default`で、`--permission-mode manual`のようにエイリアスとしても指定できます。"
+    },
+    {
+      "id": "recent-008",
+      "level": "beginner",
+      "question": "Claude CodeのFocus Viewの役割を最も適切に表しているものはどれですか？",
+      "choices": [
+        "ツール呼び出しや結果、thinkingを1ターンにつき1行の展開可能な行に畳んで、プロンプトと応答を見やすくする表示モード",
+        "危険なBashコマンドの実行を自動的にブロックするセキュリティ機能",
+        "複数のサブエージェントを1つのウィンドウに並べて表示する機能",
+        "コードエディタ上でカーソル周辺のみをハイライト表示する機能"
+      ],
+      "correctIndex": 0,
+      "explanation": "Focus Viewはツール呼び出し・ツール結果・thinkingを1ターンにつき1行の展開可能な行の背後に隠し、プロンプトと応答だけを見やすく残す表示モードです。"
+    },
+    {
+      "id": "recent-009",
+      "level": "beginner",
+      "question": "Claude in Chromeでブラウザ操作を行う際、Claudeは既存のタブと新しいタブのどちらでその作業を行いますか？",
+      "choices": [
+        "新しいタブを開いて作業する",
+        "現在アクティブなタブを乗っ取って作業する",
+        "常にシークレットウィンドウを新規に開く",
+        "タブは開かず、バックグラウンドプロセスとしてのみ動作する"
+      ],
+      "correctIndex": 0,
+      "explanation": "Claudeがブラウザ操作を行う際は新しいタブを開いて作業します。既存のブラウザのログイン状態を共有するため、既にサインイン済みのサイトにもアクセスできます。"
+    },
+    {
+      "id": "recent-010",
+      "level": "beginner",
+      "question": "Claude in Chromeを特定のサイトで使うために必要な許可の仕組みはどれですか？",
+      "choices": [
+        "サイトごとの権限（サイトレベルの許可）をChrome拡張機能側で設定する",
+        "APIキーをそのサイトのドメインに紐づけて発行する",
+        "特別な許可は不要で、インストールした時点で全サイトに自動許可される",
+        "毎回コマンドライン引数でドメインを指定する必要がある"
+      ],
+      "correctIndex": 0,
+      "explanation": "Claude in Chromeはサイトレベルの権限をChrome拡張機能側で管理しており、Claudeがどのサイトを閲覧・クリック・入力できるかを制御します。`/chrome`コマンドで接続状況や権限を確認・管理できます。"
+    },
+    {
+      "id": "recent-011",
+      "level": "beginner",
+      "question": "Claude Codeが公開するArtifactについて、公式ドキュメントが明記している制約はどれですか？",
+      "choices": [
+        "外部ホストへのスクリプト・スタイルシート・画像の読み込みやfetch/XHR/WebSocket通信はCSPによってブロックされる",
+        "Artifactは常にバックエンドサーバーを自動的に用意し、フォーム送信データを保存できる",
+        "複数のHTMLファイルを1つのArtifactとしてまとめてデプロイできる",
+        "Artifactのサイズには上限がなく、どれだけ大きな画像も埋め込める"
+      ],
+      "correctIndex": 0,
+      "explanation": "Artifactは1つの自己完結したページとして厳格なCSPの下で配信され、他ホストへのスクリプト・スタイルシート・画像の読み込みやfetch・XHR・WebSocket通信はブロックされます。CSSやJavaScriptはインライン化し、画像はdata URIとして埋め込む必要があります。"
+    },
+    {
+      "id": "recent-012",
+      "level": "intermediate",
+      "question": "セッション内で一時的に「デプロイの完了を5分おきに確認したい」という場合、`/loop`と`/schedule`（クラウドのRoutines）のどちらを使うのがより適切ですか？",
+      "choices": [
+        "`/loop`。現在のセッションが開いている間だけ繰り返せればよく、マシンやセッションを閉じても動き続ける必要がないため",
+        "`/schedule`。`/loop`は1回しか実行できないコマンドであるため",
+        "どちらでも同じ仕組みで動作するため、どちらを使っても差はない",
+        "`/schedule`。`/loop`はクラウド上でのみ動作し、ローカルマシンでは使えないため"
+      ],
+      "correctIndex": 0,
+      "explanation": "`/loop`はセッションが開いている間だけ動く、セッション内でのクイックなポーリング向けの仕組みです。マシンが起動していなくても、セッションを開いていなくても動き続けてほしい場合はクラウドのRoutines（`/schedule`）を使います。"
+    },
+    {
+      "id": "recent-013",
+      "level": "intermediate",
+      "question": "`/loop`とクラウドのRoutines（`/schedule`）の違いとして正しいものはどれですか？",
+      "choices": [
+        "`/loop`はマシンが起動しセッションが開いている必要があるが、クラウドのRoutinesはマシンが起動していなくても実行できる",
+        "`/loop`はクラウド上のAnthropic管理インフラで動作し、Routinesはローカルマシンでのみ動作する",
+        "どちらも最小実行間隔は1時間で、それより短い間隔では実行できない",
+        "Routinesはローカルファイルに直接アクセスできるが、`/loop`はアクセスできない"
+      ],
+      "correctIndex": 0,
+      "explanation": "`/loop`はローカルマシンで動作し、マシンの起動とセッションが開いていることの両方が必要です。一方クラウドのRoutinesはAnthropic管理のクラウド上で動作するため、マシンの起動もセッションを開いておくことも不要です。"
+    },
+    {
+      "id": "recent-014",
+      "level": "intermediate",
+      "question": "あるサブタスクに、これまでの会話で交わしたやり取りの文脈をすべて引き継がせたい場合、`/fork`と`/subtask`のどちらを使うべきですか？",
+      "choices": [
+        "`/fork`。親の会話をそのままコピーして引き継ぐため",
+        "`/subtask`。常に親の全文脈を引き継ぐ設計であるため",
+        "どちらを使っても文脈の引き継ぎ方に違いはない",
+        "どちらも新規の空文脈から始まるため、引き継ぎたい内容は手動で貼り付ける必要がある"
+      ],
+      "correctIndex": 0,
+      "explanation": "`/fork`は親の会話をそのままコピーした新しいセッションを作るため、それまでの文脈を丸ごと引き継ぎます。一方`/subtask`は新規の文脈から始まるサブエージェントを起動する仕組みです。"
+    },
+    {
+      "id": "recent-015",
+      "level": "intermediate",
+      "question": "独立した調査や実装を、親セッションの会話に影響を与えずに新規まっさらな状態で行わせたい場合、`/fork`と`/subtask`のどちらが適していますか？",
+      "choices": [
+        "`/subtask`。新規の文脈から始まるサブエージェントとして動作するため",
+        "`/fork`。親の文脈を引き継がないため独立した調査に向いているため",
+        "`/fork`。親セッションを停止させて置き換えるため",
+        "どちらも同じ挙動なので使い分ける意味がない"
+      ],
+      "correctIndex": 0,
+      "explanation": "`/subtask`は親の会話履歴を引き継がず、新規の文脈からサブエージェントを起動します。親の会話に不要な文脈を持ち込みたくない独立した調査や実装に向いています。"
+    },
+    {
+      "id": "recent-016",
+      "level": "intermediate",
+      "question": "権限モードが「Manual」に改称されたことに伴い、設定ファイルで`defaultMode`に指定できる値について正しい説明はどれですか？",
+      "choices": [
+        "内部の設定値は引き続き`default`であり、`manual`はそのエイリアスとして受け付けられる",
+        "内部の設定値も`manual`に完全移行し、`default`は指定するとエラーになる",
+        "設定ファイルからは`defaultMode`を指定できなくなり、CLI引数でのみ指定可能になった",
+        "`Manual`は表示名ではなく、フック・SDK連携で使う設定値そのものである"
+      ],
+      "correctIndex": 0,
+      "explanation": "表示名は「Manual」に変わりましたが、フックやSDK連携が参照する設定値は引き続き`default`です。CLIでは`manual`をエイリアスとして受け付けており、`--permission-mode manual`や`\"defaultMode\": \"manual\"`のように指定できます。"
+    },
+    {
+      "id": "recent-017",
+      "level": "intermediate",
+      "question": "Fast Modeの説明として、公式ドキュメントの内容に最も合致するものはどれですか？",
+      "choices": [
+        "Claude Opusを使い続けたまま、速度を優先するAPI設定に切り替えることで応答速度を高める仕組みで、品質は変わらない",
+        "コンテキストウィンドウを縮小することでトークン処理を高速化する仕組み",
+        "ツール呼び出しの並列実行数を増やすことで体感速度を上げる仕組み",
+        "応答の最大トークン数を制限することで生成時間を短縮する仕組み"
+      ],
+      "correctIndex": 0,
+      "explanation": "Fast Modeは別モデルへの切り替えではなく、Claude Opusを速度優先のAPI設定で動かす仕組みです。品質や能力は変わらないまま応答が速くなります。"
+    },
+    {
+      "id": "recent-018",
+      "level": "intermediate",
+      "question": "Claude Codeで公開したArtifactを、公開後に「同じURLのまま」内容を更新したい場合、どうすればよいですか？",
+      "choices": [
+        "Claudeにページの修正を依頼し、同じセッション（またはURLを伝えた別セッション）から再度公開してもらう",
+        "毎回新しいURLで公開し直し、古いリンクは手動で削除する",
+        "Artifactは一度公開すると内容を更新できない仕様である",
+        "claude.ai側の管理画面でHTMLソースを直接書き換える"
+      ],
+      "correctIndex": 0,
+      "explanation": "Artifactはページを編集して再度publishすると同じURLに新しいバージョンとして反映されます。別セッションから更新する場合はArtifactのURLをClaudeに伝えることで、そのセッションが既存のArtifactを更新できます。URLを伝えなければ新しいセッションは常に新規のArtifactを作成します。"
+    },
+    {
+      "id": "recent-019",
+      "level": "intermediate",
+      "question": "Claude CodeのArtifactが「アプリケーションではなく作業の一時的な記録である」とされる理由として、公式ドキュメントの説明に合致するものはどれですか？",
+      "choices": [
+        "バックエンドを持たない自己完結した1ページであり、フォーム入力の保存や複数ルートの提供ができないため",
+        "公開後24時間で自動的に削除されるため",
+        "JavaScriptを一切実行できない静的な画像としてのみ扱われるため",
+        "1つのアカウントにつき1つしかArtifactを作成できない制限があるため"
+      ],
+      "correctIndex": 0,
+      "explanation": "Artifactはバックエンドを持たない1つの自己完結したページであり、フォーム送信データを保存したり複数のルートを提供したりすることができません。そのため公式ドキュメントは「アプリケーションではなく作業の記録（capture of work）」と位置づけています。"
+    },
+    {
+      "id": "recent-020",
+      "level": "intermediate",
+      "question": "Claude Codeのモデル構成における、Claude Opus 5とClaude Fable 5の位置づけの違いとして適切なものはどれですか？",
+      "choices": [
+        "Opus 5は複雑なエージェント的コーディングやエンタープライズ向け作業を担い、Fable 5はさらに広く公開されている中で最も高性能なモデルとして最も要求の厳しい推論・長時間のエージェント作業に位置づけられる",
+        "Opus 5とFable 5はまったく同一の性能を持ち、名称のみが異なる",
+        "Fable 5は軽量・低コスト用途専用であり、複雑な推論作業には使用できない",
+        "Opus 5は画像生成専用モデル、Fable 5はテキスト専用モデルという役割分担がある"
+      ],
+      "correctIndex": 0,
+      "explanation": "Claude Opus 5は複雑なエージェント的コーディングやエンタープライズ向け作業向けのモデルです。Claude Fable 5はAnthropicが広く公開している中で最も高性能なモデルとされ、最も要求の厳しい推論や長時間にわたるエージェント作業向けに位置づけられています。"
+    },
+    {
+      "id": "recent-021",
+      "level": "intermediate",
+      "question": "クラウド上で進めていたClaude Codeのセッションを、途中からローカルの端末に引き継いで作業を続けたい場合に使うコマンドはどれですか？",
+      "choices": [
+        "`/teleport`",
+        "`/fork`",
+        "`/loop`",
+        "`/focus`"
+      ],
+      "correctIndex": 0,
+      "explanation": "`/teleport`はクラウド上のClaude Codeセッションをローカルの端末に引き継ぐコマンドです。対象ブランチを取得し会話履歴を読み込んで、Web側セッションの最後の状態から作業を再開します。"
+    },
+    {
+      "id": "recent-022",
+      "level": "intermediate",
+      "question": "Claude Codeで、あるチーム共有のPRレビューをFocus Viewの`/focus`で表示したとき、通常のFocus Viewと比べて画面に表示される情報の粒度はどうなりますか？",
+      "choices": [
+        "自分の直前のプロンプト、ツール呼び出しの1行要約（編集の差分統計付き）、最終応答だけが表示される、より静かな表示になる",
+        "すべてのツール呼び出しとthinkingの詳細ログが逆に展開表示されるようになる",
+        "会話履歴がすべて消去され、最終応答のみが残る",
+        "画面表示は通常モードとまったく同じで、ショートカットキーの割り当てのみが変わる"
+      ],
+      "correctIndex": 0,
+      "explanation": "`/focus`を実行すると、直前のプロンプト・ツール呼び出しの1行要約（編集の差分統計つき）・最終応答だけを表示する、より静かな表示になります。通常のFocus Viewはツール呼び出しなどをターンごとに1行へ畳みますが、`/focus`はさらに要約された表示です。"
+    }
+  ]
+}
