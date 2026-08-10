@@ -1,6 +1,7 @@
 # 初級レベルの合格基準を全問正解にする
 
 作成日: 2026-08-10
+実装計画: [2026-08-10-beginner-perfect-score.md](../plans/2026-08-10-beginner-perfect-score.md)
 
 ## 背景と目的
 
@@ -24,8 +25,13 @@ export const PASSING_SCORES = {
   expert: 8,
 };
 
+// 合否判定用。未知・欠落のレベルは黙って通さず例外にする。
 export function getPassingScore(level) {
-  return PASSING_SCORES[level] ?? 8;
+  const threshold = PASSING_SCORES[level];
+  if (typeof threshold !== 'number') {
+    throw new Error(`未知のレベルです: ${String(level)}`);
+  }
+  return threshold;
 }
 
 export function isPassed(score, level) {
@@ -41,9 +47,27 @@ export function isPassed(score, level) {
 「どれが正しい基準か」が2箇所に分かれ、`js/result-page.js` のような
 固定値を前提にした表示バグを再び生む。参照は3ファイルのみで削除コストは低い。
 
-`getPassingScore` の `?? 8` フォールバックは、`LEVELS` にない値が渡された場合に
-`score >= undefined` が常に false となり「どれだけ正解しても不合格」になるのを防ぐ防御。
-通常経路では `normalizeProgress` と `parseQuizMode` が不正な level を弾く。
+### 未知のレベルはフォールバックさせず例外にする
+
+`getPassingScore` に `?? 8` のようなフォールバック既定値を置いてはならない。
+
+一見すると、`score >= undefined` が常に false となり「どれだけ正解しても不合格」に
+なる事故を防ぐ防御に見える。しかし合否判定に既定値8を使うと、より悪い方向に倒れる。
+`isPassed` の呼び出し元が `level` を渡し忘れた場合、初級で8問正解が合格として通り、
+しかもその誤った判定が `recordAttempt` 経由で `cleared: true` として永続化される。
+一度保存された `cleared` は「一度得た合格は剥奪しない」不変条件により後から訂正できない。
+
+フォールバックは移行漏れを黙って隠すが、例外は即座に露呈させる。合否判定という
+不可逆な記録を作る経路では、静かに間違った値を返すより落ちるほうが安全である。
+
+呼び出し元はいずれも `LEVELS` 由来の正しい `level` を持っており（`recordAttempt` は
+引数、`finishNormalStage` は `parseQuizMode` が検証済みの `target.level`）、
+通常経路でこの例外が出ることはない。出たら移行漏れかデータ破損であり、それは
+握りつぶすべきものではない。
+
+なお `js/result-page.js` の合格ライン**表示**もこの `getPassingScore` を使う。
+表示専用のフォールバックは設けない。`stageResult` の `level` が壊れている状況は
+結果画面全体が信用できない状況であり、そこだけ「8問」と表示しても利用者の助けにならない。
 
 ### 既存の合格記録は剥奪しない
 
@@ -107,7 +131,27 @@ cleared: (previous?.cleared ?? false) || isPassed(score, level)
   回帰テストとして明示的に置く
 - **初級9問では合格しない** — 未合格の初級に `recordAttempt(…, 9)` を呼ぶと
   `cleared: false` となり、`getStageStatus` で中級が `locked` のまま
-- **`getPassingScore` の未知レベルフォールバック** — `getPassingScore('unknown')` が `8` を返す
+- **未知・欠落レベルは例外になる** — `getPassingScore('unknown')` と
+  `getPassingScore(undefined)` がいずれも throw する。`isPassed(10, undefined)` も同様に
+  throw し、既定値で合格扱いにならないこと
+
+### `tests/quiz-page-invariants.test.js`
+
+ページ層は DOM に依存するため直接テストできない。このリポジトリには依存パッケージを
+持たない制約があり、jsdom 等の導入は選択肢に入らない。既存の
+`quiz-page-invariants.test.js` は、この制約下でページ層の契約をソース文字列の検査で
+固定する仕組みとして既に存在するため、同じ手法を使う。
+
+- **`finishNormalStage` が `isPassed` に `level` を渡す** — 関数本体を抽出し、
+  引数なしの `isPassed(score)` 呼び出しが残っていないことを検査する。
+  レベルを渡し忘れると実行時に例外になるが、テストで形として固定しておくことで
+  移行漏れをコミット前に検出できる
+
+`js/result-page.js` の表示（初級10問・中級以上8問）は `getPassingScore(level)` の
+戻り値をそのまま埋め込むだけであり、閾値そのものは `progress.test.js` で検証済み。
+DOM を組み立てないと確認できない表示側の結線までソース検査で固定するのは、
+テストが実装の字面に過剰結合するため行わない。復習モードが合格ラインを表示しないことは、
+既存の分岐（`isReview` の真偽で表示要素を分ける構造）が変更対象外であることによる。
 
 ### ドキュメント
 
