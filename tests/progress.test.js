@@ -4,7 +4,8 @@ import {
   DOMAINS,
   DOMAIN_LABELS,
   QUESTIONS_PER_STAGE,
-  PASSING_SCORE,
+  PASSING_SCORES,
+  getPassingScore,
   createEmptyProgress,
   isPassed,
   normalizeProgress,
@@ -16,7 +17,12 @@ import {
 
 test('定数が設計どおりの値である', () => {
   assert.equal(QUESTIONS_PER_STAGE, 10);
-  assert.equal(PASSING_SCORE, 8);
+  assert.deepEqual(PASSING_SCORES, {
+    beginner: 10,
+    intermediate: 8,
+    advanced: 8,
+    expert: 8,
+  });
   assert.equal(DOMAINS.length, 8);
   assert.deepEqual(DOMAINS, [
     'basic-operations',
@@ -33,11 +39,51 @@ test('定数が設計どおりの値である', () => {
   }
 });
 
-test('合格ラインの境界: 7問は不合格、8問は合格', () => {
-  assert.equal(isPassed(7), false);
-  assert.equal(isPassed(8), true);
-  assert.equal(isPassed(10), true);
-  assert.equal(isPassed(0), false);
+test('初級の合格ラインは全問正解: 9問は不合格、10問は合格', () => {
+  assert.equal(isPassed(9, 'beginner'), false);
+  assert.equal(isPassed(10, 'beginner'), true);
+  assert.equal(isPassed(0, 'beginner'), false);
+});
+
+test('中級以上の合格ラインは8問: 7問は不合格、8問は合格', () => {
+  for (const level of ['intermediate', 'advanced', 'expert']) {
+    assert.equal(isPassed(7, level), false, `${level} で7問が合格になっています`);
+    assert.equal(isPassed(8, level), true, `${level} で8問が不合格になっています`);
+    assert.equal(isPassed(10, level), true);
+  }
+});
+
+// 既定値でフォールバックすると、levelの渡し忘れで初級8問が合格として
+// 永続化される。移行漏れは黙って隠さず露呈させる。
+test('未知・欠落のレベルは合否判定で例外になる', () => {
+  assert.throws(() => getPassingScore('unknown'));
+  assert.throws(() => getPassingScore(undefined));
+  assert.throws(() => isPassed(10, undefined));
+});
+
+// 基準の変更を遡及適用しない。既存利用者の合格を剥奪すると、
+// 上位レベルが突然ロックされ、利用者にはデータ破損と区別がつかない。
+test('基準変更前に8問で合格した初級の記録は維持される', () => {
+  const progress = createEmptyProgress();
+  progress.domains['basic-operations'].beginner = {
+    cleared: true,
+    bestScore: 8,
+    attempts: 1,
+    lastAttemptAt: '2026-08-01T00:00:00.000Z',
+  };
+
+  const updated = recordAttempt(progress, 'basic-operations', 'beginner', 8);
+
+  assert.equal(getStageRecord(updated, 'basic-operations', 'beginner').cleared, true);
+  assert.equal(getStageStatus(updated, 'basic-operations', 'beginner'), 'cleared');
+  assert.equal(getStageStatus(updated, 'basic-operations', 'intermediate'), 'available');
+});
+
+test('未合格の初級は9問では合格にならず、中級も開放されない', () => {
+  const progress = recordAttempt(createEmptyProgress(), 'basic-operations', 'beginner', 9);
+
+  assert.equal(getStageRecord(progress, 'basic-operations', 'beginner').cleared, false);
+  assert.equal(getStageStatus(progress, 'basic-operations', 'intermediate'), 'locked');
 });
 
 test('空の進捗では初級のみ挑戦可能で、他はロックされている', () => {
@@ -50,7 +96,7 @@ test('空の進捗では初級のみ挑戦可能で、他はロックされて�
 
 test('初級に合格すると中級が開放され、上級はロックされたまま', () => {
   let progress = createEmptyProgress();
-  progress = recordAttempt(progress, 'basic-operations', 'beginner', 8);
+  progress = recordAttempt(progress, 'basic-operations', 'beginner', 10);
   assert.equal(getStageStatus(progress, 'basic-operations', 'beginner'), 'cleared');
   assert.equal(getStageStatus(progress, 'basic-operations', 'intermediate'), 'available');
   assert.equal(getStageStatus(progress, 'basic-operations', 'advanced'), 'locked');
@@ -72,14 +118,14 @@ test('飛び級はできない: 中級に合格しても初級が未合格なら
 
 test('領域どうしは独立して進行する', () => {
   let progress = createEmptyProgress();
-  progress = recordAttempt(progress, 'basic-operations', 'beginner', 9);
+  progress = recordAttempt(progress, 'basic-operations', 'beginner', 10);
   assert.equal(getStageStatus(progress, 'basic-operations', 'intermediate'), 'available');
   assert.equal(getStageStatus(progress, 'feature-usage', 'intermediate'), 'locked');
 });
 
 test('合格済みステージは再挑戦で不合格になっても cleared を維持する', () => {
   let progress = createEmptyProgress();
-  progress = recordAttempt(progress, 'basic-operations', 'beginner', 9);
+  progress = recordAttempt(progress, 'basic-operations', 'beginner', 10);
   progress = recordAttempt(progress, 'basic-operations', 'beginner', 3);
   assert.equal(getStageStatus(progress, 'basic-operations', 'beginner'), 'cleared');
   assert.equal(getStageStatus(progress, 'basic-operations', 'intermediate'), 'available');
@@ -88,10 +134,10 @@ test('合格済みステージは再挑戦で不合格になっても cleared �
 test('bestScore は最高得点を保ち、attempts は挑戦のたびに増える', () => {
   let progress = createEmptyProgress();
   progress = recordAttempt(progress, 'basic-operations', 'beginner', 5);
-  progress = recordAttempt(progress, 'basic-operations', 'beginner', 9);
+  progress = recordAttempt(progress, 'basic-operations', 'beginner', 10);
   progress = recordAttempt(progress, 'basic-operations', 'beginner', 6);
   const record = getStageRecord(progress, 'basic-operations', 'beginner');
-  assert.equal(record.bestScore, 9);
+  assert.equal(record.bestScore, 10);
   assert.equal(record.attempts, 3);
   assert.equal(record.cleared, true);
   assert.ok(typeof record.lastAttemptAt === 'string' && record.lastAttemptAt.length > 0);
@@ -120,7 +166,7 @@ test('normalizeProgress は破損データを空の進捗に置き換える', ()
 
 test('normalizeProgress は正しい進捗をそのまま保持する', () => {
   let progress = createEmptyProgress();
-  progress = recordAttempt(progress, 'prompt-design', 'beginner', 8);
+  progress = recordAttempt(progress, 'prompt-design', 'beginner', 10);
   const roundTripped = normalizeProgress(JSON.parse(JSON.stringify(progress)));
   assert.equal(getStageStatus(roundTripped, 'prompt-design', 'beginner'), 'cleared');
 });
