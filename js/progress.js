@@ -23,7 +23,12 @@ export const DOMAIN_LABELS = {
 };
 
 export const QUESTIONS_PER_STAGE = 10;
-export const PASSING_SCORE = 8;
+export const PASSING_SCORES = {
+  beginner: 10,
+  intermediate: 8,
+  advanced: 8,
+  expert: 8,
+};
 export const PROGRESS_VERSION = 1;
 
 export function createEmptyProgress() {
@@ -38,8 +43,20 @@ export function createEmptyProgress() {
   return { version: PROGRESS_VERSION, domains };
 }
 
-export function isPassed(score) {
-  return score >= PASSING_SCORE;
+// 合否判定用。未知・欠落のレベルは黙って通さず例外にする。
+// 既定値でフォールバックすると、levelの渡し忘れで初級8問が合格として
+// cleared: true に永続化され、「一度得た合格は剥奪しない」不変条件により
+// 後から訂正できなくなる。落ちるほうが安全。
+export function getPassingScore(level) {
+  const threshold = PASSING_SCORES[level];
+  if (typeof threshold !== 'number') {
+    throw new Error(`未知のレベルです: ${String(level)}`);
+  }
+  return threshold;
+}
+
+export function isPassed(score, level) {
+  return score >= getPassingScore(level);
 }
 
 function isValidRecord(value) {
@@ -89,7 +106,7 @@ export function recordAttempt(progress, domain, level, score, now = new Date()) 
   const previous = getStageRecord(progress, domain, level);
   const updatedRecord = {
     // 一度合格した到達は、再挑戦で落ちても剥奪しない。
-    cleared: (previous?.cleared ?? false) || isPassed(score),
+    cleared: (previous?.cleared ?? false) || isPassed(score, level),
     bestScore: Math.max(previous?.bestScore ?? 0, score),
     attempts: (previous?.attempts ?? 0) + 1,
     lastAttemptAt: now.toISOString(),

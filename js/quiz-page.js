@@ -172,7 +172,7 @@ async function main() {
     const { domain, level } = target;
     const domainLabel = DOMAIN_LABELS[domain];
     const score = scoreStage(questions, answers);
-    const passed = isPassed(score);
+    const passed = isPassed(score, level);
     const wasCleared = getStageStatus(progress, domain, level) === 'cleared';
 
     const updatedProgress = recordAttempt(progress, domain, level, score);

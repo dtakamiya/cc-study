@@ -1,6 +1,6 @@
 import { loadStageResult } from './storage.js';
 import { LEVEL_LABELS } from './level-judge.js';
-import { PASSING_SCORE } from './progress.js';
+import { getPassingScore } from './progress.js';
 import { getStudyAdvice } from './report-content.js';
 
 const noResultEl = document.getElementById('no-result');
@@ -56,7 +56,7 @@ if (!stageResult) {
     verdictEl.className = passed ? 'verdict passed' : 'verdict failed';
 
     document.getElementById('score-line').textContent =
-      `${score} / ${total} 問正解（合格ラインは ${PASSING_SCORE} 問）`;
+      `${score} / ${total} 問正解（合格ラインは ${getPassingScore(level)} 問）`;
 
     if (unlockedLevel) {
       const unlockNoticeEl = document.getElementById('unlock-notice');

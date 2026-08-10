@@ -59,3 +59,13 @@ test('誤答履歴の保存失敗は showSaveFailure を発火させない', () 
     '誤答履歴の保存失敗で結果画面への遷移を止めてはいけません'
   );
 });
+
+// levelを渡し忘れると getPassingScore が例外を投げるが、
+// それは実行時にしか分からない。形をソース上で固定して、コミット前に検出する。
+test('finishNormalStage は isPassed に level を渡す', () => {
+  const normalBody = extractFunction('finishNormalStage');
+  assert.ok(
+    normalBody.includes('isPassed(score, level)'),
+    'finishNormalStage が isPassed に level を渡していません'
+  );
+});
