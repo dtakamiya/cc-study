@@ -1049,11 +1049,11 @@
       "choices": [
         "PermissionRequestは権限プロンプトの後に発火するため、ユーザーが下した承認判断を上書きすることはできない",
         "PermissionRequestが返せる判断はallowとdenyの2値のみで、ユーザーへの確認を求める選択肢は用意されていない",
-        "PermissionRequestは終了コード2ではブロックできず、hookSpecificOutputのdecision（allow/deny/ask）で判断を返す必要がある",
+        "PermissionRequestは終了コード2ではブロックできず、トップレベルのdecisionオブジェクト（allow/deny/ask）で判断を返す必要がある",
         "PermissionRequestはすべてのツール呼び出しで発火し、PreToolUseは権限判断が必要なときにのみ発火する"
       ],
       "correctIndex": 2,
-      "explanation": "PreToolUseは毎回のツール呼び出しで発火し終了コード2でブロックできますが、PermissionRequestは権限判断が必要になった時点で発火し、終了コード2は尊重されません。ブロックするにはhookSpecificOutputのdecisionフィールドに\"deny\"を返す必要があり、\"allow\"・\"ask\"を含む3値を指定できます。発火順はPreToolUseが先で、その後に権限ルールが評価され、判断点が生じたときにPermissionRequestが呼ばれます。"
+      "explanation": "PreToolUseは毎回のツール呼び出しで発火し終了コード2でブロックできますが、PermissionRequestは権限判断が必要になった時点で発火し、終了コード2は尊重されず権限フローがそのまま進みます。ブロックするには他の多くのイベントが使うhookSpecificOutputではなく、トップレベルのdecisionオブジェクトに\"deny\"を返す必要があり、\"allow\"・\"ask\"を含む3値を指定できます（\"ask\"はユーザーへの確認に委ねます）。あわせてreasonを添えて判断理由を説明できます。発火順はPreToolUseが先で、その後にPermissionRequestが呼ばれ、フックが判断を返さなければ通常の権限プロンプトの流れになります。"
     },
     {
       "id": "security-082",
