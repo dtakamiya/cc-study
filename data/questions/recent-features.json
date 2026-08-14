@@ -2,7 +2,7 @@
   "domain": "recent-features",
   "domainLabel": "直近の新機能",
   "updatePolicy": "replace",
-  "nextIdSeq": 62,
+  "nextIdSeq": 73,
   "questions": [
     {
       "id": "recent-001",
@@ -16,32 +16,6 @@
       ],
       "correctIndex": 2,
       "explanation": "Fast ModeはClaude Opus向けの高速な構成であり、Opus 5とOpus 4.8でのみ利用できます。別のモデルを使っている状態で有効にすると、Claude Codeは自動的にOpusへ切り替えます。小型モデルへの降格ではなく、むしろ上位モデルへ移ったうえで高速化される点に注意してください。なお`/fast`で無効に戻してもOpusのままで、元のモデルには戻りません。"
-    },
-    {
-      "id": "recent-002",
-      "level": "beginner",
-      "question": "Claude CodeのArtifacts機能で、新しく公開したページの公開範囲は既定でどうなりますか？",
-      "choices": [
-        "インターネット上の誰でも見られる公開ページになる",
-        "所属組織の全員に自動的に共有される",
-        "自分だけが見られる非公開ページになる",
-        "公開前に必ず外部レビュー担当者の承認が必要になる"
-      ],
-      "correctIndex": 2,
-      "explanation": "新しく作成したArtifactは自分だけに見える非公開ページとして公開されます。他の人に見せたい場合はページ上部の共有コントロールから明示的に共有範囲を選ぶ必要があります。"
-    },
-    {
-      "id": "recent-003",
-      "level": "beginner",
-      "question": "Claude Codeが公開するArtifactは、どこにホストされますか？",
-      "choices": [
-        "利用者自身のサーバー",
-        "claude.ai上のページ",
-        "GitHub Pages",
-        "ローカルマシンのみで、外部には公開されない"
-      ],
-      "correctIndex": 1,
-      "explanation": "Artifactはセッションの作業内容からclaude.ai上の専用URLに公開される、ライブで対話的なWebページです。ブラウザで開くとセッションの進行に合わせてその場で更新されます。"
     },
     {
       "id": "recent-004",
@@ -70,19 +44,6 @@
       "explanation": "`/fork`はその時点までの会話をバックグラウンドの新しいセッションにコピーします。コピー後は元の会話と独立して進行し、Agent View上では別の行として表示されます。なお`/fork`が会話をコピーする挙動は Claude Code v2.1.212 以降かつ agent view が有効な場合のもので、v2.1.161〜v2.1.211 や agent view を無効にしている場合は forked subagent として動作します（この旧挙動は現在 `/subtask` に分離されています）。"
     },
     {
-      "id": "recent-007",
-      "level": "beginner",
-      "question": "Claude Codeの権限モードにおいて、あらゆる操作を毎回確認する既定のモードは、CLIやヘルプ上で何という名前に改称されましたか？",
-      "choices": [
-        "Strict",
-        "Review",
-        "Manual",
-        "Safe"
-      ],
-      "correctIndex": 2,
-      "explanation": "すべての操作を確認する既定のモードは、CLIや`--help`、VS Code拡張などの表示名が「Manual」に改称されました。設定値としての内部名は引き続き`default`で、`--permission-mode manual`のようにエイリアスとしても指定できます。"
-    },
-    {
       "id": "recent-008",
       "level": "beginner",
       "question": "VS Code拡張機能におけるClaude CodeのFocus Viewの役割を最も適切に表しているものはどれですか？",
@@ -107,19 +68,6 @@
       ],
       "correctIndex": 0,
       "explanation": "Artifactは1つの自己完結したページとして厳格なCSPの下で配信され、他ホストへのスクリプト・スタイルシート・画像の読み込みやfetch・XHR・WebSocket通信はブロックされます。CSSやJavaScriptはインライン化し、画像はdata URIとして埋め込む必要があります。"
-    },
-    {
-      "id": "recent-012",
-      "level": "intermediate",
-      "question": "セッション内で一時的に「デプロイの完了を5分おきに確認したい」という場合、`/loop`と`/schedule`（クラウドのRoutines）のどちらを使うのがより適切ですか？",
-      "choices": [
-        "`/loop`。現在のセッションが開いている間だけ繰り返せればよく、マシンやセッションを閉じても動き続ける必要がないため",
-        "`/schedule`。`/loop`は1回しか実行できないコマンドであるため",
-        "どちらでも同じ仕組みで動作するため、どちらを使っても差はない",
-        "`/schedule`。`/loop`はクラウド上でのみ動作し、ローカルマシンでは使えないため"
-      ],
-      "correctIndex": 0,
-      "explanation": "`/loop`はセッションが開いている間だけ動く、セッション内でのクイックなポーリング向けの仕組みです。マシンが起動していなくても、セッションを開いていなくても動き続けてほしい場合はクラウドのRoutines（`/schedule`）を使います。"
     },
     {
       "id": "recent-013",
@@ -174,19 +122,6 @@
       "explanation": "表示名は「Manual」に変わりましたが、フックやSDK連携が参照する設定値は引き続き`default`です。CLIでは`manual`をエイリアスとして受け付けており、`--permission-mode manual`や`\"defaultMode\": \"manual\"`のように指定できます。"
     },
     {
-      "id": "recent-018",
-      "level": "intermediate",
-      "question": "Claude Codeで公開したArtifactを、公開後に「同じURLのまま」内容を更新したい場合、どうすればよいですか？",
-      "choices": [
-        "毎回新しいURLで公開し直し、古いリンクは手動で削除する",
-        "Artifactは一度公開すると内容を更新できない仕様である",
-        "claude.ai側の管理画面でHTMLソースを直接書き換える",
-        "Claudeにページの修正を依頼し、同じセッション（またはURLを伝えた別セッション）から再度公開してもらう"
-      ],
-      "correctIndex": 3,
-      "explanation": "Artifactはページを編集して再度publishすると同じURLに新しいバージョンとして反映されます。別セッションから更新する場合はArtifactのURLをClaudeに伝えることで、そのセッションが既存のArtifactを更新できます。URLを伝えなければ新しいセッションは常に新規のArtifactを作成します。"
-    },
-    {
       "id": "recent-019",
       "level": "intermediate",
       "question": "Claude CodeのArtifactが「アプリケーションではなく作業の一時的な記録である」とされる理由として、公式ドキュメントの説明に合致するものはどれですか？",
@@ -200,19 +135,6 @@
       "explanation": "Artifactはバックエンドを持たない1つの自己完結したページであり、フォーム送信データを保存したり複数のルートを提供したりすることができません。そのため公式ドキュメントは「アプリケーションではなく作業の記録（capture of work）」と位置づけています。"
     },
     {
-      "id": "recent-020",
-      "level": "intermediate",
-      "question": "Claude Codeのモデル構成における、Claude Opus 5とClaude Fable 5の位置づけの違いとして適切なものはどれですか？",
-      "choices": [
-        "Opus 5とFable 5はまったく同一の性能を持ち、名称のみが異なる",
-        "Opus 5はエージェント的コーディング向け、Fable 5は最も高性能で長時間の推論作業向け",
-        "Fable 5は軽量・低コスト用途専用であり、複雑な推論作業には使用できない",
-        "Opus 5は画像生成専用モデル、Fable 5はテキスト専用モデルという役割分担がある"
-      ],
-      "correctIndex": 1,
-      "explanation": "Claude Opus 5は複雑なエージェント的コーディングやエンタープライズ向け作業向けのモデルです。Claude Fable 5はAnthropicが広く公開している中で最も高性能なモデルとされ、最も要求の厳しい推論や長時間にわたるエージェント作業向けに位置づけられています。両者は名称のみが異なる同一モデルではなく、また役割分担も画像/テキストのような単純な分割ではありません。"
-    },
-    {
       "id": "recent-023",
       "level": "advanced",
       "question": "Claude CodeのArtifactとして公開したページが、閲覧時にMCPコネクタを呼び出して最新データを取得する場合、その通信はどのように行われますか？",
@@ -224,19 +146,6 @@
       ],
       "correctIndex": 1,
       "explanation": "Artifactの厳格なCSPは外部ホストへのfetch/XHR/WebSocketを原則ブロックしますが、MCPコネクタ呼び出しはその例外で、ページはclaude.aiに呼び出しを委ね、claude.aiがネットワーク通信を代行します。閲覧者ごとに自分のアカウントの接続を通じて呼び出しが実行されます。"
-    },
-    {
-      "id": "recent-024",
-      "level": "advanced",
-      "question": "Claude Codeが公開するArtifactとして公開できるファイルの拡張子として、公式ドキュメントに明記されているものはどれですか？",
-      "choices": [
-        "`.html`・`.jsx`・`.md`",
-        "`.html`・`.pdf`・`.txt`",
-        "`.html`・`.htm`・`.md`",
-        "`.html`・`.svg`・`.json`"
-      ],
-      "correctIndex": 2,
-      "explanation": "Page constraintsの表では、公開できるソースファイルの型は`.html`・`.htm`・`.md`に限られると明記されています。Markdownファイルはスタイル付きHTMLとしてレンダリングされます。"
     },
     {
       "id": "recent-026",
@@ -291,19 +200,6 @@
       "explanation": "`DirectoryAdded`は、セッションの途中で`/add-dir`コマンドまたはSDKの`register_repo_root`コントロールリクエストによって作業ディレクトリが追加されたときに発火します。マッチャーの値としてそれぞれ`slash_command`・`register_repo_root`が使われ、決定制御はサポートされていません。"
     },
     {
-      "id": "recent-031",
-      "level": "advanced",
-      "question": "公開済みのArtifactの「レンダリング後のページサイズ」に関する制約として、公式ドキュメントの記述に合致するものはどれですか？",
-      "choices": [
-        "レンダリング後のページは16MiB以下でなければならず、埋め込んだ大きな画像が原因で公開に失敗することが多い",
-        "サイズ上限はなく、代わりにDOM要素数に上限が設けられている",
-        "上限は100MBで、画像を除くテキストとスクリプトのみがカウントされる",
-        "上限はセッションのプランによって異なり、Enterpriseプランでは無制限になる"
-      ],
-      "correctIndex": 0,
-      "explanation": "Page constraintsの表では、レンダリング後のページは16MiB以下でなければならないと明記されており、埋め込み画像のサイズが大きいことが公開失敗の典型的な原因だと説明されています。"
-    },
-    {
       "id": "recent-032",
       "level": "advanced",
       "question": "Artifactを自分のセッションだけで無効化したい場合の設定方法として、公式ドキュメントが挙げていないものはどれですか？",
@@ -330,19 +226,6 @@
       "explanation": "`--forward-subagent-text`を付けると、サブエージェントのテキスト・thinkingブロックが`parent_tool_use_id`付きの`assistant`・`user`メッセージとしてストリームに出力され、各サブエージェントのトランスクリプトを再構成できます。付けない場合はサブエージェントの`tool_use`・`tool_result`ブロックのみが出力されます。`--print`と`--output-format stream-json`の指定が前提で、同名の環境変数でも同じ挙動を有効化できます。"
     },
     {
-      "id": "recent-035",
-      "level": "expert",
-      "question": "サブエージェントが自分自身のサブエージェントをさらに起動する「ネスト」について、現行の既定の深さ制限として正しいものはどれですか？",
-      "choices": [
-        "既定でネストは無効（深さ1）で、明示的に引き上げるまでサブエージェントは自分のサブエージェントを起動できない",
-        "既定で main conversation の下に最大3層までネストでき、`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`で変更できる",
-        "既定でネストの深さに制限はなく、無制限にサブエージェントを連鎖できる",
-        "既定で最大5層までネストでき、変更は一切できない固定値である"
-      ],
-      "correctIndex": 1,
-      "explanation": "現行の既定では、mainの会話の下にサブエージェントが最大3層までネストでき、`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`で層数を変更できます（`1`に設定するとネストを無効化）。深さの上限に達すると、forkを除くすべてのサブエージェントからAgentツールが取り上げられます。なおこの既定値はバージョンにより変遷しており、v2.1.172〜v2.1.216では既定5層かつ変更不可、v2.1.217〜v2.1.218では既定1層、v2.1.219以降で既定3層に引き上げられました。"
-    },
-    {
       "id": "recent-036",
       "level": "expert",
       "question": "サブエージェントのネストが有効な環境で、あるレビュー専用のサブエージェントだけを「自分ではサブエージェントを起動しないread-onlyな存在」に保ちたい場合、公式ドキュメントが推奨する方法はどれですか？",
@@ -354,19 +237,6 @@
       ],
       "correctIndex": 0,
       "explanation": "ネスト自体は有効なままにしつつ、特定のサブエージェントだけをAgentツールなしに保ちたい場合は、そのサブエージェント定義の`tools`から`Agent`を外すか、`disallowedTools`に`Agent`を加えます。深さ制限をセッション全体で操作する方法は、他のサブエージェントのネストも一律に止めてしまいます。"
-    },
-    {
-      "id": "recent-039",
-      "level": "expert",
-      "question": "スクリーンリーダー利用者向けにターミナルUIを平文の線形表示に切り替える機能を、1回のセッションだけ有効にするコマンドはどれですか？",
-      "choices": [
-        "`claude --screen-reader-mode`",
-        "`claude --ax-screen-reader`",
-        "`claude --a11y`",
-        "`claude --plain-text-ui`"
-      ],
-      "correctIndex": 1,
-      "explanation": "`claude --ax-screen-reader`を付けて起動すると、そのセッションに限りボックス表示やその場での再描画を避けた平文の線形出力に切り替わり、VoiceOverやNVDAなどのスクリーンリーダーが順番に読み上げられるようになります。複数セッションにわたって有効にしたい場合は環境変数`CLAUDE_AX_SCREEN_READER`を使います。"
     },
     {
       "id": "recent-040",
@@ -393,19 +263,6 @@
       ],
       "correctIndex": 3,
       "explanation": "プラグインが読み込まれない場合のトラブルシューティングとして、`claude plugin validate ./my-plugin`または`/plugin validate ./my-plugin`を実行し、`plugin.json`・skill/agent/commandのフロントマター・`hooks/hooks.json`の構文やスキーマのエラーを確認する方法が案内されています。"
-    },
-    {
-      "id": "recent-042",
-      "level": "expert",
-      "question": "`claude auto-mode reset`コマンドの効果として、公式ドキュメントの記載に合致するものはどれですか？",
-      "choices": [
-        "ユーザー設定ファイル（`~/.claude/settings.json`）の`autoMode`セクションを削除し、管理設定や`--settings`由来の`autoMode`ルールには影響しない",
-        "管理設定（managed settings）に定義された`autoMode`ルールも含め、すべてのスコープの設定を一括で削除する",
-        "auto modeの機能自体を無効化し、以後どのセッションでも有効にできなくする",
-        "直前に`claude auto-mode critique`で指摘された項目だけを選択的に削除する"
-      ],
-      "correctIndex": 0,
-      "explanation": "`claude auto-mode reset`はユーザー設定ファイル（`~/.claude/settings.json`）から`autoMode`セクションを削除して既定値に戻すコマンドで、確認プロンプトを表示し`--yes`でスキップできます。管理設定や`--settings`フラグ由来の`autoMode`ルールはリセットの対象外で、そのまま適用され続けます。"
     },
     {
       "id": "recent-043",
@@ -653,6 +510,149 @@
       ],
       "correctIndex": 0,
       "explanation": "`dialogExpiry` の既定は `\"5m\"` で、`\"60s\"`・`\"5m\"`・`\"10m\"`・`\"never\"` を受け付けます。対象はClaude Codeがリモートクライアント（Remote ControlやSDKホスト）に転送するダイアログと、保留されたクロスセッションメッセージの承認ダイアログです。権限プロンプトと `AskUserQuestion` はそれぞれ独自のフローを持ちこの期限に支配されません。読み込まれるスコープはユーザー設定・managed settings・`--settings` のみで、環境変数 `CLAUDE_CODE_USER_DIALOG_TIMEOUT_MS` がこの設定を上書きします。"
+    },
+    {
+      "id": "recent-062",
+      "level": "beginner",
+      "question": "別のターミナルで動いている自分のClaude Codeセッションを名指しでメッセージの宛先にしたいとき、プロンプト内でどう指定しますか？",
+      "choices": [
+        "# に続けてセッション名を入力し、候補から選ぶ",
+        "@ に続けてセッション名の先頭数文字を入力し、候補から選ぶ",
+        "!session: に続けてセッションIDを入力する",
+        "/send コマンドに宛先セッション名を引数として渡す"
+      ],
+      "correctIndex": 1,
+      "explanation": "プロンプトで@に続けてセッション名の先頭文字を入力すると、サブエージェントを@メンションするのと同じ要領で他の稼働中セッションがタイプアヘッドに現れます。選ぶと@api-workerのようなメンションが挿入され、ClaudeはListAgentsで一覧を取らずにそのセッションへSendMessageできます。ただし@だけを入力した段階ではセッション行は出ず、最低1文字を打ってからになります。"
+    },
+    {
+      "id": "recent-063",
+      "level": "beginner",
+      "question": "Claude Code Desktop（macOS）のiOS Simulatorペインを開くには、どうすればよいですか？",
+      "choices": [
+        "Claudeがアプリをシミュレータでビルド・起動・確認したときに自動で開く",
+        "/simulator コマンドを実行して手動で開く",
+        "claude --ios-simulator を付けて起動し直す",
+        "設定ファイルで iosSimulatorPane を true にしてセッションを再起動する"
+      ],
+      "correctIndex": 0,
+      "explanation": "公式ドキュメントは「シミュレータペインを開くのにコマンドや設定は不要」と述べています。Claudeがシミュレータでアプリをビルド・インストール・起動・確認したときにペインが自動で開き、デバイス画面をライブでストリーミングします。セッションにシミュレータが接続済みか、Swiftファイルを編集した後であれば、ツールバーのViewsメニューから自分で開くこともできます。"
+    },
+    {
+      "id": "recent-064",
+      "level": "beginner",
+      "question": "自分のセッションが他のセッションから受け取るメッセージの扱い（accept / hold / refuse）を、設定ファイルを直接編集せずに変更したい場合、どうしますか？",
+      "choices": [
+        "/config の「Messages from your other sessions」の行で値を選ぶ",
+        "/config crossSessionInbound=hold のショートハンドで指定する",
+        "/list-agents の画面から受信ポリシーを切り替える",
+        "/status の Peer address 行をクリックして設定画面を開く"
+      ],
+      "correctIndex": 0,
+      "explanation": "/configに「Messages from your other sessions」という行が追加され、選んだ値がユーザー設定に書き込まれます。managed settingsや--settingsフラグがこのキーを設定しているときは、ユーザー設定の値が効かないため行自体が表示されません。なおClaude Codeはこのキーについて /config crossSessionInbound=value というショートハンド記法を受け付けません。"
+    },
+    {
+      "id": "recent-065",
+      "level": "intermediate",
+      "question": "プラグインマーケットプレイスの command ソースについて、公式ドキュメントの記載に合致するものはどれですか？",
+      "choices": [
+        "インストール時に一度だけコマンドを実行し、以後は再実行されないためツールの出力が変わったら再インストールが必要になる",
+        "インストール時にコマンドを実行し、以後はセッションごとに1回バックグラウンドで再実行するため、再インストールなしにツールの出力変化を取り込める",
+        "コマンドはClaude Codeを起動したディレクトリで実行され、そのディレクトリのパスを標準出力に印字する",
+        "コマンドの出力はプラグインのJSON定義そのものであり、ディレクトリパスではない"
+      ],
+      "correctIndex": 1,
+      "explanation": "commandソースは、ローカルにインストールされたツールがプラグインディレクトリを生成する場合に使います。Claude Codeはインストール時にコマンドを実行し、さらにセッションごとに1回バックグラウンドで再実行するため、利用者は再インストールせずにツールの変化した出力を取り込めます。コマンドはプラットフォームのシェルで利用者のホームディレクトリから実行され、標準出力にプラグインディレクトリの絶対パスを1行だけ印字して終了コード0で終わる必要があります。印字されたパスがClaude Codeの起動ディレクトリやその親だった場合、インストールは失敗します。"
+    },
+    {
+      "id": "recent-066",
+      "level": "intermediate",
+      "question": "command ソースのプラグインで \"mode\": \"link\" を指定した場合の挙動として、公式ドキュメントの記載に合致するものはどれですか？",
+      "choices": [
+        "印字されたディレクトリをプラグインキャッシュにコピーし、内容のハッシュからバージョンを導出する",
+        "印字されたディレクトリをそのまま使うためコピーもハッシュ計算もせず、サイズ制限も適用されない",
+        "Windows専用のモードで、macOS/Linuxでは copy にフォールバックする",
+        "Node.jsパッケージの依存インストールが自動的に実行される"
+      ],
+      "correctIndex": 1,
+      "explanation": "既定の \"mode\": \"copy\" はディレクトリをバージョン付きキャッシュにコピーし、内容のハッシュからプラグインバージョンを導出します（256MiB・20,000エントリの上限あり）。\"mode\": \"link\" はレンダリング済みSDKエクスポートのような大きなディレクトリ向けで、キャッシュ側に各トップレベルエントリへのリンクを張って現物を使うため、コピーもハッシュ計算も行われずサイズ制限も適用されません。バージョンは実パスとトップレベルエントリから導出されるので、内容の更新を伝えるには別のパスを印字します。link modeはNode.jsパッケージの依存インストールをスキップするためnode_modulesを含んだディレクトリを印字する必要があり、Windowsではサポートされません。"
+    },
+    {
+      "id": "recent-067",
+      "level": "intermediate",
+      "question": "/code-review にエフォートレベルを指定せずに実行したとき、現行バージョンではどのレベルが使われますか？",
+      "choices": [
+        "常にセッションの現在のエフォートレベルが使われ、過去にどのレベルを入力したかは参照されない",
+        "常に medium に固定され、レベルを明示した過去の実行もセッションのエフォートも参照されない",
+        "前回自分が入力したレベルを再利用し、一度も入力したことがなければセッションの現在のエフォートレベルを使う",
+        "対象の差分の行数から自動的に決定され、変更が大きいほど高いレベルが選ばれる"
+      ],
+      "correctIndex": 2,
+      "explanation": "レベルを入力しなかった場合、lowからmaxの範囲で前回自分が入力したレベルを、それが過去のセッションのものであっても再利用し、その旨の通知を表示します。一度もレベルを入力したことがなければセッションの現在のエフォートを使います。/code-review high のようにレベルを入力すると以後再利用される値が変わりますが、非対話の -p 実行で渡したレベルはこの記憶を更新しません。ultraはこの記憶を更新も参照もしません。"
+    },
+    {
+      "id": "recent-068",
+      "level": "advanced",
+      "question": "同一マシン上に同じ名前のセッションが複数あるとき、Claude Codeはクロスセッションメッセージの宛先をどう解決しますか？",
+      "choices": [
+        "名前が重複している時点で送信自体が拒否され、先に /rename で解消する必要がある",
+        "一覧の各行に短い識別子を付け、その識別子を使って宛先を指定する",
+        "最後に起動したセッションが常に優先され、他のセッションには届かない",
+        "同名のセッション全員に同じメッセージがブロードキャストされる"
+      ],
+      "correctIndex": 1,
+      "explanation": "名前に応答する稼働中セッションが1つだけなら、Claude Codeは名前だけでメッセージを配送します。複数のセッションが同じ名前を共有している場合、またはセッションが動きうる全ての場所を確認しきれなかった場合は、Claudeが一覧の各行に短い識別子を付け、その識別子を含めて宛先を指定します。なおセッションのリネーム・起動・再開の時点で同一マシン上の他の稼働セッションが既にその名前を使っていれば、Claude Codeは既存側に名前を残して自分のセッションを name-word-word 形式の変種にリネームします。"
+    },
+    {
+      "id": "recent-069",
+      "level": "advanced",
+      "question": "フックやBashコマンドから自セッションのinboxソケットへメッセージを投稿する場合、CLAUDE_CODE_MESSAGING_TOKEN はどのような場面で必要になりますか？",
+      "choices": [
+        "macOSで投稿プロセスが既に終了している場合や、Claude CodeがPID 1で動くコンテナ内など、プロセスによる証跡が得られない場合",
+        "Linux上で子プロセスから投稿するすべての場合。Linuxではプロセスによる検証手段が存在しないため",
+        "crossSessionInbound が accept に設定されているすべての場合",
+        "同一マシン上の他セッションへ送信するすべての場合。自セッションへの投稿では不要"
+      ],
+      "correctIndex": 0,
+      "explanation": "crossSessionInboundの値が適用されないとき、Claude Codeは自セッションの子プロセス（フックやBashコマンド）から来たと検証できたメッセージを配送します。Linux（WSL 2内を含む）では、既に終了した子プロセスについてもプロセス証跡で検証できます。macOSでは投稿プロセスが稼働中の間しか検証できず、Claude CodeがPID 1で動くコンテナではプロセス証跡が一切得られません。その証跡が欠ける場面では、接続の1行目にauthタイプのJSONとしてCLAUDE_CODE_MESSAGING_TOKENを送った子プロセスを検証します。どちらの方法でも検証できない場合は権限クラスを主張しないメッセージとして扱われ、権限プロンプトをバイパスするセッションでは承認待ちで保留されます。"
+    },
+    {
+      "id": "recent-070",
+      "level": "expert",
+      "question": "Claudeやscheduled taskが /code-review を自分から起動するのを止めつつ、自分で入力したときには使えるようにしたい場合、公式ドキュメントが案内している方法はどれですか？",
+      "choices": [
+        "設定ファイルの skillOverrides に \"code-review\": \"user-invocable-only\" を追加する",
+        "permissions.deny に Skill(code-review) を追加する",
+        "環境変数 CLAUDE_CODE_DISABLE_AUTO_REVIEW を 1 に設定する",
+        ".claude/skills/code-review/SKILL.md を空ファイルとして置き、バンドル版を上書きする"
+      ],
+      "correctIndex": 0,
+      "explanation": "設定ファイルにskillOverridesエントリで \"code-review\": \"user-invocable-only\" を書くと、Claudeとscheduled taskが自分から起動することはなくなり、自分で /code-review と入力したときだけ動きます。なお現行ではClaudeは平易な言葉でレビューを頼まれればこのスキルを自分で起動でき、/code-reviewをプロンプトに持つscheduled taskもレビューを実行します。クラウドプロバイダ経由のセッションや、テレメトリ/フィーチャーフラグ取得をオプトアウトしたセッションでも自動起動は行われません。"
+    },
+    {
+      "id": "recent-071",
+      "level": "expert",
+      "question": "sandbox.ripgrep の設定について、現行の仕様として正しいものはどれですか？",
+      "choices": [
+        "ユーザー設定・managed settings・--settings からのみ読まれ、プロジェクト設定からは上書きできない",
+        "プロジェクト設定が最優先され、リポジトリごとに挙動を固定できるようになった",
+        "設定キー自体が廃止され、sandbox.filesystem.disabled に統合された",
+        "環境変数からのみ指定でき、いずれの設定ファイルからも読まれなくなった"
+      ],
+      "correctIndex": 0,
+      "explanation": "sandbox.ripgrepは、ユーザー設定・managed settings・--settingsフラグからのみ尊重されるよう変更され、プロジェクト設定からは上書きできなくなりました。リポジトリにチェックインされた設定ファイルがサンドボックスの挙動を緩められないようにする、sandbox.network.strictAllowlistやcredential-maskingの各設定と同じ考え方の変更です。"
+    },
+    {
+      "id": "recent-072",
+      "level": "expert",
+      "question": "agent teamsにおいて、あるサブエージェント定義をteammateとして起動した場合の扱いについて、公式ドキュメントの記載に合致するものはどれですか？",
+      "choices": [
+        "定義の tools allowlist と model は尊重されるが、skills と mcpServers のフロントマターはteammateとしては適用されない",
+        "定義の tools allowlist と model は尊重されるが、定義の本文はteammateのシステムプロンプトを完全に置き換える",
+        "定義の skills と mcpServers は尊重されるが、tools で制限すると SendMessage やタスク管理ツールも取り上げられる",
+        "定義のフロントマターはすべて尊重されるが、teammateとしては起動できず通常の委譲でのみ有効である"
+      ],
+      "correctIndex": 0,
+      "explanation": "teammateはそのサブエージェント定義のtools allowlistとmodelを尊重し、定義の本文はシステムプロンプトを置き換えるのではなく追加の指示として末尾に付加されます。一方skillsとmcpServersのフロントマターはteammateとして動くときには適用されず、teammateは通常のセッションと同様にプロジェクト設定・ユーザー設定からskillsとMCPサーバーを読み込みます。SendMessageやタスク管理ツールといったチーム協調用のツールは、toolsが他のツールを制限していてもteammateには常に利用可能です。なおagent teamsは実験的機能で、CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1を設定しない限り無効です。"
     }
   ]
 }
