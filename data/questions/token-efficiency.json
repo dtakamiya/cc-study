@@ -450,7 +450,7 @@
       "question": "effortレベル`max`の特性として正しい記述はどれですか？",
       "choices": [
         "性能を優先する設計思想に基づき、すべてのモデルでデフォルトのeffortレベルとして最初から使われている",
-        "`max`は環境変数で設定した場合にセッションをまたいで永続化される点が`low`や`high`と同じ挙動になる",
+        "`max`は`low`や`high`と同様に、対話セッションで設定すればそのままセッションをまたいで永続化され、`effortLevel`設定キーにも保存できる",
         "高難度タスクの性能を改善しうるが、収穫逓減や過剰思考（overthinking）に陥りやすく、広く採用する前にテストが推奨される",
         "`max`はレイテンシを最優先する設定であり、拡張思考のプロセス自体を完全に無効化する"
       ],
@@ -503,11 +503,11 @@
       "choices": [
         "組織の管理者がユーザーのAPIキーごとに最大effortレベルを設定できる機能で、organization model restrictionsとは独立した別系統の設定として提供され、Claude Codeが動作するすべてのプラットフォームで同じように適用される",
         "組織の管理者が請求サイクル単位でeffortレベルの上限を段階的に引き下げる機能で、usage limitsの一部として提供され、上限に達した時点で`/effort`コマンド自体が組織全体で使用できなくなる",
-        "組織の管理者がcustom roleごとにモデルの最大effortレベルを設定できる機能で、organization model restrictionsと一緒に提供されるが、Amazon Bedrock・Google Cloud・Microsoft Foundry等の一部プラットフォームでは提供されない",
-        "個々のユーザーが自分のセッションごとに最大effortレベルを設定できる機能で、Enterpriseプランに限らずすべてのプランで提供され、管理者側から組織全体の上限を強制する手段は用意されていない"
+        "個々のユーザーが自分のセッションごとに最大effortレベルを設定できる機能で、Enterpriseプランに限らずすべてのプランで提供され、管理者側から組織全体の上限を強制する手段は用意されていない",
+        "組織の管理者がcustom roleごとにモデル単位で最大effortレベルを設定できる機能で、organization model restrictionsと一緒に配信され、Anthropic APIおよびLLMゲートウェイ配下のセッションに届く"
       ],
-      "correctIndex": 2,
-      "explanation": "Claude Enterpriseプランの組織管理者は、custom roleごとにモデルへ許可する最大のeffortレベルを設定できます。この機能はorganization model restrictionsと一緒に提供され、同じプロバイダ可用性の制約に従うため、Amazon Bedrock・Google Cloud・Microsoft Foundry・Claude Platform on AWS上のセッションには適用されません。"
+      "correctIndex": 3,
+      "explanation": "Claude Enterpriseプランの組織管理者は、custom roleごとにモデル単位で許可する最大のeffortレベルを設定できます。上限を超えるレベルは`/effort`のピッカーに表示されず、`--effort`や`/effort`で上位のレベルを指定しても上限値で実行されます。複数のロールが同じモデルを許可している場合は、最も緩い上限が適用されます。この機能はorganization model restrictionsと一緒に配信され、同じセッション範囲に届きます。すなわち到達するのはAnthropic APIおよびLLMゲートウェイ配下のセッションで、それ以外のプロバイダでは代わりに`availableModels`を使います。"
     },
     {
       "id": "token-040",
