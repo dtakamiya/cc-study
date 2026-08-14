@@ -437,12 +437,12 @@
       "question": "エンタープライズ運用でCLAUDE.mdの内容を組織として全プロジェクトに強制したい場合に使えるmanaged settings専用のフィールドはどれですか？",
       "choices": [
         "settings.jsonの`permissions.claudeMdOverride`フィールド（パーミッション設定の一部として、プロジェクトのCLAUDE.mdの読み込みを禁止側に倒す）",
-        "managed-settings.jsonの`claudeMd`フィールド（設定した文字列がプロジェクトのCLAUDE.mdに関わらず適用される）",
+        "managed-settings.jsonの`claudeMd`フィールド（managed設定とpolicy設定でのみ有効で、userやprojectのCLAUDE.mdより先に読み込まれる）",
         "managed settingsディレクトリ配下の`.claude/CLAUDE.local.md`ファイル（ここに置いたメモリがプロジェクトのCLAUDE.mdより先に読み込まれ、組織の指示として優先される）",
         "SKILL.mdの`disable-model-invocation`フィールド（trueにすると組織が配布したスキル本文が常時メモリとして読み込まれ、CLAUDE.mdと同じ扱いになる）"
       ],
       "correctIndex": 1,
-      "explanation": "managed settingsは`claudeMd`のようなmanaged専用フィールドをサポートしており、ここに設定した文字列を組織のポリシーとして強制できます。これはプロジェクトやユーザーの`CLAUDE.md`ファイルとは別の、管理者が一元的に配布する強制的な指示です。"
+      "explanation": "「claudeMd」はmanaged-settings.jsonの中に管理下のCLAUDE.md本文を直接書けるキーで、managed設定とpolicy設定でのみ有効です（user・project・local設定に書いても効果はありません）。スコープはそのマシン上の全リポジトリの全セッションで、優先順位はmanaged CLAUDE.mdファイルと同じ、すなわちuserやprojectのCLAUDE.mdより先に読み込まれます（上書きではなく先行ロードです）。また managed policy のCLAUDE.mdは`claudeMdExcludes`で除外できないため、個人の設定にかかわらず必ず適用されます。ただし公式は「settingsはtechnical enforcement、CLAUDE.mdはbehavioral guidance」と役割を分けており、設定ルールがクライアント側で強制されるのに対し、CLAUDE.mdの指示はClaudeの振る舞いを方向づけるものであって強制層ではないと述べています。ツールやコマンドの実行を確実に禁止したい場合は`permissions.deny`やPreToolUseフックを使います。"
     },
     {
       "id": "harness-035",
@@ -525,15 +525,15 @@
     {
       "id": "harness-041",
       "level": "advanced",
-      "question": "プロジェクトの`.claude/skills/`にチェックインされたスキルが自動的にClaudeへ発見されるが、そのスキル本文の`allowed-tools`によって危険な操作が承認なしで実行されてしまうリスクを防ぐため、公式ドキュメントが挙げている前提条件はどれですか？",
+      "question": "プロジェクトの`.claude/skills/`にチェックインされたスキルの`allowed-tools`について、公式ドキュメントが述べているセキュリティ上の性質として正しいものはどれですか？",
       "choices": [
-        "プロジェクトの`.claude/skills/`配下のスキルの`allowed-tools`は、そのスキルがリポジトリのルート直下の`.claude/skills/`に置かれている場合にのみ有効化され、サブディレクトリに置かれたものは無視される",
-        "プロジェクトの`.claude/skills/`配下のスキルには`allowed-tools`フィールド自体が存在せず、事前承認はサブエージェント定義でのみ表現できるため、スキル経由で権限が自己承認されることは仕組み上起こらない",
-        "プロジェクトの`.claude/skills/`配下のスキルの`allowed-tools`は、そのフォルダに対するワークスペーストラストダイアログを承認するまで有効化されない",
-        "プロジェクトの`.claude/skills/`配下のスキルの`allowed-tools`は、そのスキルが呼び出されるたびにユーザーへ個別の承認ダイアログを出す仕様になっており、フォルダ単位でまとめて信頼を与える経路は用意されていない"
+        "ワークスペーストラストがこのフィールドをゲートするため、そのフォルダのトラストダイアログを承認するまで有効化されず、リポジトリをクローンしただけでは適用されない",
+        "スキルが呼び出されるたびにユーザーへツール単位の承認ダイアログが表示されるため、`allowed-tools`に列挙されたツールが無断で実行されることはない",
+        "`allowed-tools`は列挙されていないツールをそのスキルから使えなくする制限フィールドなので、危険な操作は仕組みのうえで実行できない",
+        "ワークスペーストラストはこのフィールドをゲートしないため、信頼していないフォルダでの`-p`実行でも適用される。公式はチェックインされたスキルの`allowed-tools`を実行前にレビューするよう求めている"
       ],
-      "correctIndex": 2,
-      "explanation": "プロジェクトの`.claude/skills/`にチェックインされたスキルの`allowed-tools`は、`.claude/settings.json`のパーミッションルールと同様、そのフォルダに対するワークスペーストラストダイアログを承認して初めて有効になります。これはリポジトリをクローンしただけで悪意あるスキルが広範なツールアクセスを自己承認してしまうことを防ぐための設計です。信頼していないリポジトリのプロジェクトスキルは事前にレビューすべきだとされています。"
+      "correctIndex": 3,
+      "explanation": "公式ドキュメントは「Workspace trust doesn't gate this field」と明記しており、プロジェクトスキルの`allowed-tools`は、一度も信頼していないフォルダでの`-p`実行を含め、スキルが呼び出された時点で適用されます。スキルは自分自身に広範なツールアクセスを与えられるため、公式が挙げている対策はトラストダイアログではなく、リポジトリにチェックインされたスキルの`allowed-tools`を実行前にレビューすることです。なおワークスペーストラストの承認が必要になるのは、スキルフォルダに`.claude-plugin/plugin.json`を置いてプラグインとしてロードさせる場合であり、`allowed-tools`フィールドそのものの条件ではありません。またこのフィールドは許可を追加するもので、列挙外のツールを使えなくする制限ではありません。付与された権限はスキルを呼び出したターンのみ有効で、次のメッセージを送信するとクリアされます。"
     },
     {
       "id": "harness-042",
