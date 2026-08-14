@@ -434,7 +434,7 @@
     {
       "id": "harness-034",
       "level": "advanced",
-      "question": "エンタープライズ運用でCLAUDE.mdの内容を組織として全プロジェクトに強制したい場合に使えるmanaged settings専用のフィールドはどれですか？",
+      "question": "エンタープライズ運用でCLAUDE.mdの内容を組織として全プロジェクトに配布したい場合に使えるmanaged settings専用のフィールドはどれですか？",
       "choices": [
         "settings.jsonの`permissions.claudeMdOverride`フィールド（パーミッション設定の一部として、プロジェクトのCLAUDE.mdの読み込みを禁止側に倒す）",
         "managed-settings.jsonの`claudeMd`フィールド（managed設定とpolicy設定でのみ有効で、userやprojectのCLAUDE.mdより先に読み込まれる）",
