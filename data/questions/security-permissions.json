@@ -1015,6 +1015,58 @@
       ],
       "correctIndex": 2,
       "explanation": "PreToolUseフックは権限プロンプトの前に実行され、出力で拒否・プロンプト強制・プロンプト省略を指定できます。ただしフックの判断は権限ルールを迂回せず、一致するdenyルールはブロックし、askルールはフックが `\"allow\"` を返しても確認を求めます（deny優先の評価順が保たれるため）。一方、終了コード2で終了するブロック型のフックは権限ルールの評価前に呼び出しを止めるため、allowルールがあってもブロックが効きます。この非対称性が「Bashを全許可しつつ一部だけフックで塞ぐ」構成の根拠になっています。"
+    },
+    {
+      "id": "security-079",
+      "level": "beginner",
+      "question": "Bashコマンドの許可プロンプトで「Yes, don't ask again」を選んだ場合、公式ドキュメントによればその許可ルールはどこに保存されますか？",
+      "choices": [
+        "~/.claude/settings.json（ユーザー個人の設定として全プロジェクト共通で保存される）",
+        "gitリポジトリのルートにある .claude/settings.local.json（そのリポジトリ内の以後のセッションに適用される）",
+        "どこにも保存されず、そのセッション中のみ有効で次回起動時には再び確認される",
+        "チームで共有される .claude/settings.json（コミット対象として保存される）"
+      ],
+      "correctIndex": 1,
+      "explanation": "公式ドキュメントによると、Bashコマンドのように恒久的に保存される承認は、gitリポジトリのルートにある .claude/settings.local.json へ書き込まれます（worktreeからの場合はメインのチェックアウト側へ解決されます）。そのため、サブディレクトリやworktreeで始めたセッションを含め、同じリポジトリ内の以後のセッションにルールが適用されます。一方ファイル変更の承認はファイルに保存されず、セッション終了までの有効期間にとどまります。リポジトリ外や、リポジトリルートがホームディレクトリの場合は、起動したディレクトリに保存されます。"
+    },
+    {
+      "id": "security-080",
+      "level": "intermediate",
+      "question": "watch・setsid・flock といったexecラッパーや、-exec・-delete を伴う find について、公式ドキュメントが説明する許可ルールの扱いはどれですか？",
+      "choices": [
+        "Bash(watch *) のような接頭辞ルールでは自動承認されず、コマンド文字列全体の完全一致ルールが必要になる",
+        "これらは読み取り専用コマンド集合に含まれるため、どの権限モードでも確認なしに実行される",
+        "ラッパーが自動的に取り除かれ、内側のコマンドに対する許可ルールがそのまま適用される",
+        "permissions.denyに登録しない限り、acceptEditsモード以降では自動承認の対象になる"
+      ],
+      "correctIndex": 0,
+      "explanation": "公式ドキュメントのBash節には、watch・setsid・ionice・flockといったexecラッパーは常にプロンプトを出し、Bash(watch *)のような接頭辞ルールでは自動承認できないと明記されています。findに-execや-deleteが付く形も同様で、Bash(find *)ルールの対象外です。これらは任意のコマンドを起動できてしまうため、特定の呼び出しを許可したい場合はコマンド文字列全体の完全一致ルールを書く必要があります。"
+    },
+    {
+      "id": "security-081",
+      "level": "advanced",
+      "question": "PermissionRequestフックとPreToolUseフックの違いとして、公式ドキュメントの説明に沿ったものはどれですか？",
+      "choices": [
+        "PermissionRequestは権限プロンプトの後に発火するため、ユーザーが下した承認判断を上書きすることはできない",
+        "PermissionRequestが返せる判断はallowとdenyの2値のみで、ユーザーへの確認を求める選択肢は用意されていない",
+        "PermissionRequestは終了コード2ではブロックできず、hookSpecificOutputのdecision（allow/deny/ask）で判断を返す必要がある",
+        "PermissionRequestはすべてのツール呼び出しで発火し、PreToolUseは権限判断が必要なときにのみ発火する"
+      ],
+      "correctIndex": 2,
+      "explanation": "PreToolUseは毎回のツール呼び出しで発火し終了コード2でブロックできますが、PermissionRequestは権限判断が必要になった時点で発火し、終了コード2は尊重されません。ブロックするにはhookSpecificOutputのdecisionフィールドに\"deny\"を返す必要があり、\"allow\"・\"ask\"を含む3値を指定できます。発火順はPreToolUseが先で、その後に権限ルールが評価され、判断点が生じたときにPermissionRequestが呼ばれます。"
+    },
+    {
+      "id": "security-082",
+      "level": "expert",
+      "question": "server-managed settings（サーバー配信の管理設定）とendpoint-managed settings（MDM等で端末に配布する管理設定）が両方存在する場合の適用ルールとして、公式ドキュメントの説明はどれですか？",
+      "choices": [
+        "両者のキーは常にキー単位でマージされ、衝突したキーはendpoint側の値が優先される",
+        "両者は管理階層の中で同格に扱われ、後から取得された側が全体を置き換える",
+        "endpoint-managed settingsが優先され、server-managed settingsはendpoint側に該当キーがない場合のみ補助的に読み込まれる",
+        "server-managed settingsが1つでもキーを配信していればendpoint-managed settingsは無視され、両者はマージされない"
+      ],
+      "correctIndex": 3,
+      "explanation": "公式ドキュメントのSettings precedenceによると、両者は設定階層の最上位を占め、Claude Codeは非空の設定を配信した最初のソースを使います。server-managed settingsが先に確認されるため、そこが何かキーを配信していればendpoint-managed settingsは無視され、ソース同士はマージされません。例外は2種類あり、envブロックはキー単位でマージされ、forceRemoteSettingsRefreshなどのcross-source lock keysは管理者が制御するどのソースで設定されていても尊重されます。なおpolicyHelperが設定されている場合は、その出力が唯一の管理設定として他のすべての管理ソースに優先します。"
     }
   ]
 }
