@@ -642,15 +642,15 @@
     {
       "id": "basic-050",
       "level": "advanced",
-      "question": "`claude --add-dir ../apps ../lib` のように起動時に追加ディレクトリを指定した場合の動作として正しいものはどれですか？",
+      "question": "`claude --add-dir ../apps ../lib` のように起動時に追加ディレクトリを指定した場合、そのディレクトリの`.claude/`配下の設定の扱いとして正しいものはどれですか？",
       "choices": [
-        "指定したディレクトリの`.claude/`配下の設定も含めて、起動ディレクトリと完全に同等に扱われる",
-        "`--add-dir`で追加したディレクトリのパスは存在確認されず、後から作成しても機能する",
-        "一度指定した追加ディレクトリは、`--continue`や`--resume`で再開すれば自動的に引き継がれ、再指定は不要である",
-        "指定したディレクトリ配下のファイル読み書き権限が付与されるが、そのディレクトリの`.claude/`配下の設定（CLAUDE.mdやスキルなど）はほとんど自動検出されない"
+        "`.claude/`配下の設定は種類を問わず一切読み込まれず、ファイルの読み書き権限だけが付与される",
+        "`.claude/skills/`・`.claude/commands/`・`.claude/agents/`は読み込まれるが、CLAUDE.mdは環境変数を設定したときのみ読み込まれる",
+        "起動ディレクトリと完全に同等に扱われ、CLAUDE.mdもhooksもすべて自動的に読み込まれる",
+        "settings.jsonの全キーが読み込まれる一方で、スキルとサブエージェントは読み込み対象外になる"
       ],
-      "correctIndex": 3,
-      "explanation": "`--add-dir`は指定パスがディレクトリとして存在することを検証したうえで読み書き権限を付与するが、配下の`.claude/`設定は検出対象外。セッションをまたいで永続化したい場合はsettingsの`permissions.additionalDirectories`を使う必要がある。"
+      "correctIndex": 1,
+      "explanation": "追加ディレクトリは「ファイルアクセスを広げるだけで、完全な設定ルートにはならない」のが原則ですが、いくつか例外があります。`.claude/skills/`はライブリロードつきで、`.claude/commands/`と`.claude/agents/`はライブリロードなしで読み込まれます。settings.jsonからは`enabledPlugins`と`extraKnownMarketplaces`の2キーのみ。CLAUDE.md・`.claude/rules/`・CLAUDE.local.mdは`CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1`を設定したときだけ読み込まれます。なおこれらの例外が適用されるのは`--add-dir`フラグと`/add-dir`コマンドで追加した場合のみで、settingsの`permissions.additionalDirectories`に列挙したディレクトリはファイルアクセスのみを与え、上記の設定を一切読み込みません。"
     },
     {
       "id": "basic-051",
@@ -897,7 +897,7 @@
         "サジェストを消すには毎回/configから機能そのものを無効化するしかない"
       ],
       "correctIndex": 0,
-      "explanation": "最初のサジェストはプロジェクトのgit履歴からClaude Codeが選ぶため、最近触っていたファイルが反映されます。`Tab`または右矢印キーで入力欄に取り込み、`Enter`で送信できます。何か入力を始めればその場で消えるので、無効化は必須ではありません（恒久的に切りたい場合は`/config`、`promptSuggestionEnabled`、`CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION`のいずれかを使います）。"
+      "explanation": "最初のサジェストはプロジェクトのgit履歴からClaude Codeが選ぶため、最近触っていたファイルが反映されます。`Tab`または右矢印キーで入力欄に取り込み、`Enter`で送信できます。何か入力を始めればその場で消えるので、無効化は必須ではありません（恒久的に切りたい場合は`/config`、`promptSuggestionEnabled`、`CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION`のいずれかを使います）。なお対話モードでは既定でオフになり`/config`のトグルも隠れる条件があります。Bedrock・Google CloudのAgent Platform・Microsoft Foundryなどのプロバイダ、gatewayサインイン、`DISABLE_TELEMETRY`／`DO_NOT_TRACK`／`CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC`／`DISABLE_GROWTHBOOK`の設定時が該当し、feature flag取得前の初回セッションでも表示されません。"
     },
     {
       "id": "basic-070",
@@ -923,7 +923,7 @@
         "セッション中に実行したBashコマンドの履歴が時系列で並び、選んだコマンドをそのまま再実行できる"
       ],
       "correctIndex": 1,
-      "explanation": "`Ctrl+T`が切り替えるのはClaudeが多段階の作業を計画するために作成したToDoチェックリストで、一度に最大5件が表示されます。チェックリスト項目がまだ無い場合は押しても見た目が変わりません。実行中のシェルやサブエージェントを見るのはバックグラウンドタスクビューであり、`/tasks`が担当します。なお`CLAUDE_CODE_TASK_LIST_ID`を設定すると`~/.claude/tasks/`配下の名前付きディレクトリを使い、複数セッションでタスクリストを共有できます。"
+      "explanation": "`Ctrl+T`が切り替えるのはClaudeが多段階の作業を計画するために作成したToDoチェックリストで、一度に最大5件が表示されます。チェックリスト項目がまだ無い場合は押しても見た目が変わりません。実行中のシェルやサブエージェントを見るのはバックグラウンドタスクビューであり、`/tasks`が担当します。なお`CLAUDE_CODE_TASK_LIST_ID`を設定すると`~/.claude/tasks/`配下の名前付きディレクトリを使い、複数セッションでタスクリストを共有できます。ただしOpus 4.8・Sonnet 5・Fable 5・Mythos 5以降では、Claudeが書面のチェックリストなしで多段階作業を追跡するためClaude Codeがこのリストを埋めるツールを提供せず、リストは空のままになります（`CLAUDE_CODE_ENABLE_TODO_TOOLS=1`でオプトイン可能）。"
     },
     {
       "id": "basic-072",

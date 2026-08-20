@@ -267,15 +267,15 @@
     {
       "id": "recent-043",
       "level": "expert",
-      "question": "Claude Codeのauto modeが2026年8月14日以降にProプラン・Maxプラン・Teamプランの新規セッションでどう扱われるようになるか、公式ドキュメントの記載に合致するものはどれですか？",
+      "question": "Pro・Max・Teamプランで組み込みの開始権限モードがauto modeになる要件として、公式ドキュメントの記載に合致するものはどれですか？",
       "choices": [
         "強制的に全セッションでauto modeのみが使用可能になり、他のモードへの切り替えはできなくなる",
-        "Enterpriseプランを含むすべてのプランで一律に既定化される",
-        "Amazon BedrockやGoogle Cloudのプロバイダでは対象外のまま変更されない",
-        "新規セッションの既定の権限モードになるが、自分で設定した既定モードや組織管理の既定モードがあればそちらが優先される"
+        "Enterpriseプランを含むすべてのプランで一律に組み込み既定となる",
+        "macOS・Linux・WSLはv2.1.228以降、ネイティブWindowsはv2.1.233以降が必要で、それ以前は組み込み既定がManualになる",
+        "バージョンを問わず適用されるが、`--permission-mode`フラグを明示した場合のみ上書きできる"
       ],
-      "correctIndex": 3,
-      "explanation": "2026年8月14日以降、auto modeはPro・Max・Teamプランの新規セッションの既定の権限モードになりますが、自分で設定した既定モードがあれば一度きりの切り替え案内を承諾しない限りそれが維持され、組織が管理する既定モードも変更されません。auto mode自体はAnthropic APIだけでなくAmazon Bedrock等のプロバイダでも利用可能ですが、この既定化のアナウンスはPro・Max・Teamプラン向けです。"
+      "correctIndex": 2,
+      "explanation": "公式ドキュメントは「On Pro, Max, and Team plans, the built-in starting permission mode is auto mode.」としたうえで、「The built-in `auto` default requires Claude Code v2.1.228 or later on macOS, Linux, and WSL, and v2.1.233 or later on native Windows. On earlier versions, the built-in default is Manual.」とバージョン要件を明記しています。組み込み既定は優先順位の最下位で、`--permission-mode`フラグやsettingsファイルの`permissions.defaultMode`があればそちらが先に適用されます。またEnterpriseプランやConsole APIキー、`claude -p`・Agent SDK、Bedrock・Google CloudのAgent Platform・Microsoft Foundry・Claude Platform on AWS・gatewayセッション、`disableAutoMode`が`\"disable\"`のとき、feature flag取得が無効または新規インストール・アップグレード直後の初回セッションでは、組み込み既定は`default`のままです。"
     },
     {
       "id": "recent-044",

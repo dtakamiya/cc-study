@@ -750,11 +750,11 @@
       "choices": [
         "`defaultMode`というキーはサブエージェント定義のフロントマター専用であり、settings.jsonでは`permissionMode`と書く必要があるため、キー名の不一致として黙って無視された",
         "プロジェクトスコープの設定ファイルでは`defaultMode`の値を一切指定できない仕様であり、`plan`や`acceptEdits`を書いた場合もまったく同じように無視されて既定値が使われる",
-        "`.claude/settings.json`や`.claude/settings.local.json`からの`auto`は、リポジトリが自分自身にauto modeを付与できないよう無視される設計であり、`~/.claude/settings.json`に書く必要がある",
+        "`.claude/settings.json`や`.claude/settings.local.json`からの`auto`は効力を持たず、この場合Claude Codeは`~/.claude/settings.json`の`defaultMode`ではなく組み込み既定を使う",
         "auto modeはmanaged settingsからしか既定にできない仕様であり、ユーザースコープの`~/.claude/settings.json`に書いた場合もプロジェクト設定と同様に無視される"
       ],
       "correctIndex": 2,
-      "explanation": "公式ドキュメントは、Claude Code v2.1.142以降は`.claude/settings.json`や`.claude/settings.local.json`に書かれた`defaultMode: \"auto\"`を無視するとし、その理由を「リポジトリが自分自身にauto modeを付与できないようにするため」と説明しています。auto modeを既定にしたい場合は`~/.claude/settings.json`（ユーザー設定）またはmanaged settingsに書きます。これは「設定の優先順位」という一般則だけからは導けない、権限昇格を防ぐための個別の例外です。クローンしただけのリポジトリが自身の設定で権限を緩められないという点で、プロジェクトスキルの`allowed-tools`がワークスペーストラストの承認を要求する設計と同じ発想に立っています。"
+      "explanation": "公式ドキュメントは、Claude Code v2.1.142以降は`.claude/settings.json`や`.claude/settings.local.json`に書かれた`defaultMode: \"auto\"`が効力を持たないとしています。重要なのはこのときの挙動で、「Claude Code then uses the built-in default rather than a `defaultMode` from `~/.claude/settings.json`」と明記されているとおり、ユーザー設定の`defaultMode`にフォールバックするのではなく組み込み既定が使われます。`auto`以外の値（`plan`や`acceptEdits`など）はどのsettingsファイルからでも適用されるため、`auto`だけの例外である点も押さえておく必要があります。auto modeを既定にしたい場合は`~/.claude/settings.json`（ユーザー設定）またはmanaged settingsに書きます。なお組み込み既定はPro・Max・Teamプランではauto mode（macOS・Linux・WSLはv2.1.228以降、ネイティブWindowsはv2.1.233以降）なので、この設問のように`default`で起動するとは限りません。"
     },
     {
       "id": "harness-059",
