@@ -325,7 +325,7 @@
         "個々のユーザーが自分の判断で課金プランをアップグレードする"
       ],
       "correctIndex": 2,
-      "explanation": "「availableModels」は、ユーザーが選択できるモデルを許可リストで制限する設定です。主な用途は、エンタープライズ管理者が管理設定やポリシー設定に置いて組織全体へ適用するケースで、管理設定が定義した場合はユーザー・プロジェクト・ローカル設定に書かれた追加分は無視されます。管理設定以外のスコープでも設定でき、その場合は各スコープのリストが連結され重複が除かれます。"
+      "explanation": "「availableModels」は、ユーザーが選択できるモデルを許可リストで制限する設定です。公式ドキュメントは「Enterprise administrators can use `availableModels` in managed or policy settings to restrict which models users can select.」として、エンタープライズ管理者が管理設定またはポリシー設定に置いて組織全体へ適用する用途を説明しています。許可リストが設定されると、`/model`・`--model`フラグ・`ANTHROPIC_MODEL`環境変数・`model`設定に加えて、サブエージェントやチームメイトのモデル指定、スキルやコマンドの`model`フロントマターなど、ユーザーがモデルを指定できるあらゆる箇所に適用されます。"
     },
     {
       "id": "security-026",
@@ -793,7 +793,7 @@
         "コマンドをサンドボックス環境に転送し、実際の実行結果を確認してから許可するか判断できるようにする"
       ],
       "correctIndex": 1,
-      "explanation": "Bash/PowerShellの権限プロンプトでCtrl+Eを押すと、コマンドの内容・実行理由・想定されるリスクについてモデルに説明を生成させ、Low risk/Med risk/High riskのラベル付きで表示します。コマンドを実行するわけではなく、あくまで説明表示です。permissionExplainerEnabled設定で無効化できます。"
+      "explanation": "Bash/PowerShellの権限プロンプトでCtrl+Eを押すと、コマンドの内容・実行理由・想定されるリスクについてモデルに説明を生成させ、Low risk/Med risk/High riskのラベル付きで表示します。説明の生成はCtrl+Eを押したときだけ行われ、毎回のプロンプトでは行われません。コマンドを実行するわけではなく、あくまで説明表示です（もう一度Ctrl+Eを押すと非表示に戻ります）。このショートカットを無効化するには、settings.jsonではなく`~/.claude.json`（グローバル設定）で`permissionExplainerEnabled`を`false`にします。"
     },
     {
       "id": "security-062",
@@ -850,7 +850,7 @@
     {
       "id": "security-066",
       "level": "intermediate",
-      "question": "2026年8月14日以降、Pro・Max・Teamプランの新規セッションにおいて、権限モードのデフォルトがどのように変わりますか？",
+      "question": "Pro・Max・Teamプランの新規セッションにおける、組み込みの開始権限モード（built-in starting permission mode）の説明として正しいものはどれですか？",
       "choices": [
         "auto modeがデフォルトの権限モードになるが、ユーザーが独自に設定したデフォルトモードや組織側の管理設定があればそれが優先される",
         "全プランで一律にbypassPermissionsモードがデフォルトとなり、確認プロンプトは原則発生しなくなる",
@@ -858,7 +858,7 @@
         "dontAskモードがデフォルトとなり、事前に許可ルールを設定していないツール呼び出しはすべて自動的に拒否されるようになる"
       ],
       "correctIndex": 0,
-      "explanation": "公式ドキュメント「Choose a permission mode」には、2026年8月14日よりPro・Max・Teamプランの新規セッションでauto modeがデフォルトの権限モードになると明記されています。ただしユーザー自身が設定したデフォルトモードがある場合はワンタイムの切り替え確認を承諾しない限りそのまま維持され、組織が管理するデフォルトがある場合はそちらが変更されずに優先されます。"
+      "explanation": "公式ドキュメント「Choose a permission mode」は「On Pro, Max, and Team plans, the built-in starting permission mode is auto mode.」と現在形で記載しています。ただし組み込み既定はあくまで優先順位の最下位で、セッションの権限モードは(1)`--permission-mode`フラグまたは`--dangerously-skip-permissions`、(2)settingsファイルの`permissions.defaultMode`、(3)組み込み既定、の順に最初に該当したものが使われます。したがって自分で`defaultMode`を設定していればそれが組み込み既定より優先されます。この組み込み`auto`既定にはバージョン要件があり、macOS・Linux・WSLはv2.1.228以降、ネイティブWindowsはv2.1.233以降が必要です。それ以前のバージョンでは組み込み既定はManualです。またいずれかのsettingsファイルが`disableAutoMode`を`\"disable\"`にしている場合、feature flag取得が無効または新規インストール・アップグレード直後の初回セッションの場合、`claude -p`やAgent SDKの場合、Bedrock・Google CloudのAgent Platform・Microsoft Foundry・Claude Platform on AWS・gatewayセッションの場合、Enterpriseプランまたは Console APIキーの場合は組み込み既定が`default`になります。"
     },
     {
       "id": "security-067",
