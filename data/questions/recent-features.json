@@ -2,7 +2,7 @@
   "domain": "recent-features",
   "domainLabel": "直近の新機能",
   "updatePolicy": "replace",
-  "nextIdSeq": 73,
+  "nextIdSeq": 79,
   "questions": [
     {
       "id": "recent-001",
@@ -61,13 +61,13 @@
       "level": "beginner",
       "question": "Claude Codeが公開するArtifactについて、公式ドキュメントが明記している制約はどれですか？",
       "choices": [
-        "外部ホストへのスクリプト・スタイルシート・画像の読み込みやfetch/XHR/WebSocket通信はCSPによってブロックされる",
+        "許可リストにある公開CDN（cdnjs、Tailwind CDN、jQuery CDN、jsDelivrの/npm/パス）以外からのスクリプト読み込み、Google Fonts以外の外部スタイルシート、すべての外部画像、および自オリジンとGoogle Fonts以外へのfetch・XHR・WebSocket通信はCSPによってブロックされる",
         "Artifactは常にバックエンドサーバーを自動的に用意し、フォーム送信データを保存できる",
         "複数のHTMLファイルを1つのArtifactとしてまとめてデプロイできる",
         "Artifactのサイズには上限がなく、どれだけ大きな画像も埋め込める"
       ],
       "correctIndex": 0,
-      "explanation": "Artifactは1つの自己完結したページとして厳格なCSPの下で配信され、他ホストへのスクリプト・スタイルシート・画像の読み込みやfetch・XHR・WebSocket通信はブロックされます。CSSやJavaScriptはインライン化し、画像はdata URIとして埋め込む必要があります。"
+      "explanation": "Artifactは1つの自己完結したページとして厳格なCSPの下で配信されます。外部スクリプトはcdnjs・Tailwind CDN・jQuery CDN・jsDelivr（/npm/パス）の公開CDN許可リストからのみ読み込め、外部スタイルシートはGoogle Fontsのみ許可されます。すべての外部画像はブロックされるためdata URIで埋め込みます。fetch・XHR・WebSocketは自オリジンとGoogle Fontsのホスト以外には到達できません。許可リスト外のライブラリのCSS・JavaScriptはインライン化する必要があります。"
     },
     {
       "id": "recent-013",
@@ -204,13 +204,13 @@
       "level": "advanced",
       "question": "Artifactを自分のセッションだけで無効化したい場合の設定方法として、公式ドキュメントが挙げていないものはどれですか？",
       "choices": [
-        "設定ファイルで`\"disableArtifact\": true`を指定する",
+        "設定ファイルで`\"enableArtifact\": false`を指定する",
         "コマンドラインで`--no-artifact`フラグを付けて起動する",
         "環境変数`CLAUDE_CODE_DISABLE_ARTIFACT=1`を設定する",
         "`permissions.deny`に`Artifact`を追加する"
       ],
       "correctIndex": 1,
-      "explanation": "Artifactを無効化する方法として公式ドキュメントが挙げているのは、設定ファイルの`disableArtifact`、環境変数`CLAUDE_CODE_DISABLE_ARTIFACT`、`permissions.deny`への`Artifact`追加の3通りです。`--no-artifact`というCLIフラグは記載されていません。"
+      "explanation": "Artifactを無効化する方法として公式ドキュメントが挙げているのは、(1) `/config`の「Artifacts」行をオフにする、(2) 設定ファイルで`\"enableArtifact\": false`を指定する（旧来の`\"disableArtifact\": true`も無効化に働くが非推奨）、(3) 環境変数`CLAUDE_CODE_DISABLE_ARTIFACT=1`、(4) `permissions.deny`への`Artifact`追加、の4通りです。`--no-artifact`というCLIフラグは記載されていません。"
     },
     {
       "id": "recent-034",
@@ -626,7 +626,7 @@
         ".claude/skills/code-review/SKILL.md を空ファイルとして置き、バンドル版を上書きする"
       ],
       "correctIndex": 0,
-      "explanation": "設定ファイルにskillOverridesエントリで \"code-review\": \"user-invocable-only\" を書くと、Claudeとscheduled taskが自分から起動することはなくなり、自分で /code-review と入力したときだけ動きます。なお現行ではClaudeは平易な言葉でレビューを頼まれればこのスキルを自分で起動でき、/code-reviewをプロンプトに持つscheduled taskもレビューを実行します。クラウドプロバイダ経由のセッションや、テレメトリ/フィーチャーフラグ取得をオプトアウトしたセッションでも自動起動は行われません。"
+      "explanation": "設定ファイルにskillOverridesエントリで \"code-review\": \"user-invocable-only\" を書くと、Claudeやscheduled taskが自分から起動することはなくなり、自分で /code-review と入力したときだけ動きます。Claude Code v2.1.246以降、平易な言葉でレビューを頼めばClaudeはこのスキルを自分で起動でき、/code-reviewをプロンプトに持つscheduled taskもレビューを実行します（v2.1.246より前は、Anthropicから取得するフィーチャーフラグが有効なセッションでのみClaudeが自発起動しました）。user-invocable-only はこの自動起動だけを止め、手動起動は残します。"
     },
     {
       "id": "recent-071",
@@ -653,6 +653,84 @@
       ],
       "correctIndex": 0,
       "explanation": "teammateはそのサブエージェント定義のtools allowlistとmodelを尊重し、定義の本文はシステムプロンプトを置き換えるのではなく追加の指示として末尾に付加されます。一方skillsとmcpServersのフロントマターはteammateとして動くときには適用されず、teammateは通常のセッションと同様にプロジェクト設定・ユーザー設定からskillsとMCPサーバーを読み込みます。SendMessageやタスク管理ツールといったチーム協調用のツールは、toolsが他のツールを制限していてもteammateには常に利用可能です。なおagent teamsは実験的機能で、CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1を設定しない限り無効です。"
+    },
+    {
+      "id": "recent-073",
+      "level": "beginner",
+      "question": "Claude Code v2.1.248で追加された `claude --restricted` フラグの効果として正しいものはどれですか？",
+      "choices": [
+        "コマンドやコードを実行する組み込みツールと`WebFetch`を、明示的に許可しない限り取り除いた状態でセッションを起動する",
+        "すべてのファイル書き込みを読み取り専用に切り替える",
+        "セッションを1ターンで強制的に終了させる",
+        "MCPサーバーへの接続をすべて禁止する"
+      ],
+      "correctIndex": 0,
+      "explanation": "v2.1.248で追加された`--restricted`は、コマンドやコードを実行する組み込みツール（Bashなど）と`WebFetch`を、`--allowedTools`などで明示的に名指ししない限り取り除いた状態でセッションを起動します。`--restricted`を付けたセッションでは`bypassPermissions`も拒否されます。出典: Claude Code CHANGELOG v2.1.248 / code.claude.com/docs/en/cli-reference"
+    },
+    {
+      "id": "recent-074",
+      "level": "intermediate",
+      "question": "Claude Code v2.1.246で `/permissions` に追加された「Auto mode」タブの用途はどれですか？",
+      "choices": [
+        "auto modeの分類器（classifier）のルールを閲覧・編集する",
+        "auto modeを組織全体で無効化する",
+        "auto modeのトークン消費量をリアルタイムで表示する",
+        "auto modeとManualモードを1画面で切り替える"
+      ],
+      "correctIndex": 0,
+      "explanation": "v2.1.246で`/permissions`にAuto modeタブが追加され、auto modeの分類器ルール（どのアクションを許可・ブロックするか）を閲覧・編集できるようになりました。出典: Claude Code CHANGELOG v2.1.246"
+    },
+    {
+      "id": "recent-075",
+      "level": "intermediate",
+      "question": "Claude Code v2.1.243で追加された `modelPicker` 設定の役割はどれですか？",
+      "choices": [
+        "`/model`ピッカーに表示するモデルを、順序とラベルを指定したリストで絞り込む",
+        "モデルを一定時間ごとに自動で切り替える",
+        "組織のデフォルトモデルを強制し、`/model`を無効化する",
+        "モデルごとの単価を上書きする"
+      ],
+      "correctIndex": 0,
+      "explanation": "`modelPicker`設定は`/model`ピッカーに出るモデルを、順序とラベルを指定したリストでキュレーションします。組織契約レートを反映する`modelPricing`や、1時間キャッシュを維持する`promptCacheTtl` / `subagentPromptCacheTtl`は別の設定です。出典: Claude Code CHANGELOG v2.1.243"
+    },
+    {
+      "id": "recent-076",
+      "level": "advanced",
+      "question": "cross-sessionの `SendMessage` にv2.1.236で追加された `notify_when_idle` 入力について、公式ドキュメントの記載に合致するものはどれですか？",
+      "choices": [
+        "同一マシン上の相手セッションが次にアイドルまたは終了したとき、一度だけ通知が返る",
+        "相手セッションがアイドルになるまでこちらのターンをブロックする",
+        "相手セッションを強制的にアイドル状態へ遷移させる",
+        "アイドル検知を無効化し、常時ポーリングに切り替える"
+      ],
+      "correctIndex": 0,
+      "explanation": "`notify_when_idle`は、同一マシン上の相手セッションが次にアイドル（キュー無しでターン終了）または終了したときに一度だけ通知を返す購読です。ワンショットで、どちらのセッションも相手をポーリングしません。12時間以内に通知が来なければ購読は破棄されます。サブエージェントやチームメイト、マシン外のセッションには購読できません。出典: Claude Code CHANGELOG v2.1.236 / code.claude.com/docs/en/cross-session-messaging"
+    },
+    {
+      "id": "recent-077",
+      "level": "advanced",
+      "question": "同一マシン上のcross-session messaging（`SendMessage` / `ListAgents`）を Amazon Bedrock・Google CloudのAgent Platform・Microsoft Foundry のセッションや、フィーチャーフラグ取得を無効にしたセッションで使う場合の要件はどれですか？",
+      "choices": [
+        "Claude Code v2.1.248以降が必要。メッセージはマシン上のper-sessionソケットを通り、Anthropicのサーバーは経由しない",
+        "これらのプロバイダでは同一マシンでもcross-session messagingは一切使えない",
+        "`crossSessionInbound`を`accept`に設定すれば、どのバージョンでも使える",
+        "Remote Control接続が必須になる"
+      ],
+      "correctIndex": 0,
+      "explanation": "同一マシン上のメッセージングは全プロバイダ（Bedrock、Claude Platform on AWS、Agent Platform、Foundryを含む）とフラグ取得オフのセッションでも使えますが、これらの環境ではClaude Code v2.1.248以降が必要です。配送はマシン上のper-sessionソケット（macOS/Linux）またはnamed pipe（Windows）を通り、Anthropicのサーバーを経由しません。マシンをまたぐ相手やWebセッションの探索にはRemote Control接続とclaude.aiサインインが必要です。出典: Claude Code CHANGELOG v2.1.248 / code.claude.com/docs/en/cross-session-messaging"
+    },
+    {
+      "id": "recent-078",
+      "level": "expert",
+      "question": "Claude Code v2.1.238でプラグインマーケットプレイスに追加された `headersHelper` の役割はどれですか？",
+      "choices": [
+        "カタログおよびアーカイブ取得のたびに、時間制限付きHTTPヘッダーを生成するコマンドを実行する",
+        "プラグインのHTTPレスポンスヘッダーを検証してスキーマ違反を報告する",
+        "マーケットプレイスのHTTPレスポンスをキャッシュするTTLを設定する",
+        "プラグインのフロントマターにカスタムヘッダー行を挿入する"
+      ],
+      "correctIndex": 0,
+      "explanation": "`headersHelper`は、プラグインマーケットプレイスがカタログ取得や`archive`ソースのzip取得を行うたびに、時間制限付きのHTTPヘッダー（署名付きURL用トークンなど）を生成するコマンドを実行させる設定です。ArtifactoryやS3の署名付きアクセスなど、都度発行が必要な認証に使います。出典: Claude Code CHANGELOG v2.1.238"
     }
   ]
 }
