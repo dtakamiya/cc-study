@@ -57,14 +57,12 @@ Ryoko の負荷分散方針により、本サイクルは全8領域のうち**6�
 
 ### 陳腐化した問題
 
-#### 要修正（1件）
+#### 要修正（0件）
 
-**recent-074 — Auto mode タブ追加バージョンが誤り**
+なし。
 
-- 現状の記述: 問題文「Claude Code **v2.1.246** で `/permissions` に追加された『Auto mode』タブ」、explanation「v2.1.246で`/permissions`にAuto modeタブが追加され…出典: Claude Code CHANGELOG v2.1.246」
-- 正しい記述: Auto mode タブの追加は **v2.1.232**。現行 CHANGELOG の v2.1.232 に「Added an Auto mode tab to `/permissions` for viewing and editing auto mode classifier rules」と明記。v2.1.246 のエントリに Auto mode タブの追加はない。
-- 根拠URL: https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md （v2.1.232 セクション）
-- 深刻度: 要修正（検証可能な事実＝バージョン番号の誤り）。設問本体（タブの用途＝分類器ルールの閲覧・編集）は正しいため、バージョン番号のみ差し替えれば足りる。
+> **【Ryoko レビューによる訂正 2026-09-01】** 初回報告で recent-074 を「バージョン番号が誤り（v2.1.246 → v2.1.232 にすべき）」として要修正1件に計上したが、Ryoko が生 CHANGELOG を直接照合した結果、**recent-074 の現状記述「v2.1.246」は正しい**ことを確認した。CHANGELOG 本文の v2.1.246 セクションに「Added an Auto mode tab to `/permissions` for viewing and editing auto mode classifier rules」が存在し、v2.1.232 セクションには該当エントリがない（v2.1.232 は subagent forking の既定化・`@` メンション等）。担当サブエージェントの誤照合。**recent-074 は修正不要。今サイクルの要修正はゼロ。**
+> 根拠URL: https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md （v2.1.246 セクション、参照日 2026-09-01）
 
 #### 検討推奨（0件）
 
@@ -90,7 +88,7 @@ Ryoko の負荷分散方針により、本サイクルは全8領域のうち**6�
 
 | 領域 | 照合問題数 | 要修正 | 検討推奨 | 参考 |
 |---|---|---|---|---|
-| recent-features | 56 | 1（recent-074） | 0 | 2（recent-052, recent-046） |
+| recent-features | 56 | 0 | 0 | 2（recent-052, recent-046） |
 | feature-usage | 81 | 0 | 0 | 0 |
 | security-permissions | 82 | 0 | 0 | 0 |
 | basic-operations | 77 | 0 | 0 | 0 |
@@ -123,5 +121,5 @@ feature-usage・security-permissions・basic-operations・prompt-design・harnes
 ## 次サイクルへの申し送り
 
 1. **対象外だった `slash-commands`・`token-efficiency` を次回優先で照合する。**
-2. recent-074 のバージョン番号修正は Ryoko レビュー後に別途 `add` モードまたは直接修正で対応（本レポートでは JSON 未変更）。
+2. 今サイクルの要修正はゼロ（recent-074 は Ryoko レビューで「現状記述が正しい」と確定、初回報告の要修正1件は誤照合として取り下げ）。JSON 本体は未変更。
 3. 新機能クイズ案（特に v2.1.232〜v2.1.252 由来のもの）は recent-features の replace サイクルと恒久領域への追加を Ryoko が仕分ける。
