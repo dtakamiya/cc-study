@@ -167,9 +167,15 @@ description: data/questions/*.json（Claude Codeステップアップ問題集�
 3. 全サブエージェントの結果を集約する
 4. レポート保存専用のサブエージェントに、集約済みレポート本文と実行日時を
    入力として渡し、`docs/superpowers/reports/YYYY-MM-DD-question-staleness.md`
-   （`YYYY-MM-DD`は実行日）への保存とgitコミットを委譲する。同日に既に
+   （`YYYY-MM-DD`は実行日）への保存を委譲する。同日に既に
    同名のレポートが存在する場合は、ファイル名に実行時刻（`HHmm`）を付加
-   （`YYYY-MM-DD-question-staleness-HHmm.md`）して上書きを避ける
+   （`YYYY-MM-DD-question-staleness-HHmm.md`）して上書きを避ける。
+   コミットは**その日付専用の新規ブランチ**（例: `docs/staleness-YYYY-MM-DD`）
+   を`main`の最新から切って行い、コミット後に`git push -u origin <branch>`まで
+   実行する（`git push`が失敗する/認証がない場合はその旨を報告する）。
+   既存の別サイクルのブランチ（例: 前回の`chore/staleness-*`）に積み増さない
+   — レポートはドキュメントのみの変更でPRも自己完結できるため、可能なら
+   `gh pr create`でPRも作成する（マージ判断はRyoko）
 5. 指摘ゼロの場合も、チェックした情報源と範囲を明記してレポートを作成する
 
 ### このモードでは行わないこと
