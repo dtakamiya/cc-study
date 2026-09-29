@@ -551,15 +551,15 @@
     {
       "id": "slash-043",
       "level": "advanced",
-      "question": "現在のClaude Codeでアウトプットスタイル（Explanatory、Learning等）を切り替える正しい方法はどれですか？",
+      "question": "アウトプットスタイル（Explanatory、Learning等）を、メニューを開かずにスタイル名を引数で直接指定して切り替えられる方法はどれですか？（Claude Code v2.1.269以降）",
       "choices": [
-        "`/config`を実行して「Output style」を選ぶ（または設定ファイルの`outputStyle`フィールドを直接編集する）",
-        "`/output-style`コマンドにスタイル名を引数で渡す",
+        "`/config`を実行して「Output style」のメニューから選ぶ",
+        "`/output-style`コマンドにスタイル名を引数で渡す（例: `/output-style concise`）",
         "`/status`のStatusタブからスタイルを選択する",
         "`/memory`でCLAUDE.mdにスタイル名を記述する"
       ],
-      "correctIndex": 0,
-      "explanation": "スタンドアロンの`/output-style`コマンドはv2.1.73で非推奨となり、v2.1.91で削除されました。現在は`/config`を実行して「Output style」を選ぶか、設定ファイルの`outputStyle`フィールドを直接編集します。選択内容はプロジェクトローカルの`.claude/settings.local.json`に保存されます。アウトプットスタイルはシステムプロンプトの一部であり、変更は`/clear`または新しいセッションから有効になります。"
+      "correctIndex": 1,
+      "explanation": "`/output-style`コマンドはv2.1.73で非推奨、v2.1.91で削除されましたが、v2.1.269で復活しました。現在は`/output-style <style>`で切り替えでき、引数なしで実行すると選べるスタイルの一覧と現在のスタイルが表示されます（大文字小文字は区別されず、非対話モードやRemote Control経由でも使えます）。従来どおり`/config`の「Output style」メニュー、または設定ファイルの`outputStyle`フィールド（大文字小文字を区別）でも設定でき、メニューは`.claude/settings.local.json`に保存します。切り替え後は次のメッセージから新しいスタイルが適用されます（v2.1.251より前は`/clear`または新規セッションから）。"
     },
     {
       "id": "slash-044",
@@ -897,7 +897,7 @@
         "`cd apps/web` してから `/deploy`"
       ],
       "correctIndex": 1,
-      "explanation": "ネストされた `.claude/skills/` のスキルが上位のスキルと名前衝突した場合、作業ディレクトリからの相対パスで修飾された `/apps/web:deploy` という名前が付与され、これを入力すると明示的に実行できます。単に `/deploy` と入力した場合はプロジェクトルート側のスキルが実行されますが、その際 Claude Code はディレクトリ修飾された変種の一覧を内容に追記し、作業対象のファイルがそのディレクトリにあるなら変種も呼ぶよう指示するため、ネスト側が無視されるわけではありません。この修飾名の挙動には Claude Code v2.1.203 以降が必要です。"
+      "explanation": "ネストされた `.claude/skills/` のスキルが上位のスキルと名前衝突した場合、作業ディレクトリからの相対パスで修飾された `/apps/web:deploy` という名前が付与され、これを入力すると明示的に実行できます。単に `/deploy` と入力した場合はプロジェクトルート側のスキルが実行されますが、その際 Claude Code はディレクトリ修飾された変種の一覧を内容に追記し、作業対象のファイルがそのディレクトリにあるなら変種も呼ぶよう指示するため、ネスト側が無視されるわけではありません。この修飾名の挙動には Claude Code v2.1.178 以降が必要です。"
     },
     {
       "id": "slash-070",
