@@ -644,7 +644,7 @@
     {
       "id": "recent-072",
       "level": "expert",
-      "question": "agent teamsにおいて、あるサブエージェント定義をteammateとして起動した場合の扱いについて、公式ドキュメントの記載に合致するものはどれですか？",
+      "question": "agent teamsにおいて、あるサブエージェント定義をteammateとして起動した場合の扱いについて、公式ドキュメントの記載に合致するものはどれですか？（既定のin-processモードを前提とします）",
       "choices": [
         "定義の tools allowlist と model は尊重されるが、skills と mcpServers のフロントマターはteammateとしては適用されない",
         "定義の tools allowlist と model は尊重されるが、定義の本文はteammateのシステムプロンプトを完全に置き換える",
@@ -652,7 +652,7 @@
         "定義のフロントマターはすべて尊重されるが、teammateとしては起動できず通常の委譲でのみ有効である"
       ],
       "correctIndex": 0,
-      "explanation": "teammateはそのサブエージェント定義のtools allowlistとmodelを尊重し、定義の本文はシステムプロンプトを置き換えるのではなく追加の指示として末尾に付加されます。一方skillsとmcpServersのフロントマターはteammateとして動くときには適用されず、teammateは通常のセッションと同様にプロジェクト設定・ユーザー設定からskillsとMCPサーバーを読み込みます。SendMessageやタスク管理ツールといったチーム協調用のツールは、toolsが他のツールを制限していてもteammateには常に利用可能です。なおagent teamsは実験的機能で、CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1を設定しない限り無効です。"
+      "explanation": "in-processのteammateはそのサブエージェント定義のtools allowlistとmodelを尊重し、定義の本文はシステムプロンプトを置き換えるのではなく追加の指示として既定のシステムプロンプトに付加されます。一方skillsフロントマターは表示モードを問わずteammateには適用されず、mcpServersもin-processのteammateでは無視され、teammateはプロジェクト設定・ユーザー設定からskillsとMCPサーバーを読み込みます。なお分割ペイン（tmux/iTerm2）のteammateでは挙動が異なり、本文が既定のシステムプロンプトを置き換え、mcpServersも定義の内容が適用されます。SendMessageは、in-processのteammateではtoolsの制限があっても追加され、Taskツールがあるセッションではタスク管理ツールも追加されます。agent teamsは実験的機能で、CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1を設定しない限り無効です。"
     },
     {
       "id": "recent-073",
