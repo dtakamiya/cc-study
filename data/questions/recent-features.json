@@ -2,7 +2,7 @@
   "domain": "recent-features",
   "domainLabel": "直近の新機能",
   "updatePolicy": "replace",
-  "nextIdSeq": 79,
+  "nextIdSeq": 87,
   "questions": [
     {
       "id": "recent-001",
@@ -15,20 +15,7 @@
         "モデルは変わらず、ツール呼び出しだけが並列化される"
       ],
       "correctIndex": 2,
-      "explanation": "Fast ModeはClaude Opus向けの高速な構成であり、Opus 5とOpus 4.8でのみ利用できます。別のモデルを使っている状態で有効にすると、Claude Codeは自動的にOpusへ切り替えます。小型モデルへの降格ではなく、むしろ上位モデルへ移ったうえで高速化される点に注意してください。なお`/fast`で無効に戻してもOpusのままで、元のモデルには戻りません。"
-    },
-    {
-      "id": "recent-004",
-      "level": "beginner",
-      "question": "Claude CodeのCLIで利用できる現行モデルのモデルIDの組み合わせとして正しいものはどれですか？",
-      "choices": [
-        "claude-opus-5 / claude-sonnet-5 / claude-fable-5",
-        "claude-opus-max / claude-sonnet-max / claude-haiku-max",
-        "claude-3-opus / claude-3-sonnet / claude-3-haiku",
-        "opus-latest / sonnet-latest / fable-latest"
-      ],
-      "correctIndex": 0,
-      "explanation": "現行のセルフサーブ向けモデルIDは`claude-opus-5`・`claude-sonnet-5`・`claude-fable-5`（および`claude-haiku-4-5`系）です。`-max`や`-latest`、旧世代の`-3-`付きIDは現行のモデルIDではありません。"
+      "explanation": "Fast ModeはClaude Opus向けの高速な構成であり、Opus 5.5・Opus 5・Opus 4.8で利用でき、v2.1.280以降の既定はOpus 5.5です。別のモデルを使っている状態で有効にすると、Claude Codeは自動的にOpusへ切り替えます。小型モデルへの降格ではなく、むしろ上位モデルへ移ったうえで高速化される点に注意してください。なお`/fast`で無効に戻してもOpusのままで、元のモデルには戻りません。"
     },
     {
       "id": "recent-006",
@@ -55,19 +42,6 @@
       ],
       "correctIndex": 0,
       "explanation": "VS Code拡張機能のFocus Viewはツール呼び出し・ツール結果・thinkingを1ターンにつき1行の展開可能な行の背後に隠し、プロンプトと応答だけを見やすく残す表示モードです。CLI向けの`/focus`とは別の機能です。"
-    },
-    {
-      "id": "recent-011",
-      "level": "beginner",
-      "question": "Claude Codeが公開するArtifactについて、公式ドキュメントが明記している制約はどれですか？",
-      "choices": [
-        "許可リストにある公開CDN（cdnjs、Tailwind CDN、jQuery CDN、jsDelivrの/npm/パス）以外からのスクリプト読み込み、Google Fonts以外の外部スタイルシート、すべての外部画像、および自オリジンとGoogle Fonts以外へのfetch・XHR・WebSocket通信はCSPによってブロックされる",
-        "Artifactは常にバックエンドサーバーを自動的に用意し、フォーム送信データを保存できる",
-        "複数のHTMLファイルを1つのArtifactとしてまとめてデプロイできる",
-        "Artifactのサイズには上限がなく、どれだけ大きな画像も埋め込める"
-      ],
-      "correctIndex": 0,
-      "explanation": "Artifactは1つの自己完結したページとして厳格なCSPの下で配信されます。外部スクリプトはcdnjs・Tailwind CDN・jQuery CDN・jsDelivr（/npm/パス）の公開CDN許可リストからのみ読み込め、外部スタイルシートはGoogle Fontsのみ許可されます。すべての外部画像はブロックされるためdata URIで埋め込みます。fetch・XHR・WebSocketは自オリジンとGoogle Fontsのホスト以外には到達できません。許可リスト外のライブラリのCSS・JavaScriptはインライン化する必要があります。"
     },
     {
       "id": "recent-013",
@@ -265,19 +239,6 @@
       "explanation": "プラグインが読み込まれない場合のトラブルシューティングとして、`claude plugin validate ./my-plugin`または`/plugin validate ./my-plugin`を実行し、`plugin.json`・skill/agent/commandのフロントマター・`hooks/hooks.json`の構文やスキーマのエラーを確認する方法が案内されています。"
     },
     {
-      "id": "recent-043",
-      "level": "expert",
-      "question": "Pro・Max・Teamプランで組み込みの開始権限モードがauto modeになる要件として、公式ドキュメントの記載に合致するものはどれですか？",
-      "choices": [
-        "強制的に全セッションでauto modeのみが使用可能になり、他のモードへの切り替えはできなくなる",
-        "Enterpriseプランを含むすべてのプランで一律に組み込み既定となる",
-        "macOS・Linux・WSLはv2.1.228以降、ネイティブWindowsはv2.1.233以降が必要で、それ以前は組み込み既定がManualになる",
-        "バージョンを問わず適用されるが、`--permission-mode`フラグを明示した場合のみ上書きできる"
-      ],
-      "correctIndex": 2,
-      "explanation": "公式ドキュメントは「On Pro, Max, and Team plans, the built-in starting permission mode is auto mode.」としたうえで、「The built-in `auto` default requires Claude Code v2.1.228 or later on macOS, Linux, and WSL, and v2.1.233 or later on native Windows. On earlier versions, the built-in default is Manual.」とバージョン要件を明記しています。組み込み既定は優先順位の最下位で、`--permission-mode`フラグやsettingsファイルの`permissions.defaultMode`があればそちらが先に適用されます。またEnterpriseプランやConsole APIキー、`claude -p`・Agent SDK、Bedrock・Google CloudのAgent Platform・Microsoft Foundry・Claude Platform on AWS・gatewayセッション、`disableAutoMode`が`\"disable\"`のとき、feature flag取得が無効または新規インストール・アップグレード直後の初回セッションでは、組み込み既定は`default`のままです。"
-    },
-    {
       "id": "recent-044",
       "level": "beginner",
       "question": "プラグインをgitやnpmを使わずに配布したい場合、`marketplace.json` のプラグインエントリで指定できる、v2.1.224で追加されたソース種別はどれですか？",
@@ -340,7 +301,7 @@
         "Fast Modeはサブスクリプションプランでは利用できず、Console APIのみで使える"
       ],
       "correctIndex": 1,
-      "explanation": "公式ドキュメントは「Fast mode usage draws directly from usage credits, even if you have remaining usage on your plan」と明記しています。Fast Modeのトークンはプランの利用枠にカウントされず、最初のトークンからFast Modeのレート（Opus 5 / Opus 4.8 で入力$10・出力$50 per MTok）で課金されます。そのためアカウントでusage creditsが有効になっている必要があります。"
+      "explanation": "公式ドキュメントは「Fast mode usage draws directly from usage credits, even if you have remaining usage on your plan」と明記しています。Fast Modeのトークンはプランの利用枠にカウントされず、最初のトークンからFast Modeのレート（Opus 5 / Opus 4.8 で入力$10・出力$50 per MTok、Opus 5.5は入力$8・出力$40）で課金されます。そのためアカウントでusage creditsが有効になっている必要があります。"
     },
     {
       "id": "recent-049",
@@ -731,6 +692,110 @@
       ],
       "correctIndex": 0,
       "explanation": "`headersHelper`は、プラグインマーケットプレイスがカタログ取得や`archive`ソースのzip取得を行うたびに、時間制限付きのHTTPヘッダー（署名付きURL用トークンなど）を生成するコマンドを実行させる設定です。ArtifactoryやS3の署名付きアクセスなど、都度発行が必要な認証に使います。出典: Claude Code CHANGELOG v2.1.238"
+    },
+    {
+      "id": "recent-079",
+      "level": "beginner",
+      "question": "現行のAnthropic API向けOpus 5.5・Sonnet 5.5・Fable 5.1を、完全なモデルIDで指定する場合の組み合わせはどれですか？",
+      "choices": [
+        "`claude-opus-5.5` / `claude-sonnet-5.5` / `claude-fable-5.1`",
+        "`claude-opus-5-0` / `claude-sonnet-5-0` / `claude-fable-5-0`",
+        "`claude-opus-5-5` / `claude-sonnet-5-5` / `claude-fable-5-1`",
+        "`claude-5-5-opus` / `claude-5-5-sonnet` / `claude-5-1-fable`"
+      ],
+      "correctIndex": 2,
+      "explanation": "完全なモデルIDは `claude-opus-5-5`・`claude-sonnet-5-5`・`claude-fable-5-1` で、バージョンのドットはハイフンで表記します。Anthropic API では `opus` エイリアスと default が Opus 5.5 に、`sonnet` が Sonnet 5.5 に、`fable` が Fable 5.1 に対応します。Opus 5.5 と Sonnet 5.5 は v2.1.280 / v2.1.284 の changelog で追加されました。"
+    },
+    {
+      "id": "recent-080",
+      "level": "beginner",
+      "question": "リポジトリに `AGENTS.md` だけがあり、作業ディレクトリとその上位に `CLAUDE.md` も `CLAUDE.local.md` もない場合、v2.1.277以降のClaude Codeは既定でどう動作しますか？",
+      "choices": [
+        "`AGENTS.md` は読まれず、`/init` で `CLAUDE.md` を作るまで指示なしで動く",
+        "`AGENTS.md` をプロジェクト指示として直接読み込む",
+        "`CLAUDE.md` に `@AGENTS.md` のimportを書いた場合にだけ読み込む",
+        "`~/.claude/CLAUDE.md` がある場合に限り `AGENTS.md` も併せて読み込む"
+      ],
+      "correctIndex": 1,
+      "explanation": "v2.1.277以降、既定では作業ディレクトリとその上位に `CLAUDE.md`・`.claude/CLAUDE.md`・`CLAUDE.local.md` がない場合に `AGENTS.md` を読み込みます。`~/.claude/CLAUDE.md` や管理者の `CLAUDE.md` は「ある」判定に数えません。`CLAUDE.md` がある場合は `CLAUDE.md` 系だけが読まれます。この挙動は `/config` の Project instructions で変更できます。"
+    },
+    {
+      "id": "recent-081",
+      "level": "intermediate",
+      "question": "v2.1.283以降のClaude Codeで、フラグも設定ファイルも指定せず対話のターミナルセッションを起動したとき、組み込みの開始権限モードはどれですか？",
+      "choices": [
+        "Manual（設定値 `default`）",
+        "`acceptEdits`",
+        "`auto`",
+        "Pro・Max・Teamプランの場合のみ `auto`、それ以外は Manual"
+      ],
+      "correctIndex": 2,
+      "explanation": "v2.1.283以降は、ターミナルと VS Code の対話セッションで組み込みの開始権限モードが auto です。それ以前は Pro/Max/Team かつ feature flag を取得するセッションに限られていました。`claude -p` と Agent SDK、および `disableAutoMode` が `\"disable\"` のセッションは `default` のままです。auto が利用不可の場合は Manual で起動します。"
+    },
+    {
+      "id": "recent-082",
+      "level": "intermediate",
+      "question": "`/effort ultracode` について、公式ドキュメントの記載に合致するものはどれですか？",
+      "choices": [
+        "`max` より深く推論する新しい最上位のエフォートレベルである",
+        "`--effort ultracode` でのみ有効化でき、設定ファイルには保存できない",
+        "有効にするとセッションのエフォートレベルが自動的に `low` に固定される",
+        "エフォートレベルではなく、実質的なタスクで動的ワークフローを組み立てる設定で、`/effort ultracode off` で無効にできる"
+      ],
+      "correctIndex": 3,
+      "explanation": "Ultracode はエフォートレベルとは別の Claude Code の設定です。有効にすると、セッションのエフォートレベルのまま、実質的なタスクに対して動的ワークフローを組み立てます。`\"ultracode\": true` で設定ファイルに永続化できます。`/effort ultracode off`、スライダーの Tab 切替、`xhigh` 以外のレベルでの継続には v2.1.284 以降が必要です。ワークフローが無効な場合、またはモデルが `xhigh` 非対応の場合は使えません。"
+    },
+    {
+      "id": "recent-083",
+      "level": "advanced",
+      "question": "管理設定で `\"availableModels\": [\"claude-opus-5\"]` と `\"availableModelsMatch\": \"exact\"` を指定した場合の挙動はどれですか？",
+      "choices": [
+        "Opus 5 と、後続の Opus 5.5（`claude-opus-5-5`）の両方が許可される",
+        "Opus 5 だけが許可され、`claude-opus-5-5` は許可されない",
+        "モデルIDのエントリは無視され、すべてのモデルが許可される",
+        "ユーザー設定や `--settings` に書いても同様に有効で、個人ごとに固定できる"
+      ],
+      "correctIndex": 1,
+      "explanation": "`availableModelsMatch` の既定は `\"prefix\"` で、エントリのバージョンとそれを延長するIDを許可します。`\"exact\"` にすると、そのバージョン（日付付きIDを含む）だけを許可します。`opus` のようなファミリーエイリアスをエントリに書けばファミリー全体が許可されます。この設定は管理設定のみ有効で、ユーザー・プロジェクト・ローカル設定と `--settings` では警告付きで無視されます。`availableModelsMatch` と `deniedModels` は v2.1.283 以降で使えます。`deniedModels` に `claude-opus-5` と書くと後続の Opus 5.5 も遮断し、Opus 5 だけを遮断するには `claude-opus-5-0` と書きます。"
+    },
+    {
+      "id": "recent-084",
+      "level": "advanced",
+      "question": "auto mode で `rm -rf ~` のような重要パス（critical path）の削除をClaudeが実行しようとした場合の、v2.1.281以降の扱いはどれですか？",
+      "choices": [
+        "分類器が安全と判断すれば自動で実行される",
+        "一致する allow ルールがあれば、確認なしで実行される",
+        "常に無条件で拒否され、承認を求める経路は存在しない",
+        "ターミナルでは制限時間付きで承認を求め、ターミナル以外では拒否される"
+      ],
+      "correctIndex": 3,
+      "explanation": "重要パスへの `rm`/`rmdir` は、allow ルールや `\"allow\"` を返す `PreToolUse` フックでは承認されません。auto mode ではターミナルなら時間制限付きで承認を求め、それ以外では拒否します。一致する ask ルールがあれば、制限時間なしで確認します。deny ルールは常に遮断します。`CLAUDE_CODE_DISABLE_DANGEROUS_RM_TIMEOUT=1` を設定すると、auto mode では分類器に判断を委ねます。"
+    },
+    {
+      "id": "recent-085",
+      "level": "expert",
+      "question": "auto mode でサーバー側分類器レビューが有効なセッションで、あるアクションのレビュー結果（verdict）が返ってこなかった場合の扱いとして、公式ドキュメントに合致するものはどれですか？",
+      "choices": [
+        "未レビューのまま実行し、後でログにだけ記録する",
+        "Claude Code自身の分類器で再判定し、結果に関わらず実行する",
+        "未レビューでは実行せず拒否し、10回連続すると、そのターンを停止する",
+        "応答が届くまで無期限に待機し、その間ユーザーへの確認は行わない"
+      ],
+      "correctIndex": 2,
+      "explanation": "サーバーが判定を返さないアクションは、未レビューのまま実行せずに拒否されます。判定なしが連続10回に達するとターンを停止します。応答が途中で切れる場合や、LLM ゲートウェイ／プロキシが応答を書き換える場合が原因になります。これと別に、サーバーがセッションそのものをレビューしない場合は、Claude Code自身の分類器リクエストへフォールバックします。`CLAUDE_CODE_AUTO_MODE_SERVER=0` で常に自前の分類器を使えます。"
+    },
+    {
+      "id": "recent-086",
+      "level": "expert",
+      "question": "`/doctor prompt-audit` について、公式ドキュメントの記載に合致するものはどれですか？",
+      "choices": [
+        "古いモデル向けの指示や矛盾を検出し、修正を直ちにファイルへ自動適用する",
+        "CLAUDE.md・AGENTS.md・スキル・サブエージェント等を監査して指摘と修正案を出し、適用は依頼するまで行わない",
+        "対象は `CLAUDE.md` のみで、AGENTS.md・スキル・サブエージェントは監査しない",
+        "同梱の `/claude-api` スキルとは独立に動くため、そのスキルを無効化していても使える"
+      ],
+      "correctIndex": 1,
+      "explanation": "読む対象は `CLAUDE.md`・`CLAUDE.local.md`・`AGENTS.md`、`.claude/` と `~/.claude/` 配下の rules・skills・commands・subagents・output styles です。古いモデル向けの指示、存在しないファイル／コマンドへの参照、矛盾を検出して、指摘と修正案を報告します。ファイルは、適用を頼むまで変更されません。同梱 `/claude-api` スキル経由で動くため、`skillOverrides` や `disableBundledSkills` でそのスキルを無効にすると使えません。v2.1.283 以降で使え、`/checkup prompt-audit` の別名もあります。"
     }
   ]
 }
